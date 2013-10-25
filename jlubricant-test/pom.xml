@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>jlubricant-test</artifactId>
+	<name>JLubricant for Tests</name>
+	<description>Test power ups!</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.2.8</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		
+		<dependency>  
+			<groupId>org.hsqldb</groupId>  
+			<artifactId>hsqldb</artifactId>  
+			<version>2.2.8</version>  
+		</dependency>  
+
+	</dependencies>
+
+	<parent>
+		<groupId>com.github.jlubricant</groupId>
+		<artifactId>jlubricant</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+</project>
