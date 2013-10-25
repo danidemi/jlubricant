@@ -20,10 +20,10 @@ import org.hsqldb.server.Server;
 
 /**
  * This is a standalone DB that can be controlled through its methods, making it an ideal solution for
- * unit tests that involve a db.
+ * automatic tests that involve a db.
  * TestDb is backed by HSQLDB (http://hsqldb.org/).
  */
-public class TestDb {
+public final class HsqlDb implements Db {
 	
 	private static final String DB_PASSWORD = "";
 	private static final String DB_USERNAME = "SA";
@@ -36,18 +36,18 @@ public class TestDb {
 	private ArrayList<String> list;
 	
 	/**
-	 * Creates a new {@link TestDb} with a name equals to the provided class'name.
+	 * Creates a new {@link HsqlDb} with a name equals to the provided class'name.
 	 */
-	public TestDb(Class clazz){
+	public HsqlDb(Class clazz){
 		this(clazz.getSimpleName());
 	}
 	
 	/**
-	 * Creates a new {@link TestDb} with the provided name.
+	 * Creates a new {@link HsqlDb} with the provided name.
 	 * The provided <code>dbName</code> will be used to define a folder in the
 	 * local OS temporary directory where to store all db files.
 	 */
-	public TestDb(String dbName){
+	public HsqlDb(String dbName){
 		if(dbName==null || dbName.trim().isEmpty()){
 			throw new IllegalArgumentException("Please provide a not blank name.");
 		}
@@ -57,10 +57,10 @@ public class TestDb {
 	}
 	
 	/**
-	 * Creates a new {@link TestDb} with the provided name.
+	 * Creates a new {@link HsqlDb} with the provided name.
 	 * The provided <code>dbName</code> stored in the given folder.
 	 */
-	public TestDb(String dbName, File dbFolder){
+	public HsqlDb(String dbName, File dbFolder){
 		if(dbName==null || dbName.trim().isEmpty()){
 			throw new IllegalArgumentException("Please provide a not blank name.");
 		}
@@ -185,12 +185,12 @@ public class TestDb {
 	}
 	
 	/** The name of the JDBC driver to be used to connect to the database. */
-	public String getJDBCDriver(){
+	public String getDriverClassName(){
 		return JDBC_DRIVER;
 	}
 	
 	/** The JDBC URL to be used to connect to the database. */
-	public String getJDBCUrl(){
+	public String getConnectionString(){
 		return jdbcUrl;
 	}
 	
@@ -198,15 +198,15 @@ public class TestDb {
 	 * Shorthand method to obtain a {@link Connection} to this DB.
 	 * <strong>Just remember to close it!</strong>
 	 */
-	public Connection openJdbcConnection() {
+	public Connection newConnection() {
 		
 		if(s==null || s.getState() != Database.DATABASE_ONLINE){
 			throw new IllegalStateException("Cannot return a connection id the DB is not started.");
 		}
 		
 		try {
-			Class.forName(getJDBCDriver());
-			Connection connection = DriverManager.getConnection(getJDBCUrl());
+			Class.forName(getDriverClassName());
+			Connection connection = DriverManager.getConnection(getConnectionString());
 			return connection;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -226,8 +226,11 @@ public class TestDb {
 		executeBatch(asList);
 	}
 	
-	/** Executes the list of provided queries. */
-	public void executeBatch(List<String> lines) throws Exception{
+	/** Executes the list of provided queries. 
+	 * @throws ClassNotFoundException 
+	 * @throws SQLException 
+	 * */
+	public void executeBatch(List<String> lines) throws ClassNotFoundException, SQLException {
 	
 		Class.forName(JDBC_DRIVER);
 		Connection jdbcConnection = DriverManager.getConnection(jdbcUrl, DB_USERNAME, DB_PASSWORD);
@@ -245,7 +248,7 @@ public class TestDb {
 		Statement stat = null;
 		ResultSet rs = null;
 		try{
-			conn = openJdbcConnection();
+			conn = newConnection();
 			stat = conn.createStatement();
 			rs = stat.executeQuery(sql);
 			if(rs.next()){
@@ -279,7 +282,7 @@ public class TestDb {
 		Statement stat = null;
 		ResultSet rs = null;
 		try{
-			conn = openJdbcConnection();
+			conn = newConnection();
 			stat = conn.createStatement();
 			rs = stat.executeQuery(sql);
 			ResultSetMetaData metaData = rs.getMetaData();
@@ -319,11 +322,11 @@ public class TestDb {
 	}
 		
 	/**
-	 * A quick example of how to use the {@link TestDb}.
+	 * A quick example of how to use the {@link HsqlDb}.
 	 */
 	public static void main(String[] args) {
 		
-		TestDb testDb = new TestDb("thedb");
+		HsqlDb testDb = new HsqlDb("thedb");
 		testDb.truncate();
 		testDb.start();
 		
@@ -336,8 +339,8 @@ public class TestDb {
 					"INSERT INTO PEOPLE VALUES ('James', 'Bond')"
 			);
 			
-			Class.forName(testDb.getJDBCDriver());
-			Connection connection = DriverManager.getConnection(testDb.getJDBCUrl());
+			Class.forName(testDb.getDriverClassName());
+			Connection connection = DriverManager.getConnection(testDb.getConnectionString());
 			Statement statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery("SELECT * FROM PEOPLE");
 			while(rs.next()){

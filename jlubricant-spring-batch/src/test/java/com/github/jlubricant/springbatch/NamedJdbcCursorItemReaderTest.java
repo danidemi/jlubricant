@@ -7,7 +7,9 @@ import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,15 +18,15 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-import com.github.jlubricant.test.TestDb;
+import com.github.jlubricant.test.HsqlDb;
 
 public class NamedJdbcCursorItemReaderTest {
 	
-	private static TestDb testDb;
-
+	static HsqlDb testDb;
+	
 	@BeforeClass
 	public static void setUpDb() {
-		testDb = new TestDb(NamedJdbcCursorItemReaderTest.class);
+		testDb = new HsqlDb(NamedJdbcCursorItemReaderTest.class);
 		testDb.start();
 	}
 	
@@ -39,7 +41,6 @@ public class NamedJdbcCursorItemReaderTest {
 					"INSERT INTO PEOPLE (firstName, lastName) VALUES ('zon', 'gong')",
 					"CREATE TABLE EMPTY (a_field VARCHAR(32))"
 			);
-			
 	}
 	
 	@AfterClass
@@ -51,10 +52,10 @@ public class NamedJdbcCursorItemReaderTest {
 		
 		// given
 		DriverManagerDataSource ds = new DriverManagerDataSource();
-		ds.setDriverClassName(testDb.getJDBCDriver());
+		ds.setDriverClassName(testDb.getDriverClassName());
 		ds.setPassword(testDb.getPassword());
 		ds.setUsername(testDb.getUsername());
-		ds.setUrl(testDb.getJDBCUrl());
+		ds.setUrl(testDb.getConnectionString());
 		
 		
 		NamedJdbcCursorItemReader<Map<String, Object>> reader = new NamedJdbcCursorItemReader<Map<String, Object>>();

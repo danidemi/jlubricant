@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.jlubricant.springbatch;
 
 import java.sql.Connection;
@@ -24,17 +23,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import org.springframework.batch.item.database.AbstractCursorItemReader;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameter;
-import org.springframework.jdbc.core.namedparam.MyParsedSql;
-import org.springframework.jdbc.core.namedparam.MyParsedSqlDel;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.ExposedParsedSql;
 import org.springframework.jdbc.core.namedparam.NamedParameterUtils;
 import org.springframework.jdbc.core.namedparam.ParsedSql;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -46,13 +41,17 @@ import org.springframework.util.ClassUtils;
  * <p>
  * Simple item reader implementation that opens a JDBC cursor and continually retrieves the
  * next row in the ResultSet.
+ * This is highly based on Spring Batch's JdbcCursorItemReader.
  * </p>
  *
  * <p>
  * The statement used to open the cursor is created with the 'READ_ONLY' option since a non read-only
- * cursor may unnecessarily lock tables or rows. It is also opened with 'TYPE_FORWARD_ONLY' option.
- * By default the cursor will be opened using a separate connection which means that it will not participate
+ * cursor may unnecessarily lock tables or rows. It is also opened with updatableRecords to false option,
+ * which in turns is likely to impose a 'TYPE_FORWARD_ONLY' option. 
+ * 
+ * Currently the cursor will be opened using a separate connection which means that it will not participate
  * in any transactions created as part of the step processing.
+ * It is not currently possible to change this behaviour.
  * </p>
  *
  * <p>
@@ -64,10 +63,10 @@ import org.springframework.util.ClassUtils;
  * @author Peter Zozom
  * @author Robert Kasanicky
  * @author Thomas Risberg
+ * @author Daniele Demichelis
  */
 @SuppressWarnings("rawtypes")
 public class NamedJdbcCursorItemReader<T> extends AbstractCursorItemReader<T> {
-
 
 	PreparedStatement preparedStatement;
 
@@ -79,18 +78,18 @@ public class NamedJdbcCursorItemReader<T> extends AbstractCursorItemReader<T> {
 
 	SqlParameterSource paramSource;
 
-//	/** Default maximum number of entries for this template's SQL cache: 256 */
-//	public static final int DEFAULT_CACHE_LIMIT = 256;
-//	private int cacheLimit = DEFAULT_CACHE_LIMIT;
-//	
-//	/** Cache of original SQL String to ParsedSql representation */
-//	private final Map<String, ParsedSql> parsedSqlCache =
-//			new LinkedHashMap<String, ParsedSql>(DEFAULT_CACHE_LIMIT, 0.75f, true) {
-//				@Override
-//				protected boolean removeEldestEntry(Map.Entry<String, ParsedSql> eldest) {
-//					return size() > getCacheLimit();
-//				}
-//			};
+	/** Default maximum number of entries for this template's SQL cache: 256 */
+	public static final int DEFAULT_CACHE_LIMIT = 256;
+	private int cacheLimit = DEFAULT_CACHE_LIMIT;
+	
+	/** Cache of original SQL String to ParsedSql representation */
+	private final Map<String, ExposedParsedSql> parsedSqlCache =
+			new LinkedHashMap<String, ExposedParsedSql>(DEFAULT_CACHE_LIMIT, 0.75f, true) {
+				@Override
+				protected boolean removeEldestEntry(Map.Entry<String, ExposedParsedSql> eldest) {
+					return size() > getCacheLimit();
+				}
+			};
 	
 	
 	
@@ -114,57 +113,40 @@ public class NamedJdbcCursorItemReader<T> extends AbstractCursorItemReader<T> {
 	
 	
 	/**
-	 * Build a PreparedStatementCreator based on the given SQL and named parameters.
-	 * <p>Note: Not used for the <code>update</code> variant with generated key handling.
-	 * @param sql SQL to execute
-	 * @param paramSource container of arguments to bind
-	 * @return the corresponding PreparedStatementCreator
-	 */
-	protected PreparedStatementCreator getPreparedStatementCreator(String sql, SqlParameterSource paramSource) {
-		ParsedSql parsedSql = getParsedSql(sql).getDelegate();
-		String sqlToUse = NamedParameterUtils.substituteNamedParameters(parsedSql, paramSource);
-		Object[] params = NamedParameterUtils.buildValueArray(parsedSql, paramSource, null);
-		List<SqlParameter> declaredParameters = NamedParameterUtils.buildSqlParameterList(parsedSql, paramSource);
-		PreparedStatementCreatorFactory pscf = new PreparedStatementCreatorFactory(sqlToUse, declaredParameters);
-		return pscf.newPreparedStatementCreator(params);
-	}
-
-	/**
 	 * Obtain a parsed representation of the given SQL statement.
 	 * <p>The default implementation uses an LRU cache with an upper limit
 	 * of 256 entries.
 	 * @param sql the original SQL
 	 * @return a representation of the parsed SQL statement
 	 */
-	protected MyParsedSqlDel getParsedSql(String sql) {
-		return new MyParsedSqlDel( NamedParameterUtils.parseSqlStatement(sql) );
-//		if (getCacheLimit() <= 0) {
-//			return new MyParsedSqlDel( NamedParameterUtils.parseSqlStatement(sql) );
-//		}
-//		synchronized (this.parsedSqlCache) {
-//			ParsedSql parsedSql = this.parsedSqlCache.get(sql);
-//			if (parsedSql == null) {
-//				parsedSql = NamedParameterUtils.parseSqlStatement(sql);
-//				this.parsedSqlCache.put(sql, parsedSql);
-//			}
-//			return parsedSql;
-//		}
+	protected ExposedParsedSql getParsedSql(String sql) {
+		if (getCacheLimit() <= 0) {
+			return new ExposedParsedSql( NamedParameterUtils.parseSqlStatement(sql) );
+		}
+		synchronized (this.parsedSqlCache) {
+			ExposedParsedSql parsedSql = this.parsedSqlCache.get(sql);
+			if (parsedSql == null) {
+				parsedSql = new ExposedParsedSql( NamedParameterUtils.parseSqlStatement(sql) );
+				this.parsedSqlCache.put(sql, parsedSql);
+			}
+			return parsedSql;
+		}
 	}
 	
-//	/**
-//	 * Specify the maximum number of entries for this template's SQL cache.
-//	 * Default is 256.
-//	 */
-//	public void setCacheLimit(int cacheLimit) {
-//		this.cacheLimit = cacheLimit;
-//	}
-//
-//	/**
-//	 * Return the maximum number of entries for this template's SQL cache.
-//	 */
-//	public int getCacheLimit() {
-//		return this.cacheLimit;
-//	}
+	/**
+	 * Specify the maximum number of entries for this template's SQL cache.
+	 * Default is 256.
+	 */
+	public void setCacheLimit(int cacheLimit) {
+		this.cacheLimit = cacheLimit;
+	}
+
+	/**
+	 * Return the maximum number of entries for this template's SQL cache.
+	 */
+	public int getCacheLimit() {
+		return this.cacheLimit;
+	}
 	
 	
 	
@@ -249,11 +231,11 @@ public class NamedJdbcCursorItemReader<T> extends AbstractCursorItemReader<T> {
 	@Override
 	protected void openCursor(Connection con) {
 		
-		MyParsedSqlDel parsedSql = getParsedSql(sql);
+		//MyParsedSqlDel parsedSql = getParsedSql(sql);
 		
-		String sqlToUse = NamedParameterUtils. substituteNamedParameters(parsedSql.getDelegate(), paramSource);
+		//String sqlToUse = NamedParameterUtils.substituteNamedParameters(parsedSql.getDelegate(), paramSource);
 		
-		String theSql = sqlToUse;
+		//String theSql = sqlToUse;
 		
 		
 		try {
@@ -277,7 +259,17 @@ public class NamedJdbcCursorItemReader<T> extends AbstractCursorItemReader<T> {
 //			}
 //			this.rs = preparedStatement.executeQuery();
 			
-			PreparedStatementCreator preparedStatementCreator = this.getPreparedStatementCreator(sql, paramSource);
+			ParsedSql parsedSql1 = this.getParsedSql(sql).getDelegate();
+			String sqlToUse1 = NamedParameterUtils.substituteNamedParameters(parsedSql1, paramSource);
+			Object[] params = NamedParameterUtils.buildValueArray(parsedSql1, paramSource, null);
+			List<SqlParameter> declaredParameters = NamedParameterUtils.buildSqlParameterList(parsedSql1, paramSource);
+			PreparedStatementCreatorFactory pscf = new PreparedStatementCreatorFactory(sqlToUse1, declaredParameters);
+			pscf.setResultSetType( ResultSet.TYPE_FORWARD_ONLY );
+			pscf.setUpdatableResults(false);
+			PreparedStatementCreator preparedStatementCreator = pscf.newPreparedStatementCreator(params);
+			
+			//con.prepareStatement(theSql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			
 			preparedStatement = preparedStatementCreator.createPreparedStatement(con);
 			this.rs = preparedStatement.executeQuery();
 			

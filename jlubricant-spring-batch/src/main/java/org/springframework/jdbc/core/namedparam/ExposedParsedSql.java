@@ -2,15 +2,15 @@ package org.springframework.jdbc.core.namedparam;
 
 import java.util.List;
 
-public class MyParsedSqlDel {
+public class ExposedParsedSql {
 
 	private ParsedSql delegate;
 	
-	public MyParsedSqlDel(String originalSql) {
+	public ExposedParsedSql(String originalSql) {
 		this.delegate = new ParsedSql(originalSql);
 	}
 	
-	public MyParsedSqlDel(ParsedSql parsedSql){
+	public ExposedParsedSql(ParsedSql parsedSql){
 		this.delegate = parsedSql;
 	}
 	
