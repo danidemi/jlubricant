@@ -55,7 +55,7 @@
 				<version>3.1</version>
 				<configuration>
 					<source>1.7</source>
-					<target>1.5</target>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -70,5 +70,6 @@
 	<modules>
 		<module>../jlubricant-spring-batch</module>
 		<module>../jlubricant-test</module>
+		<module>../jlubricant-common</module>
 	</modules>
 </project>
