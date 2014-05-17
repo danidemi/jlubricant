@@ -43,6 +43,11 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.github.jlubricant</groupId>
+			<artifactId>jlubricant-embeddable-hsql</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>com.github.jlubricant</groupId>
