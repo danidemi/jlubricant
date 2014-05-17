@@ -13,7 +13,7 @@
 	<url>https://github.com/danidemi/jlubricant/wiki</url>
 	
 	<modules>
-		<module>jlubricant-common</module>
+		<module>jlubricant-apache-commons-collections</module>
 		<module>jlubricant-spring-batch</module>
 		<module>jlubricant-test</module>
 	</modules>
