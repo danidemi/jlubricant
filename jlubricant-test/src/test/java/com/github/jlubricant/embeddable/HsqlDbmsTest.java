@@ -1,0 +1,83 @@
+package com.github.jlubricant.embeddable;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+public class HsqlDbmsTest {
+
+	public @Rule TemporaryFolder tmp = new TemporaryFolder();
+		
+	@Test
+	public void test() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+		
+		HsqlDbms dbms = new HsqlDbms();
+		
+		HsqlDatabase db = new HsqlDatabase();
+		db.setDbName("oracle-like");
+		db.setCompatibility( new OracleCompatibility() );
+		db.setStorage(new ServerMode(tmp.newFolder("oracle-like")));
+		
+			
+		dbms.add(db);
+		
+		dbms.start();
+		
+		HsqlDatabase dbByName = dbms.dbByName("oracle-like");
+		dbByName.executeStm("CREATE TABLE PEOPLE(NAME varchar(164))");
+		dbByName.executeStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
+		
+		
+		dbms.stop();
+		
+	}	
+	
+	@Test
+	public void shouldSupportMultipleDbs() throws IOException, InterruptedException {
+		
+		HsqlDbms dbms = new HsqlDbms();
+		
+		int maxDbs = 4;
+		for(int i=0; i<maxDbs; i++){
+			HsqlDatabase db = new HsqlDatabase();
+			db.setDbName("db" + i);
+			db.setStorage(new ServerMode(tmp.newFolder("db" + i)));			
+			dbms.add(db);			
+		}
+		dbms.start();
+		
+		for(int i=0; i<maxDbs; i++){
+			HsqlDatabase dbByName = dbms.dbByName("db" + i);
+			dbByName.executeStm("CREATE TABLE PEOPLE(NAME varchar(164))");
+			dbByName.executeStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
+		}		
+		
+		dbms.stop();
+		
+	}
+	
+	@Test
+	public void shouldSupportOracle() throws IOException, InterruptedException {
+		
+		HsqlDbms dbms = new HsqlDbms();
+		
+		HsqlDatabase oraLikeDb = new HsqlDatabase();
+		oraLikeDb.setDbName("oracle-like");
+		oraLikeDb.setStorage(new ServerMode(tmp.newFolder("oracle-like")));
+
+		dbms.add(oraLikeDb);
+		dbms.start();
+		
+		HsqlDatabase dbByName = dbms.dbByName("oracle-like");
+		dbByName.executeStm("CREATE TABLE PEOPLE(NAME varchar(164))");
+		dbByName.executeStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
+
+		
+		dbms.stop();
+		
+	}
+
+}
