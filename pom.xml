@@ -1,13 +1,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.jlubricant</groupId>
 	<artifactId>jlubricant</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	
 	<name>JLubricant</name>
 	<description>Java Power Ups!</description>
+	
 	<packaging>pom</packaging>
 	<url>https://github.com/danidemi/jlubricant/wiki</url>
+	
+	<modules>
+		<module>jlubricant-common</module>
+		<module>jlubricant-spring-batch</module>
+		<module>jlubricant-test</module>
+	</modules>
+	
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -15,11 +25,13 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	
 	<scm>
 		<connection>scm:git:git@github.com:danidemi/jlubricant.git</connection>
 		<url>scm:git:git@github.com:danidemi/jlubricant.git</url>
 		<developerConnection>scm:git:git@github.com:danidemi/jlubricant.git</developerConnection>
 	</scm>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -66,10 +78,4 @@
 		</plugins>
 	</build>
 
-
-	<modules>
-		<module>../jlubricant-spring-batch</module>
-		<module>../jlubricant-test</module>
-		<module>../jlubricant-common</module>
-	</modules>
 </project>

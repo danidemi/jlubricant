@@ -7,7 +7,6 @@
 		<groupId>com.github.jlubricant</groupId>
 		<artifactId>jlubricant</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../jlubricant-master</relativePath>
 	</parent>
 	<dependencies>
 		<dependency>

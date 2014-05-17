@@ -2,3 +2,4 @@
 .project
 org.eclipse*
 .classpath
+/.settings
