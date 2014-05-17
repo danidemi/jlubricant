@@ -84,5 +84,36 @@ public class HsqlDatabase {
 		}
 		this.dbms = hsqlDbms;
 	}
+
+	void setSyntax(String syntax) {
+		executeStm("set database sql syntax "
+				+ syntax
+				+ " "
+				+ "true");
+	}
+
+	void setTransactionControl() {
+		executeStm("set database transaction control");
+	}
+
+	void setTransactionRollbackOnConflict(boolean setTransactionRollbackOnConflict) {
+		executeStm("set database transaction rollback on conflict "
+				+ setTransactionRollbackOnConflict);
+	}
+
+	void setDatabaseSqlConcatNulls(boolean setDatabaseSqlConcatNulls) {
+		executeStm("set database sql concat nulls "
+				+ setDatabaseSqlConcatNulls);
+	}
+
+	void setDatabaseSqlNullsFirst(boolean setDatabaseSqlNullsFirst) {
+		executeStm("set database sql nulls first "
+				+ setDatabaseSqlNullsFirst);
+	}
+
+	void setDatabaseSqlUniqueNulls(boolean setDatabaseSqlUniqueNulls) {
+		executeStm("set database sql unique nulls "
+				+ setDatabaseSqlUniqueNulls);
+	}
 	
 }

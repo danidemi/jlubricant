@@ -10,6 +10,24 @@ import org.junit.rules.TemporaryFolder;
 public class HsqlDbmsTest {
 
 	public @Rule TemporaryFolder tmp = new TemporaryFolder();
+	
+	@Test
+	public void shouldSupportInProcessInMemoryDatabase() throws IOException, InterruptedException {
+				
+		HsqlDatabase db = new HsqlDatabase();
+		db.setDbName("memdb");
+		db.setStorage(new InProcessInMemory());		
+		
+		HsqlDbms dbms = new HsqlDbms();
+		dbms.add(db);
+		
+		dbms.start();
+		
+		db.executeStm("CREATE TABLE PEOPLE(NAME varchar(164))");
+		db.executeStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
+		
+		dbms.stop();
+	}
 		
 	@Test
 	public void test() throws IOException, InterruptedException, ClassNotFoundException, SQLException {

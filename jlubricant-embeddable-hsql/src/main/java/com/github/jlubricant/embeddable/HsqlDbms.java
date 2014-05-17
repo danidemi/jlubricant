@@ -29,6 +29,7 @@ public class HsqlDbms implements EmbeddableServer {
 
 	public HsqlDbms() {
 		dbs = new ArrayList<>(0);
+		server = null;
 	}
 	
 	
@@ -97,15 +98,14 @@ public class HsqlDbms implements EmbeddableServer {
 
 	@Override
 	public void stop() throws InterruptedException {
+		if(server == null) return;
 		server.shutdown();
 
 		int state = server.getState();
-		System.err.println("ssttaattuuss ====== " + state);
 		while (state != 16) {
 			Thread.yield();
 			Thread.sleep(100);
 			state = server.getState();
-			System.err.println("ssttaattuuss ====== " + state);
 		}
 
 	}
