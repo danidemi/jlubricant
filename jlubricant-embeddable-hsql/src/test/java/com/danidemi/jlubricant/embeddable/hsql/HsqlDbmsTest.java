@@ -7,6 +7,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import com.danidemi.jlubricant.embeddable.ServerException;
+import com.danidemi.jlubricant.embeddable.ServerStartException;
+import com.danidemi.jlubricant.embeddable.ServerStopException;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDatabase;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms;
 import com.danidemi.jlubricant.embeddable.hsql.InProcessInMemory;
@@ -18,7 +21,7 @@ public class HsqlDbmsTest {
 	public @Rule TemporaryFolder tmp = new TemporaryFolder();
 	
 	@Test
-	public void shouldSupportInProcessInMemoryDatabase() throws IOException, InterruptedException {
+	public void shouldSupportInProcessInMemoryDatabase() throws ServerException {
 				
 		HsqlDatabase db = new HsqlDatabase();
 		db.setDbName("memdb");
@@ -36,7 +39,7 @@ public class HsqlDbmsTest {
 	}
 		
 	@Test
-	public void test() throws IOException, InterruptedException, ClassNotFoundException, SQLException {
+	public void test() throws ServerException, IOException {
 		
 		HsqlDbms dbms = new HsqlDbms();
 		
@@ -60,7 +63,7 @@ public class HsqlDbmsTest {
 	}	
 	
 	@Test
-	public void shouldSupportMultipleDbs() throws IOException, InterruptedException {
+	public void shouldSupportMultipleDbs() throws IOException, ServerException  {
 		
 		HsqlDbms dbms = new HsqlDbms();
 		
@@ -84,7 +87,7 @@ public class HsqlDbmsTest {
 	}
 	
 	@Test
-	public void shouldSupportOracle() throws IOException, InterruptedException {
+	public void shouldSupportOracle() throws IOException, ServerException  {
 		
 		HsqlDbms dbms = new HsqlDbms();
 		

@@ -16,6 +16,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.hsqldb.Server;
 
+import com.danidemi.jlubricant.embeddable.EmbeddableServer;
+import com.danidemi.jlubricant.embeddable.ServerStartException;
+import com.danidemi.jlubricant.embeddable.ServerStopException;
+
 import static org.apache.commons.collections4.CollectionUtils.*;
 
 public class HsqlDbms implements EmbeddableServer {
@@ -42,7 +46,7 @@ public class HsqlDbms implements EmbeddableServer {
 
 
 	@Override
-	public void start() throws IOException {
+	public void start() throws ServerStartException {
 		
 		final AtomicBoolean serverRequired = new AtomicBoolean(false);		
 		forAllDo(dbs, new Closure<HsqlDatabase>() {
@@ -97,16 +101,25 @@ public class HsqlDbms implements EmbeddableServer {
 
 
 	@Override
-	public void stop() throws InterruptedException {
+	public void stop() throws ServerStopException {
 		if(server == null) return;
 		server.shutdown();
-
-		int state = server.getState();
-		while (state != 16) {
-			Thread.yield();
-			Thread.sleep(100);
-			state = server.getState();
+		
+		try{
+			
+			int state = server.getState();
+			while (state != 16) {
+				Thread.yield();
+				Thread.sleep(100);
+				state = server.getState();
+			}
+			
+		}catch(Exception e){
+			
+			throw new ServerStopException(e);
+			
 		}
+
 
 	}
 

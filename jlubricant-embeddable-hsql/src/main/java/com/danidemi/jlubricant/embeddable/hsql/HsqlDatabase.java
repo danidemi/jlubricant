@@ -19,6 +19,12 @@ public class HsqlDatabase {
 		setCompatibility(new HsqlCompatibility());
 	}
 	
+	public HsqlDatabase(String name, Storage storage) {
+		super();
+		this.dbName = name;
+		this.storage = storage;
+	}
+
 	public void setStorage(Storage storage) {
 		this.storage = storage;
 	}
