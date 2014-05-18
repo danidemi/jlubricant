@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.embeddable;
+package com.danidemi.jlubricant.embeddable.hsql;
 
 public abstract class Compatibility {
 

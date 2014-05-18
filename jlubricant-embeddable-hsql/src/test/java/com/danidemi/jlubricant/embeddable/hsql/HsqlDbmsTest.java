@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.embeddable;
+package com.danidemi.jlubricant.embeddable.hsql;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -7,11 +7,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.danidemi.jlubricant.embeddable.HsqlDatabase;
-import com.danidemi.jlubricant.embeddable.HsqlDbms;
-import com.danidemi.jlubricant.embeddable.InProcessInMemory;
-import com.danidemi.jlubricant.embeddable.OracleCompatibility;
-import com.danidemi.jlubricant.embeddable.ServerMode;
+import com.danidemi.jlubricant.embeddable.hsql.HsqlDatabase;
+import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms;
+import com.danidemi.jlubricant.embeddable.hsql.InProcessInMemory;
+import com.danidemi.jlubricant.embeddable.hsql.OracleCompatibility;
+import com.danidemi.jlubricant.embeddable.hsql.ServerMode;
 
 public class HsqlDbmsTest {
 

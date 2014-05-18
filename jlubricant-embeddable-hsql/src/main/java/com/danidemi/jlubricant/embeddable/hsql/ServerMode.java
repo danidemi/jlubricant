@@ -1,8 +1,8 @@
-package com.danidemi.jlubricant.embeddable;
+package com.danidemi.jlubricant.embeddable.hsql;
 
 import java.io.File;
 
-import com.danidemi.jlubricant.embeddable.HsqlDbms.Registration;
+import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 
 public class ServerMode extends Storage {
 

@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.commons.collections;
+package com.danidemi.jlubricant.apache.commons.collections;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.not;
@@ -10,8 +10,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.danidemi.jlubricant.commons.collections.CollectionUtils;
-import com.danidemi.jlubricant.commons.collections.Predicate;
+import com.danidemi.jlubricant.apache.commons.collections.CollectionUtils;
+import com.danidemi.jlubricant.apache.commons.collections.Predicate;
 
 public class CollectionsUtilsTest {
 		

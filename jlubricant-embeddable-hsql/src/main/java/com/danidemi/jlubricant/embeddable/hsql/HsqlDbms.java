@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.embeddable;
+package com.danidemi.jlubricant.embeddable.hsql;
 
 import java.io.File;
 import java.io.IOException;

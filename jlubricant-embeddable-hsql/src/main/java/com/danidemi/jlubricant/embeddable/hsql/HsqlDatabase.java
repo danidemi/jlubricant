@@ -1,11 +1,11 @@
-package com.danidemi.jlubricant.embeddable;
+package com.danidemi.jlubricant.embeddable.hsql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.danidemi.jlubricant.embeddable.HsqlDbms.Registration;
+import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 
 public class HsqlDatabase {
 

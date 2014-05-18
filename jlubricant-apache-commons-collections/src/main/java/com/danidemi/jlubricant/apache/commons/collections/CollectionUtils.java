@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.commons.collections;
+package com.danidemi.jlubricant.apache.commons.collections;
 
 import java.util.Collection;
 import java.util.Enumeration;

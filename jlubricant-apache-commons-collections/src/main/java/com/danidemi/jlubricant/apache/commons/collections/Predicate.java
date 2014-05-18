@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.commons.collections;
+package com.danidemi.jlubricant.apache.commons.collections;
 
 
 public class Predicate<T> {

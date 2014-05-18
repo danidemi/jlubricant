@@ -1,6 +1,10 @@
-package com.danidemi.jlubricant.embeddable;
+package com.danidemi.jlubricant.embeddable.hsql;
 
-public class InProcessInMemory extends Storage {
+import java.io.File;
+
+public class InProcessInFile extends Storage {
+	
+	private File folder;
 
 	@Override
 	public boolean requireStandaloneServer() {
@@ -9,12 +13,12 @@ public class InProcessInMemory extends Storage {
 
 	@Override
 	public String getProtocol() {
-		return "mem";
+		return "file";
 	}
 
 	@Override
 	public String getLocation(String dbName, HsqlDbms dbms) {
-		return dbName;
+		return folder.getAbsolutePath();
 	}
 
 }
