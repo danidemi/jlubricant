@@ -37,21 +37,21 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.github.jlubricant</groupId>
+			<groupId>com.danidemi.jlubricant</groupId>
 			<artifactId>jlubricant-test</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>com.github.jlubricant</groupId>
+			<groupId>com.danidemi.jlubricant</groupId>
 			<artifactId>jlubricant-embeddable-hsql</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 	<parent>
-		<groupId>com.github.jlubricant</groupId>
+		<groupId>com.danidemi.jlubricant</groupId>
 		<artifactId>jlubricant</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 </project>

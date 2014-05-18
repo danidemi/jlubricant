@@ -4,9 +4,9 @@
 	<artifactId>jlubricant-apache-commons-collections</artifactId>
 	<name>jlubricant-apache-commons-collections</name>
 	<parent>
-		<groupId>com.github.jlubricant</groupId>
-		<artifactId>jlubricant</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+	<groupId>com.danidemi.jlubricant</groupId>
+	<artifactId>jlubricant</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
