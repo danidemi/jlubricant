@@ -16,13 +16,14 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.hsqldb.Server;
 
+import com.danidemi.jlubricant.embeddable.Dbms;
 import com.danidemi.jlubricant.embeddable.EmbeddableServer;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
 
 import static org.apache.commons.collections4.CollectionUtils.*;
 
-public class HsqlDbms implements EmbeddableServer {
+public class HsqlDbms implements EmbeddableServer, Dbms {
 	
 	static interface Registration {
 		void register(String name, File path);

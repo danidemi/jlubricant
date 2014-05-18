@@ -18,6 +18,7 @@
 		<module>jlubricant-test</module>
 		<module>jlubricant-embeddable</module>
 		<module>jlubricant-embeddable-hsql</module>
+		<module>jlubricant-embeddable-h2</module>
 	</modules>
 
 	<licenses>
