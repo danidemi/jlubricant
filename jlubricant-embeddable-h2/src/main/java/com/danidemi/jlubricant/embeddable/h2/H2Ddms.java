@@ -40,7 +40,7 @@ public class H2Ddms implements EmbeddableServer, Dbms {
 		
 		dbsw = new ArrayList<>();
 		for (H2DatabaseDescription descriptor : dbs) {
-			dbsw.add( new H2DatabaseWorking(descriptor) );
+			dbsw.add( new H2DatabaseWorking(descriptor, this) );
 		}
 		
 		try {
@@ -79,6 +79,14 @@ public class H2Ddms implements EmbeddableServer, Dbms {
 			throw new IllegalArgumentException("More than one database is called '" + dbName + "'");
 		}
 		return CollectionUtils.extractSingleton( select );
+	}
+
+	public void accept(UrlVisitor v) {
+		v.visit(this);
+	}
+
+	public String getProtocol() {
+		return "tcp";		
 	}
 
 }

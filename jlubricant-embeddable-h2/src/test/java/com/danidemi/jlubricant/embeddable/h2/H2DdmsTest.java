@@ -41,7 +41,7 @@ public class H2DdmsTest {
 		
 		tested.start();
 		
-		Connection conn = db.newConnection();
+		Connection conn = tested.dbByName("test").newConnection();
 		
 		Statement stm = conn.createStatement();
 		stm.execute("CREATE TABLE PEOPLE(NAME CHAR(64))");
@@ -52,7 +52,7 @@ public class H2DdmsTest {
 		
 		conn.close();
 
-		conn = db.newConnection();
+		conn = tested.dbByName("test").newConnection();
 		
 		stm = conn.createStatement();
 		executeQuery = stm.executeQuery("SELECT COUNT(*) AS C FROM PEOPLE");

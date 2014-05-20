@@ -9,24 +9,30 @@ import com.danidemi.jlubricant.embeddable.ServerStartException;
 public class H2DatabaseDescription {
 
 	private String dbName;
+	private H2Storage h2Storage;
 
 	public H2DatabaseDescription(String dbName) {
 		this.dbName = dbName;
+		this.h2Storage = new MemoryStorage();
+	}
+	
+	public H2DatabaseDescription(String dbName, H2Storage storage) {
+		this.dbName = dbName;
+		this.h2Storage = storage;
 	}
 	
 	public String getDbName() {
 		return dbName;
 	}
-	
-	Connection newConnection() throws ClassNotFoundException, SQLException {
 
-		String jdbcUrl = "jdbc:h2:tcp://localhost/mem:" + dbName + ";IFEXISTS=TRUE";
-		Class.forName("org.h2.Driver");
-		Connection conn = DriverManager.
-			    getConnection(jdbcUrl, "sa", "");
-		return conn;
-		
+	public void accept(Visitor v) {
+		v.visit(this);
+		v.visit(h2Storage);
 	}
+
+
+	
+
 
 
 

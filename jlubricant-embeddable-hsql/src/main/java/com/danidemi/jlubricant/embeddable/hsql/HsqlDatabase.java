@@ -42,10 +42,8 @@ public class HsqlDatabase implements Database {
 		return dbName;
 	}
 	
-	Connection newConnection() throws ClassNotFoundException, SQLException {
-
-
-		Class.forName(getDriverName());
+	public Connection newConnection() throws SQLException {
+		
 		String protocol = storage.getProtocol();
 		String location = storage.getLocation( dbName, dbms );
 		String jdbcUrl = "jdbc:hsqldb:" + protocol + ":" + location;
