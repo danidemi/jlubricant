@@ -34,6 +34,17 @@
 		<url>scm:git:git@github.com:danidemi/jlubricant.git</url>
 		<developerConnection>scm:git:git@github.com:danidemi/jlubricant.git</developerConnection>
 	</scm>
+	
+	<developers>
+		<developer>
+			<name>Daniele Demichelis</name>
+			<organization>Studio Ingegneria DaniDemi</organization>
+			<organizationUrl>http://www.danidemi.com</organizationUrl>
+			<email>demichelis@danidemi.com</email>
+			<timezone>2</timezone>
+			<id>danidemi</id>
+		</developer>
+	</developers>
 
 	<dependencies>
 		<dependency>
