@@ -124,6 +124,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 	}
 
+	@Override
 	public HsqlDatabase dbByName(final String dbName) {
 		Collection<HsqlDatabase> select = CollectionUtils.select(dbs, new Predicate<HsqlDatabase>() {
 

@@ -36,7 +36,7 @@ public class H2DdmsTest {
 		H2Ddms tested = new H2Ddms();
 		tested.setBaseDir(tmp.newFolder());
 		
-		H2Database db = new H2Database("test");
+		H2DatabaseDescription db = new H2DatabaseDescription("test");
 		tested.add( db );
 		
 		tested.start();

@@ -5,9 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.danidemi.jlubricant.embeddable.Database;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 
-public class HsqlDatabase {
+public class HsqlDatabase implements Database {
 
 	private Storage storage;
 	private Compatibility compatibility;
