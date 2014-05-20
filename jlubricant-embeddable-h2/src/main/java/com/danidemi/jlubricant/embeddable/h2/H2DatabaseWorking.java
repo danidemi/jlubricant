@@ -31,19 +31,12 @@ public class H2DatabaseWorking implements Database {
 		this.master = h2Ddms;
 	}
 	
-	public void postStart() throws ServerStartException {
+	public void postStart() throws SQLException {
 		
-		UrlVisitor visit = visit( new UrlVisitor() );
-		
-		try {
-			String jdbcUrl = visit.jdbcUrl() + ";DB_CLOSE_DELAY=-1";
-			Connection conn = DriverManager.
-					getConnection(jdbcUrl, "sa", "");
-			conn.close();
-		} catch (Exception e) {
-			throw new ServerStartException(e);
-		}
-		
+		String jdbcUrl = visit( new UrlVisitor() ).withParam("DB_CLOSE_DELAY", "-1").jdbcUrl();
+		Connection conn = DriverManager.getConnection(jdbcUrl, "sa", "");
+		conn.close();
+				
 	}
 
 	private UrlVisitor visit(UrlVisitor v) {
@@ -55,10 +48,7 @@ public class H2DatabaseWorking implements Database {
 	
 	public Connection newConnection() throws SQLException {
 		
-		UrlVisitor visit = visit( new UrlVisitor() );		
-
-		String jdbcUrl = visit.jdbcUrl() + ";IFEXISTS=TRUE";
-		
+		String jdbcUrl = visit( new UrlVisitor() ).withParam("IFEXISTS", "TRUE").jdbcUrl();
 		Connection conn = DriverManager.
 			    getConnection(jdbcUrl, "sa", "");
 		return conn;

@@ -45,11 +45,11 @@ public class H2Ddms implements EmbeddableServer, Dbms {
 		
 		try {
 			server = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpDaemon", "-baseDir", baseDir.getAbsolutePath()).start();
+			for (H2DatabaseWorking db : dbsw) {
+				db.postStart();
+			}
 		} catch (SQLException e) {
 			throw new ServerStartException(e);
-		}
-		for (H2DatabaseWorking db : dbsw) {
-			db.postStart();
 		}
 	}
 
