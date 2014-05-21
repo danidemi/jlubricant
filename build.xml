@@ -50,9 +50,9 @@
 	
 	<target name="stage release" description="Stage a new release">
 		<echo>
-			release:clean -Dgpg.passphrase=${gpg.pwd}
-			release:prepare -Dgpg.passphrase=${gpg.pwd} -DautoVersionSubmodules=true
-			release:perform -Dgpg.passphrase=${gpg.pwd}
+			mvn release:clean -Dgpg.passphrase=${gpg.pwd}
+			mvn release:prepare -Dgpg.passphrase=${gpg.pwd} -DautoVersionSubmodules=true -Darguments=-DmyProp=value
+			mvn release:perform -Dgpg.passphrase=${gpg.pwd}
 		</echo>
 		<!--
 		<input message="GPG passphrase ?" addproperty="gpg.pwd"/>
@@ -76,6 +76,10 @@
 	        <param name="maven.profile" value=""/>
 	    	<param name="maven.targets" value="release:rollback"/>
 	    </antcall>
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="release:clean"/>
+	    </antcall>		
 	    <antcall target="___runGit">
 	    	<param name="git.commandline" value="clean -f"/>
 	    </antcall>				
