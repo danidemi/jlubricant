@@ -46,12 +46,10 @@
 	        <param name="maven.profile" value=""/>
 	    	<param name="maven.targets" value="release:prepare -Dgpg.passphrase=${gpg.pwd} -DautoVersionSubmodules=true"/>
 	    </antcall>		
-		<!--
 	    <antcall target="___runMaven">
 	        <param name="maven.profile" value=""/>
 	    	<param name="maven.targets" value="release:perform -Dgpg.passphrase=${gpg.pwd}"/>
 	    </antcall>
-	    -->		
 	</target>
 
 </project>
