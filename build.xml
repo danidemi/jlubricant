@@ -35,5 +35,21 @@
 	    	<param name="maven.targets" value="clean deploy -Dgpg.passphrase=${gpg.pwd}"/>
 	    </antcall>
 	</target>
+	
+	<target name="stage release" description="Stage a new release">
+		<input message="GPG passphrase ?" addproperty="gpg.pwd"/>
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="release:clean -Dgpg.passphrase=${gpg.pwd}"/>
+	    </antcall>
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="release:prepare -Dgpg.passphrase=${gpg.pwd}"/>
+	    </antcall>		
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="release:perform -Dgpg.passphrase=${gpg.pwd}"/>
+	    </antcall>		
+	</target>
 
 </project>
