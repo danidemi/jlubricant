@@ -19,5 +19,21 @@
 	    	<param name="maven.targets" value="clean"/>
 	    </antcall>
 	</target>
+	
+	<target name="install" description="Install through Maven">
+		<input message="GPG passphrase ?" addproperty="gpg.pwd"/>
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="clean install -Dgpg.passphrase=${gpg.pwd}"/>
+	    </antcall>
+	</target>
+	
+	<target name="deploy" description="Deploy through Maven">
+		<input message="GPG passphrase ?" addproperty="gpg.pwd"/>
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="clean deploy -Dgpg.passphrase=${gpg.pwd}"/>
+	    </antcall>
+	</target>
 
 </project>
