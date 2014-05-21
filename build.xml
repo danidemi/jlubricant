@@ -13,6 +13,18 @@
         </exec>
     </target>
 	
+    <target name="___runGit">
+    	<!--
+        <exec executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg line="mvn.bat ${maven.profile} ${maven.targets}"/>
+        </exec>
+        -->
+        <exec executable="git" osfamily="unix">
+            <arg line="${git.commandline}"/>
+        </exec>
+    </target>	
+	
 	<target name="clean" description="Clean project through Maven">
 	    <antcall target="___runMaven">
 	        <param name="maven.profile" value=""/>
@@ -50,6 +62,16 @@
 	        <param name="maven.profile" value=""/>
 	    	<param name="maven.targets" value="release:perform -Dgpg.passphrase=${gpg.pwd}"/>
 	    </antcall>
+	</target>
+	
+	<target name="release.rollback" description="Roll back a failed release">
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="release:rollback"/>
+	    </antcall>
+	    <antcall target="___runGit">
+	    	<param name="git.commandline" value="clean -f"/>
+	    </antcall>				
 	</target>
 
 </project>
