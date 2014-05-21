@@ -11,6 +11,12 @@
 
 	<packaging>pom</packaging>
 	<url>https://github.com/danidemi/jlubricant/wiki</url>
+	
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
 
 	<modules>
 		<module>jlubricant-apache-commons-collections</module>
@@ -20,6 +26,11 @@
 		<module>jlubricant-embeddable-hsql</module>
 		<module>jlubricant-embeddable-h2</module>
 	</modules>
+	
+	<properties>
+		<plugin.maven-source-plugin.version>2.0.4</plugin.maven-source-plugin.version>
+		<plugin.maven-javadoc-plugin.version>2.3</plugin.maven-javadoc-plugin.version>
+	</properties>
 
 	<licenses>
 		<license>
@@ -31,8 +42,8 @@
 
 	<scm>
 		<connection>scm:git:git@github.com:danidemi/jlubricant.git</connection>
-		<url>scm:git:git@github.com:danidemi/jlubricant.git</url>
 		<developerConnection>scm:git:git@github.com:danidemi/jlubricant.git</developerConnection>
+		<url>git@github.com:danidemi/jlubricant.git</url>
 	</scm>
 	
 	<developers>
@@ -80,6 +91,35 @@
 
 	<build>
 		<plugins>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${plugin.maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${plugin.maven-javadoc-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

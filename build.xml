@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project name="JLubricant" basedir=".">
+
+    <description>Useful tasks for JLubricant project</description>
+
+    <target name="___runMaven">
+        <exec executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg line="mvn.bat ${maven.profile} ${maven.targets}"/>
+        </exec>
+        <exec executable="mvn" osfamily="unix">
+            <arg line="${maven.profile} ${maven.targets}"/>
+        </exec>
+    </target>
+	
+	<target name="clean" description="Clean project through Maven">
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="clean"/>
+	    </antcall>
+	</target>
+
+</project>
