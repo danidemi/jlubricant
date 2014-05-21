@@ -105,6 +105,7 @@
 	            	<!--  
 	                <mavenExecutorId>forked-path</mavenExecutorId>
 	            	-->
+	            	<mavenExecutorId>invoker</mavenExecutorId>
 	                <useReleaseProfile>false</useReleaseProfile>
 	                <arguments>-Psonatype-oss-release</arguments>
 	            </configuration>
