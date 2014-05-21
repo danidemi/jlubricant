@@ -31,7 +31,6 @@
 		<plugin.maven-source-plugin.version>2.0.4</plugin.maven-source-plugin.version>
 		<plugin.maven-javadoc-plugin.version>2.3</plugin.maven-javadoc-plugin.version>
 		<plugin.maven-gpg-plugin.version>1.5</plugin.maven-gpg-plugin.version>
-		<plugin.maven-release-plugin.version>2.5</plugin.maven-release-plugin.version>
 	</properties>
 
 	<licenses>
@@ -94,10 +93,13 @@
 	<build>
 		<plugins>
 		
+			<!--
+			This plugin is used to release a project with Maven, saving a lot of repetitive, manual work. 
+			Releasing a project is made in two steps: prepare and perform.  
+			-->
 	        <plugin>
 	            <groupId>org.apache.maven.plugins</groupId>
 	            <artifactId>maven-release-plugin</artifactId>
-	            <version>${plugin.maven-release-plugin.version}</version>
 	            <configuration>
 	                <mavenExecutorId>forked-path</mavenExecutorId>
 	                <useReleaseProfile>false</useReleaseProfile>
