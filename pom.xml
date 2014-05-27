@@ -4,7 +4,7 @@
 	
 	<groupId>com.danidemi.jlubricant</groupId>
 	<artifactId>jlubricant</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 
 	<name>JLubricant</name>
 	<description>Java Power Ups!</description>
@@ -142,7 +142,8 @@
 					</execution>
 				</executions>
 			</plugin>
-		
+		-->
+		<!--  
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -158,11 +159,11 @@
 			</plugin>
 			-->
 			
-			<!--  
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${plugin.maven-javadoc-plugin.version}</version>
+			<!--  
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -171,8 +172,8 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
 			-->
+			</plugin>
 		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
