@@ -2,6 +2,19 @@
 <project name="JLubricant" basedir=".">
 
     <description>Useful tasks for JLubricant project</description>
+	
+	<macrodef name="maven">
+		<attribute name="mvnline" />
+		<sequential>
+			<exec executable="cmd" osfamily="windows">
+			    <arg value="/c"/>
+			    <arg line="mvn.bat ${mvnline}"/>
+			</exec>
+			<exec executable="mvn" osfamily="unix">
+			    <arg line="@{mvnline}"/>
+			</exec>
+		</sequential>
+	</macrodef>
 
     <target name="___runMaven">
         <exec executable="cmd" osfamily="windows">
@@ -47,6 +60,68 @@
 	    	<param name="maven.targets" value="clean deploy -Dgpg.passphrase=${gpg.pwd}"/>
 	    </antcall>
 	</target>
+	
+
+	<target name="help.plugin.release.detailed" description="Print Maven plugin help">
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="help:describe -Dplugin=release -Ddetail"/>
+	    </antcall>		
+	</target>
+	
+	<target name="help.plugin.release" description="Print Maven plugin help">
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="help:describe -Dplugin=release"/>
+	    </antcall>		
+	</target>
+	
+	<target name="help.plugin.source.detailed" description="Print Maven plugin help">
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="help:describe -Dplugin=source -Ddetail"/>
+	    </antcall>		
+	</target>	
+	
+	<target name="help.plugin.source" description="Print Maven plugin help">
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="help:describe -Dplugin=source"/>
+	    </antcall>		
+	</target>		
+	
+	<target name="help.plugin.javadoc.detailed" description="Print Maven plugin help">
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="help:describe -Dplugin=javadoc -Ddetail"/>
+	    </antcall>		
+	</target>
+	
+	<target name="help.plugin.javadoc" description="Print Maven plugin help">
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="help:describe -Dplugin=javadoc"/>
+	    </antcall>		
+	</target>
+	
+	<target name="help.lifecycle" description="Print Maven plugin help">
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="help:describe -Dcmd=compile"/>
+	    </antcall>		
+	</target>	
+	
+	
+	
+	<target name="help.effective-pom" description="Print Maven plugin help">
+		<!--
+	    <antcall target="___runMaven">
+	        <param name="maven.profile" value=""/>
+	    	<param name="maven.targets" value="mvn help:effective-pom"/>
+	    </antcall>
+	    -->
+		<maven mvnline="help:effective-pom"/>
+	</target>		
 	
 	<target name="stage release" description="Stage a new release">
 		<echo>

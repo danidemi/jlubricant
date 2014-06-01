@@ -29,7 +29,7 @@
 	
 	<properties>
 		<plugin.maven-source-plugin.version>2.2.1</plugin.maven-source-plugin.version>
-		<plugin.maven-javadoc-plugin.version>2.3</plugin.maven-javadoc-plugin.version>
+		<plugin.maven-javadoc-plugin.version>2.9.1</plugin.maven-javadoc-plugin.version>
 		<plugin.maven-gpg-plugin.version>1.5</plugin.maven-gpg-plugin.version>
 	</properties>
 
@@ -117,15 +117,15 @@
 			This plugin is used to release a project with Maven, saving a lot of repetitive, manual work. 
 			Releasing a project is made in two steps: prepare and perform.  
 			-->
-        <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.1</version>
-          <configuration>
-            <mavenExecutorId>invoker</mavenExecutorId>
-            <useReleaseProfile>false</useReleaseProfile>
-            <arguments>-Psonatype-oss-release</arguments>
-          </configuration>
-        </plugin>
+	        <plugin>
+	          <artifactId>maven-release-plugin</artifactId>
+	          <version>2.1</version>
+	          <configuration>
+	            <mavenExecutorId>invoker</mavenExecutorId>
+	            <useReleaseProfile>false</useReleaseProfile>
+	            <arguments>-Psonatype-oss-release</arguments>
+	          </configuration>
+	        </plugin>
 
 			<!--  
 			<plugin>
@@ -143,7 +143,7 @@
 				</executions>
 			</plugin>
 		-->
-		<!--  
+		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -151,28 +151,31 @@
 				<executions>
 					<execution>
 						<id>attach-sources</id>
+						<phase>install</phase>
 						<goals>
-							<goal>jar</goal>
+							<goal>jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			-->
+		
 			
 			<plugin>
+				<!-- Bound to phase: package -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${plugin.maven-javadoc-plugin.version}</version>
-			<!--  
+			
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
+						<phase>install</phase>
 						<goals>
 							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
-			-->
+			
 			</plugin>
 		
 			<plugin>
