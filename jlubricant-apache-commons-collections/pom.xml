@@ -5,7 +5,7 @@
 	<parent>
 	<groupId>com.danidemi.jlubricant</groupId>
 	<artifactId>jlubricant</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.4</version>
 	</parent>
 	<dependencies>
 		<dependency>
