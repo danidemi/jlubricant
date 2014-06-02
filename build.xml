@@ -123,10 +123,10 @@
 		<maven mvnline="help:effective-pom"/>
 	</target>		
 	
-	<target name="stage release" description="Stage a new release">
+	<target name="stage.release" description="Stage a new release">
 		<echo>
 			mvn release:clean -Dgpg.passphrase=${gpg.pwd}
-			mvn release:prepare -Dgpg.passphrase=${gpg.pwd} -DautoVersionSubmodules=true -Darguments=-DmyProp=value
+			mvn release:prepare -Dgpg.passphrase=${gpg.pwd} -DautoVersionSubmodules=true
 			mvn release:perform -Dgpg.passphrase=${gpg.pwd}
 		</echo>
 		<!--
