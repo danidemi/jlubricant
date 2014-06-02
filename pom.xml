@@ -130,7 +130,10 @@
 	          <artifactId>maven-release-plugin</artifactId>
 	          <version>${plugin.maven-release-plugin.version}</version>
 	          <configuration>
+				<mavenExecutorId>forked-path</mavenExecutorId>
+				<!--  
 	            <mavenExecutorId>invoker</mavenExecutorId>
+				-->
 	            <useReleaseProfile>false</useReleaseProfile>
 	            <arguments>-Psonatype-oss-release</arguments>
 	          </configuration>
@@ -177,9 +180,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>${plugin.maven-gpg-plugin.version}</version>
-				<configuration>
-					<mavenExecutorId>forked-path</mavenExecutorId>
-				</configuration>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>
