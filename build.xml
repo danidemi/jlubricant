@@ -129,6 +129,11 @@
 		<maven mvnline="help:effective-pom"/>
 	</target>
 	
+	<target name="stage.current-install-only" description="install only">
+		<input message="GPG passphrase ?" addproperty="gpg.pwd"/>
+		<maven mvnline="clean install -Dgpg.passphrase=${gpg.pwd}"/>
+	</target>
+	
 	<target name="stage.current-snapshot" description="Stage current snapshot release">
 		<input message="GPG passphrase ?" addproperty="gpg.pwd"/>
 		<maven mvnline="clean deploy -Dgpg.passphrase=${gpg.pwd}"/>
