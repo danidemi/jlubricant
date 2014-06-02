@@ -30,7 +30,7 @@
 	<properties>
 		<plugin.maven-source-plugin.version>2.2.1</plugin.maven-source-plugin.version>
 		<plugin.maven-javadoc-plugin.version>2.9.1</plugin.maven-javadoc-plugin.version>
-		<plugin.maven-gpg-plugin.version>1.5</plugin.maven-gpg-plugin.version>
+		<plugin.maven-gpg-plugin.version>1.4</plugin.maven-gpg-plugin.version>
 		<plugin.maven-release-plugin.version>2.5</plugin.maven-release-plugin.version>
 		<plugin.maven-install-plugin.version>2.5.1</plugin.maven-install-plugin.version>
 	</properties>
@@ -101,6 +101,16 @@
 
 	<build>
 		<plugins>
+		
+			<!-- Install plugin configured like this allow to install only after all the tests passed -->
+			<plugin>
+			   <groupId>org.apache.maven.plugins</groupId>
+			   <artifactId>maven-install-plugin</artifactId>
+			   <version>${plugin.maven-install-plugin.version}</version>
+			  <configuration>
+			    <installAtEnd>true</installAtEnd>
+			  </configuration>			   
+			</plugin>
 			
 			<!-- Deploy plugin configured like this allow to deploy only after all the tests passed -->
 			<plugin>
@@ -112,16 +122,6 @@
 			  </configuration>			   
 			</plugin>
 			
-			<!-- Install plugin configured like this allow to install only after all the tests passed -->
-			<plugin>
-			   <groupId>org.apache.maven.plugins</groupId>
-			   <artifactId>maven-install-plugin</artifactId>
-			   <version>${plugin.maven-install-plugin.version}</version>
-			  <configuration>
-			    <installAtEnd>true</installAtEnd>
-			  </configuration>			   
-			</plugin>			
-		
 			<!--
 			This plugin is used to release a project with Maven, saving a lot of repetitive, manual work. 
 			Releasing a project is made in two steps: prepare and perform.  
@@ -136,22 +136,9 @@
 	          </configuration>
 	        </plugin>
 
-			<!--  
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>${plugin.maven-gpg-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		-->
+			
+
+	
 		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -160,7 +147,7 @@
 				<executions>
 					<execution>
 						<id>attach-sources</id>
-						<phase>install</phase>
+						<phase>verify</phase>
 						<goals>
 							<goal>jar-no-fork</goal>
 						</goals>
@@ -177,7 +164,7 @@
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
-						<phase>install</phase>
+						<phase>verify</phase>
 						<goals>
 							<goal>jar</goal>
 						</goals>
@@ -185,6 +172,21 @@
 				</executions>
 			
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>${plugin.maven-gpg-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
 		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -209,20 +211,7 @@
 				-->
 				
 			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>${plugin.maven-gpg-plugin.version}</version>            
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
 			
 			<plugin>
 			        <groupId>org.apache.maven.plugins</groupId>
