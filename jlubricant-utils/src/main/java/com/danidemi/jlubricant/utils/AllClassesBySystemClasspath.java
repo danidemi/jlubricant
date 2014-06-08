@@ -19,26 +19,4 @@ public class AllClassesBySystemClasspath implements ClassFinder {
 		return cc.getClasses();
 	}
 	
-//	@Override
-//	public Set<Class> findClasses() throws IOException {
-//		
-//		LinkedHashSet<Class> found = new LinkedHashSet<>(0);
-//		
-//		String cp = System.getProperty("java.class.path");
-//		String[] split = StringUtils.split(cp, File.pathSeparator);
-//		for (String string : split) {
-//			File file = new File(string);
-//			if(file.isDirectory()){
-//				found.addAll( new AllClassesByFolder(file).findClasses() );
-//			}else if(file.isFile() && "jar".equals( FilenameUtils.getExtension(file.getAbsolutePath()) )){				
-//				AllClassesByJar allClassesByJar = new AllClassesByJar( new JarFile( file ) );
-//				found.addAll( allClassesByJar.findClasses() );
-//			}else{
-//				throw new RuntimeException("Unsupported " + file);
-//			}
-//		}
-//		
-//		return found;
-//	}
-
 }

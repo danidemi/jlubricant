@@ -24,36 +24,4 @@ public class AllClassesByJar implements ClassFinder {
 		return collector.getClasses();
 	}
 
-
-//	@Override
-//	public Set<Class> findClasses() throws IOException {
-//
-//		LinkedHashSet<Class> classes = new LinkedHashSet<>(0);
-//
-//		Enumeration<JarEntry> entries = jarFile.entries();
-//
-//		while (entries.hasMoreElements()) {
-//			JarEntry nextElement = entries.nextElement();
-//
-//			if (nextElement.isDirectory())
-//				continue;
-//
-//			String name = nextElement.getName();
-//
-//			name = name.replace('/', '.');
-//			name = name.substring(0, name.length() - ".class".length());
-//
-//			try {
-//				Class<?> forName = Class.forName(name);
-//				if (forName != null) {
-//					classes.add(forName);
-//				}
-//			} catch (ClassNotFoundException | NoClassDefFoundError e) {
-//				// not a class after all
-//			}
-//		}
-//
-//		return classes;
-//	}
-
 }
