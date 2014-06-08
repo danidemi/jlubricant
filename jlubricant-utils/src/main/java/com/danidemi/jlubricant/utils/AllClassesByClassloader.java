@@ -18,23 +18,9 @@ public class AllClassesByClassloader implements ClassFinder {
 	@Override
 	public Set<Class> findClasses() throws IOException {
 		
-		final LinkedHashSet<Class> classes = new LinkedHashSet<>(0);
-		
-		new VisitableClassloader(classLoader).accept( new Visitor() {
-			
-			@Override
-			public void onFoundClass(Class foundClass) {
-				classes.add(foundClass);
-			}
-			
-			@Override
-			public void onError(String className) {
-				// TODO Auto-generated method stub
-				
-			}
-		} );
-		
-		return classes;
+		ClassCollector visitor = new ClassCollector();
+		new VisitableClassloader(classLoader).accept( visitor );
+		return visitor.getClasses();
 	}
 
 }

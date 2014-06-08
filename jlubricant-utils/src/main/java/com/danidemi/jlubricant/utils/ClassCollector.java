@@ -1,6 +1,7 @@
 package com.danidemi.jlubricant.utils;
 
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class ClassCollector implements Visitor {
 	
@@ -19,6 +20,10 @@ public class ClassCollector implements Visitor {
 	@Override
 	public void onError(String className) {
 		// nothing to do
+	}
+	
+	public Set<Class> getClasses() {
+		return foundClasses;
 	}
 
 }
