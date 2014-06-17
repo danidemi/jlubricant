@@ -16,14 +16,22 @@ import com.danidemi.jlubricant.embeddable.EmbeddableServer;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
 
-
+/** 
+ * An H2 based embeddable dbms.
+ * @author danidemi
+ */
 public class H2Ddms implements EmbeddableServer, Dbms {
 
+        /** the H2 server. */
 	private Server server;
 	
+        /** ??? */
 	private File baseDir;
 
+        /** List of databases we'll have to provide access to after startup. */
 	private List<H2DatabaseDescription> dbs;
+        
+        /** Working databases. */
 	private List<H2DatabaseWorking> dbsw;
 	
 	public H2Ddms() {

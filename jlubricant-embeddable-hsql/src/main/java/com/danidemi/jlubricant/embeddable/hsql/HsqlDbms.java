@@ -23,13 +23,20 @@ import com.danidemi.jlubricant.embeddable.ServerStopException;
 
 import static org.apache.commons.collections4.CollectionUtils.*;
 
+/**
+ * An embeddable Dbms based on Hsql.
+ * @author danidemi
+ */
 public class HsqlDbms implements EmbeddableServer, Dbms {
 	
 	static interface Registration {
 		void register(String name, File path);
 	}
 
-	Server server;
+        /** The Hsql server. */
+	private Server server;
+        
+        /** The list of HSQL databases. */
 	ArrayList<HsqlDatabase> dbs;
 
 	public HsqlDbms() {

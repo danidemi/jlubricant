@@ -12,7 +12,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 
 /**
- * Retrieve the SQL type name corresponding to the int constants contained in {@link java.sql.Types}.
+ * Retrieve the SQL type name corresponding to the int constants specified in {@link java.sql.Types}.
+ * For instance, <code>TypesUtils.typeNameOf( java.sql.Types.TIMESTAMP )</code> returns the string <code>TIMESTAMP</code>
  * @author danidemi
  */
 public class TypesUtils {
@@ -23,13 +24,17 @@ public class TypesUtils {
 		intToName = new HashMap<Integer, String>( inspectTypes() );
 	}
 
-	/**
-	 * Retrieve the SQL type name corresponding to the int constants contained in {@link java.sql.Types}.
-	 * Return <code>null</code> if type is not found.
-	 */
-	public static String typeNameOf(int sqlType) {
-		return intToName.get(sqlType);
-	}
+        /**
+         * Retrieve the SQL type name corresponding to the int constants specified
+         * in {@link java.sql.Types}. 
+         * For instance,
+         * <code>TypesUtils.typeNameOf( java.sql.Types.TIMESTAMP )</code> returns
+         * the string <code>TIMESTAMP</code> 
+         * @return <code>null</code> if specified type is not found.
+         */
+        public static String typeNameOf(int sqlType) {
+            return intToName.get(sqlType);
+        }
 
 	private static Map<Integer, String> inspectTypes() {
 		Collection<Field> fields = CollectionUtils.select(Arrays.asList( java.sql.Types.class.getFields() ), (Predicate<? super Field>) new Predicate<Field>() {

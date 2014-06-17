@@ -7,6 +7,7 @@ package com.danidemi.jlubricant.embeddable.h2;
  */
 public abstract class H2Storage {
 
-	public abstract String getStorageSpecifier();
+    /** Implementations should return the storage specifier as expected by H2. */
+    public abstract String getStorageSpecifier();
 
 }
