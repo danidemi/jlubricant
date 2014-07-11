@@ -3,12 +3,15 @@ package com.danidemi.jlubricant.embeddable.h2;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.h2.tools.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.danidemi.jlubricant.embeddable.Database;
 import com.danidemi.jlubricant.embeddable.Dbms;
@@ -17,24 +20,27 @@ import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
 
 /** 
- * An H2 based embeddable dbms.
+ * An H2 based embeddable {@link Dbms}.
  * @author danidemi
  */
-public class H2Ddms implements EmbeddableServer, Dbms {
+public class H2Dbms implements EmbeddableServer, Dbms {
+	
+	private static Logger log = LoggerFactory.getLogger(H2Dbms.class);
 
-        /** the H2 server. */
+	/** the H2 server. */
 	private Server server;
 	
-        /** ??? */
+	/** ??? */
 	private File baseDir;
 
-        /** List of databases we'll have to provide access to after startup. */
+	/** List of databases we'll have to provide access to after startup. */
 	private List<H2DatabaseDescription> dbs;
         
-        /** Working databases. */
+	/** Working databases. */
 	private List<H2DatabaseWorking> dbsw;
 	
-	public H2Ddms() {
+	/** Set up a new {@link Dbms} based on H2 without any running database. */
+	public H2Dbms() {
 		super();
 		this.dbs = new ArrayList<>();
 	}
@@ -46,13 +52,33 @@ public class H2Ddms implements EmbeddableServer, Dbms {
 	@Override
 	public void start() throws ServerStartException {
 		
+		//if(baseDir == null) throw new IllegalStateException("baseDir could not be null");
+		
 		dbsw = new ArrayList<>();
+		boolean memoryOnly = true;
 		for (H2DatabaseDescription descriptor : dbs) {
-			dbsw.add( new H2DatabaseWorking(descriptor, this) );
+			memoryOnly = memoryOnly && descriptor.isMemoryMode();
+			H2DatabaseWorking workingDb = new H2DatabaseWorking(descriptor, this);
+			dbsw.add( workingDb );
+			
+			log.info("Adding DB {} {} {} {} {}", workingDb.getName(), workingDb.getDriverClassName(), workingDb.getUrl(), workingDb.getUsername(), workingDb.getPassword());
+			
 		}
 		
 		try {
-			server = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpDaemon", "-baseDir", baseDir.getAbsolutePath()).start();
+			
+			List<String> params = new ArrayList<String>();
+			params.add( "-tcp" );
+			params.add( "-tcpAllowOthers" );
+			params.add( "-tcpDaemon" );
+			if(!memoryOnly){
+				params.add( "-baseDir" );
+				params.add( baseDir.getAbsolutePath() );
+			}
+			
+			
+			
+			server = Server.createTcpServer( params.toArray(new String[]{}) ).start();
 			for (H2DatabaseWorking db : dbsw) {
 				db.postStart();
 			}
@@ -66,10 +92,12 @@ public class H2Ddms implements EmbeddableServer, Dbms {
 		server.stop();
 	}
 
+	/** Add a database. */
 	public void add(H2DatabaseDescription h2Database) {
 		dbs.add(h2Database);
 	}
 
+	/** Get a database by its name. */
 	@Override
 	public Database dbByName(final String dbName) {
 		Collection<H2DatabaseWorking> select = CollectionUtils.select(dbsw, new Predicate<H2DatabaseWorking>() {

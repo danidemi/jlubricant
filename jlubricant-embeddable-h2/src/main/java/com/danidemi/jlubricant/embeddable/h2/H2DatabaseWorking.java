@@ -4,12 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.danidemi.jlubricant.embeddable.Database;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 
 public class H2DatabaseWorking implements Database {
 	
-	private H2Ddms master;
+	private static final Logger log = LoggerFactory.getLogger(H2DatabaseWorking.class);
+	
+	private H2Dbms master;
 	
 	static{
 		try {
@@ -21,20 +26,24 @@ public class H2DatabaseWorking implements Database {
 	
 	private H2DatabaseDescription descriptor;
 	
-	public void setMaster(H2Ddms master) {
+	public void setMaster(H2Dbms master) {
 		this.master = master;
 	}
 
 
-	public H2DatabaseWorking(H2DatabaseDescription descriptor, H2Ddms h2Ddms) {
+	public H2DatabaseWorking(H2DatabaseDescription descriptor, H2Dbms h2Ddms) {
 		this.descriptor = descriptor;
 		this.master = h2Ddms;
 	}
 	
 	public void postStart() throws SQLException {
 		
-		String jdbcUrl = visit( new UrlVisitor() ).withParam("DB_CLOSE_DELAY", "-1").jdbcUrl();
-		Connection conn = DriverManager.getConnection(jdbcUrl, "sa", "");
+		// During post start phase, we run an actual connection to the database.
+		// This will implicitly set username and pwd.
+		String jdbcUrl = visit( new UrlVisitor().keepDbOpen() ).jdbcUrl();
+		log.info("Post start initialization to {} {} {}", jdbcUrl, getUsername(), getPassword());
+		Connection conn = DriverManager.getConnection(jdbcUrl, getUsername(), getPassword());
+		conn.prepareStatement("SELECT 1+1").executeQuery();
 		conn.close();
 				
 	}
@@ -47,16 +56,38 @@ public class H2DatabaseWorking implements Database {
 	}
 	
 	public Connection newConnection() throws SQLException {
-		
-		String jdbcUrl = visit( new UrlVisitor() ).withParam("IFEXISTS", "TRUE").jdbcUrl();
 		Connection conn = DriverManager.
-			    getConnection(jdbcUrl, "sa", "");
+			    getConnection(getUrl(), descriptor.getUsername(), descriptor.getPassword());
 		return conn;
 		
 	}
 
 	public String getName() {
 		return descriptor.getDbName();
+	}
+
+
+	@Override
+	public String getUrl() {
+		return visit( new UrlVisitor().onlyIfDatabaseExists() ).jdbcUrl();
+	}
+
+
+	@Override
+	public String getPassword() {
+		return descriptor.getPassword();
+	}
+
+
+	@Override
+	public String getDriverClassName() {
+		return descriptor.getDriverClassName();
+	}
+
+
+	@Override
+	public String getUsername() {
+		return descriptor.getUsername();
 	}
 
 }

@@ -10,6 +10,11 @@ public class FileStorage extends H2Storage {
     public String getStorageSpecifier() {
         return "file";
     }
+
+	@Override
+	public boolean isMemoryMode() {
+		return false;
+	}
     
 
 }

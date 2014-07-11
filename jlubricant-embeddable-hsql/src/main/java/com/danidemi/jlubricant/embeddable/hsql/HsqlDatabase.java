@@ -1,23 +1,34 @@
 package com.danidemi.jlubricant.embeddable.hsql;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.danidemi.jlubricant.embeddable.Database;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 
 public class HsqlDatabase implements Database {
+	
+	private static Logger log = LoggerFactory.getLogger(HsqlDatabase.class);
 
 	private Storage storage;
 	private Compatibility compatibility;
 	private String dbName;
 	private HsqlDbms dbms;
+	private String password;
+	private String username;
 	
 
 	public HsqlDatabase() {
 		setCompatibility(new HsqlCompatibility());
+		storage = new InProcessInMemory();
 	}
 	
 	public HsqlDatabase(String name, Storage storage) {
@@ -46,7 +57,8 @@ public class HsqlDatabase implements Database {
 		
 		String protocol = storage.getProtocol();
 		String location = storage.getLocation( dbName, dbms );
-		String jdbcUrl = "jdbc:hsqldb:" + protocol + ":" + location;
+		String jdbcUrl1 = "jdbc:hsqldb:" + protocol + ":" + location;
+		String jdbcUrl = jdbcUrl1;
 		
 		Connection conn = DriverManager.getConnection(jdbcUrl, "sa", "");
 		return conn;
@@ -70,11 +82,40 @@ public class HsqlDatabase implements Database {
 
 	public boolean requireStandaloneServer() {
 		return storage.requireStandaloneServer();
-		
 	}
 
 	public void postStartSetUp() {
-		compatibility.postStartSetUp(this);
+		compatibility.apply(this);
+		
+		log.info("Creating new user {}/{}", username, password);
+		
+		try(Connection con = newConnection()){
+			PreparedStatement call = con.prepareStatement("CREATE USER \"" + username + "\" PASSWORD '" + password + "' ADMIN");
+//			call.setString(1, username);
+//			call.setString(2, password);
+			call.execute();
+			
+			call = con.prepareCall("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS");
+			ResultSet rs = call.executeQuery();
+			while(rs.next()){
+				log.info("User " + rs.getObject(1) + " " + rs.getObject(2));
+			}
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		try(Connection con = newConnection()){
+			CallableStatement call = con.prepareCall("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS");
+			ResultSet rs = call.executeQuery();
+			while(rs.next()){
+				log.info("User " + rs.getObject(1) + " " + rs.getObject(2));
+			}
+		} catch (SQLException e) {
+			new RuntimeException(e);
+		}
+		
+		
 		
 	}
 
@@ -119,6 +160,37 @@ public class HsqlDatabase implements Database {
 	void setDatabaseSqlUniqueNulls(boolean setDatabaseSqlUniqueNulls) {
 		executeStm("set database sql unique nulls "
 				+ setDatabaseSqlUniqueNulls);
+	}
+
+	@Override
+	public String getUrl() {
+		String protocol = storage.getProtocol();
+		String location = storage.getLocation( dbName, dbms );
+		String jdbcUrl = "jdbc:hsqldb:" + protocol + ":" + location;
+		return jdbcUrl;
+	}
+
+	@Override
+	public String getPassword() {
+		return password;
+	}
+
+	@Override
+	public String getDriverClassName() {
+		return getDriverName();
+	}
+
+	@Override
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 }

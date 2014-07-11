@@ -6,5 +6,10 @@ public class MemoryStorage extends H2Storage {
 	public String getStorageSpecifier() {
 		return "mem";
 	}
+	
+	@Override
+	public boolean isMemoryMode() {
+		return true;
+	}
 
 }

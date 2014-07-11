@@ -24,7 +24,7 @@ public class UrlVisitor implements Visitor {
 		this.storage = h2Storage.getStorageSpecifier();
 	}
 
-	public void visit(H2Ddms h2Ddms) {
+	public void visit(H2Dbms h2Ddms) {
 		protocol = h2Ddms.getProtocol();
 	}
 	
@@ -44,5 +44,15 @@ public class UrlVisitor implements Visitor {
 		this.params.put(string, string2);
 		return this;
 	}
+	
+	public UrlVisitor onlyIfDatabaseExists() {
+		withParam("IFEXISTS", "TRUE");
+		return this;
+	}	
+	
+	public UrlVisitor keepDbOpen() {
+		withParam("DB_CLOSE_DELAY", "-1");
+		return this;
+	}	
 
 }

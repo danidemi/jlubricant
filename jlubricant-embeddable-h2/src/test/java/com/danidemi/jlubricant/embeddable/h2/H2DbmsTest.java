@@ -16,13 +16,13 @@ import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
 import java.sql.SQLException;
 
-public class H2DdmsTest {
+public class H2DbmsTest {
 	
 	public @Rule TemporaryFolder tmp = new TemporaryFolder(); 
 
 	@Test
 	public void shouldStartAndStop() throws ServerException, IOException {
-		H2Ddms h2Ddms = new H2Ddms();
+		H2Dbms h2Ddms = new H2Dbms();
 		h2Ddms.setBaseDir(tmp.newFolder());
 		
 		h2Ddms.start();
@@ -32,7 +32,7 @@ public class H2DdmsTest {
         @Test
         public void shouldAddAMemoryDatabase() throws ServerStartException, SQLException, IOException, ServerStopException {
 
-            H2Ddms tested = new H2Ddms();
+            H2Dbms tested = new H2Dbms();
             tested.setBaseDir(tmp.newFolder());
             H2Storage filestorage = new FileStorage();
 
@@ -49,7 +49,7 @@ public class H2DdmsTest {
 	@Test
 	public void shouldAddAMemoryDatabaseToTheDbms() throws Exception {
 	
-            H2Ddms tested = new H2Ddms();
+            H2Dbms tested = new H2Dbms();
             tested.setBaseDir(tmp.newFolder());
             
             H2DatabaseDescription db = new H2DatabaseDescription("test");
@@ -62,7 +62,7 @@ public class H2DdmsTest {
 		
 	}
 
-    private void perfromTest(final String test, H2Ddms tested) throws ServerStartException, SQLException {
+    private void perfromTest(final String test, H2Dbms tested) throws ServerStartException, SQLException {
         
         Connection conn = tested.dbByName(test).newConnection();
         

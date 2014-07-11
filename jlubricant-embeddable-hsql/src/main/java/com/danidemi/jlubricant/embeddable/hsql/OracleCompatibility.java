@@ -8,7 +8,7 @@ public class OracleCompatibility extends Compatibility {
 	}
 
 	@Override
-	public void postStartSetUp(HsqlDatabase hsqlDatabase) {
+	public void apply(HsqlDatabase hsqlDatabase) {
 		hsqlDatabase.setSyntax("ORA");
 		hsqlDatabase.setTransactionControl();
 		hsqlDatabase.setTransactionRollbackOnConflict(true);

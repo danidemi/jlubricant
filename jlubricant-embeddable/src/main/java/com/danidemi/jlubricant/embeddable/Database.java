@@ -7,4 +7,12 @@ public interface Database {
 
 	Connection newConnection() throws SQLException;
 
+	String getUrl();
+
+	String getPassword();
+
+	String getDriverClassName();
+
+	String getUsername();
+
 }

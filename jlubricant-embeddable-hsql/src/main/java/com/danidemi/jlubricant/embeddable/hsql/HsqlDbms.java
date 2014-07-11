@@ -92,11 +92,11 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 			server.start();
 			
-			for (HsqlDatabase db : dbs) {
-				db.postStartSetUp();
-			}
 		}
 		
+		for (HsqlDatabase db : dbs) {
+			db.postStartSetUp();
+		}
 	}
 	
 
