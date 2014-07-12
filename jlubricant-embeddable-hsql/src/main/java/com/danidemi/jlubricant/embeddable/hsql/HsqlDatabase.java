@@ -85,7 +85,10 @@ public class HsqlDatabase implements Database {
 	}
 
 	public void postStartSetUp() {
-		compatibility.apply(this);
+                if(compatibility != null){
+                    compatibility.apply(this);
+                }
+		
 		
 		log.info("Creating new user {}/{}", username, password);
 		
