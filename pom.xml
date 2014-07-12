@@ -19,7 +19,6 @@
   </parent>
 
 	<modules>
-		<module>jlubricant-apache-commons-collections</module>
 		<module>jlubricant-spring-batch</module>
 		<module>jlubricant-test</module>
 		<module>jlubricant-embeddable</module>
