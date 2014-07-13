@@ -27,7 +27,9 @@ public final class Preconditions {
     }
     
     public static void paramNotNull(String message, Object param) {
-        throw new IllegalArgumentException(message);
+        if(param == null){
+            throw new IllegalArgumentException(message);
+        }
     }
     
     private Preconditions(){
