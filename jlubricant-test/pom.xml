@@ -4,7 +4,7 @@
 	
 	<artifactId>jlubricant-test</artifactId>
 	
-	<name>JLubricant for Tests</name>
+	<name>jlubricant - test</name>
 	<description>Test power ups!</description>
 	
 	<packaging>jar</packaging>
@@ -32,10 +32,34 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
 		</dependency>
 
-
+                <!-- =============================================== -->
+                <!-- TEST                                            -->
+                <!-- =============================================== -->	
+                <dependency>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                        <scope>test</scope>
+                </dependency>
+                <dependency>
+                        <groupId>org.mockito</groupId>
+                        <artifactId>mockito-core</artifactId>
+                        <scope>test</scope>
+                </dependency>
+                <dependency>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                        <scope>test</scope>
+                </dependency>
+                <dependency>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-integration</artifactId>
+                        <scope>test</scope>
+                </dependency>
+                <!-- =============================================== -->
+                <!-- TEST                                            -->
+                <!-- =============================================== -->
 		
 
             		

@@ -1,5 +1,6 @@
 package com.danidemi.jlubricant.embeddable;
 
+import com.danidemi.jlubricant.contracts.DatabaseContractTest;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDatabase;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms;
 

@@ -1,13 +1,10 @@
-package com.danidemi.jlubricant.embeddable;
+package com.danidemi.jlubricant.contracts;
 
+import com.danidemi.jlubricant.embeddable.Database;
 import static org.junit.Assert.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 

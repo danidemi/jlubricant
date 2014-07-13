@@ -6,7 +6,7 @@
 	<artifactId>jlubricant</artifactId>
 	<version>0.0.5-SNAPSHOT</version>
 
-	<name>JLubricant</name>
+	<name>jlubricant</name>
 	<description>Java Power Ups!</description>
 
 	<packaging>pom</packaging>
@@ -25,6 +25,7 @@
 		<module>jlubricant-embeddable-hsql</module>
 		<module>jlubricant-embeddable-h2</module>
 		<module>jlubricant-utils</module>
+	 <module>jlubricant-internal-contracts</module>
 	</modules>
 	
 	<properties>
@@ -78,6 +79,11 @@
                             <artifactId>commons-lang3</artifactId>
                             <version>3.3.2</version>
                     </dependency>
+                    <dependency>
+                            <groupId>commons-io</groupId>
+                            <artifactId>commons-io</artifactId>
+                            <version>2.4</version>
+                    </dependency>                    
                     <!-- =============================================== -->
                     <!-- Utils                                           -->
                     <!-- =============================================== -->                    

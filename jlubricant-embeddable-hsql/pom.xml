@@ -6,7 +6,7 @@
         <version>0.0.5-SNAPSHOT</version>
     </parent>
     <artifactId>jlubricant-embeddable-hsql</artifactId>
-  
+    <name>jlubricant - embeddable - hsql</name>
     <dependencies>
         <dependency>
             <groupId>com.danidemi.jlubricant</groupId>
@@ -65,6 +65,13 @@
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-integration</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.danidemi.jlubricant</groupId>
+            <artifactId>jlubricant-internal-contracts</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
         <!-- =============================================== -->
         <!-- TEST                                            -->
         <!-- =============================================== -->
