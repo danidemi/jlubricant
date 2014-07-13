@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.utils;
+package com.danidemi.jlubricant.utils.classes;
 
 import java.util.Enumeration;
 import java.util.jar.JarEntry;

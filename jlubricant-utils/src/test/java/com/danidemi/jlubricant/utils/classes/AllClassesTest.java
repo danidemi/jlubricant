@@ -1,5 +1,7 @@
-package com.danidemi.jlubricant.utils;
+package com.danidemi.jlubricant.utils.classes;
 
+import com.danidemi.jlubricant.utils.classes.AllClassesByClassloader;
+import com.danidemi.jlubricant.utils.classes.AllClassesBySystemClasspath;
 import java.io.IOException;
 import java.util.Set;
 
@@ -12,21 +14,21 @@ public class AllClassesTest {
 	@Test
 	public void findAllBySystemClasspath() throws IOException {
 
-		new AllClassesBySystemClasspath().findClasses();
+		new AllClassesBySystemClasspath().allAvailableClasses();
 		
 	}
 
 	@Test
 	public void findClassesFromSystemClassLoader() throws IOException {
 
-		new AllClassesByClassloader(ClassLoader.getSystemClassLoader()).findClasses();
+		new AllClassesByClassloader(ClassLoader.getSystemClassLoader()).allAvailableClasses();
 		
 	}
 	
 	@Test
 	public void findClassesFromClassLoader() throws IOException {
 		
-		new AllClassesByClassloader(ArrayUtils.class.getClassLoader()).findClasses();
+		new AllClassesByClassloader(ArrayUtils.class.getClassLoader()).allAvailableClasses();
 		
 	}	
 

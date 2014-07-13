@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.utils;
+package com.danidemi.jlubricant.utils.classes;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

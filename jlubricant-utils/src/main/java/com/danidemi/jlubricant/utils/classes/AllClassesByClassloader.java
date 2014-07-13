@@ -1,22 +1,23 @@
-package com.danidemi.jlubricant.utils;
+package com.danidemi.jlubricant.utils.classes;
 
-import java.io.File;
+import com.danidemi.jlubricant.utils.hoare.Preconditions;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class AllClassesByClassloader implements ClassFinder {
 
-	private ClassLoader classLoader;
+	private final ClassLoader classLoader;
 	
 	public AllClassesByClassloader(ClassLoader classLoader) {
-		this.classLoader = classLoader;
+            
+            Preconditions.paramNotNull("classLoader cannot be null", classLoader);
+            this.classLoader = classLoader;
+            
 	}
 	
+        /** Return all classes found through the {@link ClassLoader} specified ad instantiation. */
 	@Override
-	public Set<Class> findClasses() throws IOException {
+	public Set<Class> allAvailableClasses() throws IOException {
 		
 		ClassCollector visitor = new ClassCollector();
 		new VisitableClassloader(classLoader).accept( visitor );

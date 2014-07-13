@@ -8,6 +8,8 @@
     </parent>
     <artifactId>jlubricant-internal-contracts</artifactId>
     <packaging>jar</packaging>
+    <name>jlubricant - internal - contracts</name>
+    <description>Project used internally by JLubricant</description>
     
     <dependencies>
         

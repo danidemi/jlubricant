@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.utils;
+package com.danidemi.jlubricant.utils.classes;
 
 import java.io.File;
 import java.io.IOException;

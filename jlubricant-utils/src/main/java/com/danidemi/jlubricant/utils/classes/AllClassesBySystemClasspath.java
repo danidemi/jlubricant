@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.utils;
+package com.danidemi.jlubricant.utils.classes;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 public class AllClassesBySystemClasspath implements ClassFinder {
 
 	@Override
-	public Set<Class> findClasses() throws IOException {
+	public Set<Class> allAvailableClasses() throws IOException {
 		
 		ClassCollector cc = new ClassCollector();
 		new VisitableSystemClasspath().accept( cc );

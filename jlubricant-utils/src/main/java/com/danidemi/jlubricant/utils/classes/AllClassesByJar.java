@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.utils;
+package com.danidemi.jlubricant.utils.classes;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class AllClassesByJar implements ClassFinder {
 	}
 	
 	
-	public Set<Class> findClasses() throws IOException {
+	public Set<Class> allAvailableClasses() throws IOException {
 		ClassCollector collector = new ClassCollector();
 		new VisitableJar(jarFile).accept( collector );
 		return collector.getClasses();
