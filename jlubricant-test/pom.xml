@@ -69,6 +69,6 @@
 	<parent>
 		<groupId>com.danidemi.jlubricant</groupId>
 		<artifactId>jlubricant</artifactId>
-		<version>0.0.5</version>
+		<version>0.0.5-SNAPSHOT</version>
 	</parent>
 </project>
