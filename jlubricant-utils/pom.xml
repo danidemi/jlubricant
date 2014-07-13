@@ -70,7 +70,7 @@
   <parent>
     <groupId>com.danidemi.jlubricant</groupId>
     <artifactId>jlubricant</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
   </parent>
   <artifactId>jlubricant-utils</artifactId>
   
