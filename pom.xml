@@ -4,7 +4,7 @@
 	
 	<groupId>com.danidemi.jlubricant</groupId>
 	<artifactId>jlubricant</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.6-SNAPSHOT</version>
 
 	<name>jlubricant</name>
 	<description>Java Power Ups!</description>
@@ -48,7 +48,7 @@
 		<connection>scm:git:git@github.com:danidemi/jlubricant.git</connection>
 		<developerConnection>scm:git:git@github.com:danidemi/jlubricant.git</developerConnection>
 		<url>git@github.com:danidemi/jlubricant.git</url>
-	  <tag>jlubricant-0.0.5</tag>
+	  <tag>HEAD</tag>
         </scm>
 	
 	<developers>
