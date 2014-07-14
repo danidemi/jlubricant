@@ -26,6 +26,7 @@
 		<module>jlubricant-embeddable-h2</module>
 		<module>jlubricant-utils</module>
 	 <module>jlubricant-internal-contracts</module>
+	 <module>jlubricant-logback</module>
 	</modules>
 	
 	<properties>
