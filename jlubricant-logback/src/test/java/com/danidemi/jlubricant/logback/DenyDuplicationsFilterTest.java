@@ -44,16 +44,28 @@ public class DenyDuplicationsFilterTest {
 	@Test public void shouldEvictEveryNowAndThen() throws InterruptedException {
 		
 		// given
+		// ...a filter
 		DenyDuplicationsFilter myFilter = new DenyDuplicationsFilter();
+		
+		// ...that runs evictions without delay and consider all log items too old 
 		myFilter.setSecondsBetweenEvictions(0);
 		myFilter.setItemMaxAgeInSeconds(0);
 		
+	
+		
+		// when
+		// ...one hundred log items are sent
 		for(int i = 0; i<100; i++){
 			myFilter.decide( loggingEventWithMessageAndTimestamp("msg {}", i, 100 * i) );			
 		}				
 		
+		// ...and we wait for a while...
 		Thread.sleep(2000);
 		
+		
+		
+		// then
+		// ...all items should have been evicted.
 		assertThat( myFilter.itemsInCache(), equalTo(0) );
 		
 	}

@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.management.RuntimeErrorException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +19,13 @@ import ch.qos.logback.core.spi.FilterReply;
  * allowed another {@link ILoggingEvent} B with the same text in the close past. If that proves
  * to be {@literal true}, the logging event is denied.
  *  
+ * Internally the filter keeps track of all log events that it has previously decided about.
+ * To avoid this list to grow endlessly, some mechanisms are in place.
+ * The number of kept log events is limited. If such limit is reached, older log events are discarded.
+ * This means that in case the filter is "flooded" with a lot of log items, each carrying a different log message,
+ * it can wrongly allow a log message even if it was duplicated.
  * 
- * The behaviour of the filter can be fine tuned through a couple of properties, even though
+ * The behaviour of the filter can be fine tuned through a set of properties, even if
  * it comes with reasonable defaults.  
  * 
  * @author danidemi
@@ -44,6 +47,7 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 		
 		setItemMaxAgeInSeconds( TimeUnit.SECONDS.convert(30, TimeUnit.MINUTES) );
 		setMaxSize(50);
+		setSecondsBetweenEvictions(30);
 		
 		evicting = new Thread(new Runnable() {
 
@@ -59,33 +63,64 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 
 					if (!Thread.currentThread().isInterrupted()) {
 						try {
-							DenyDuplicationsFilter.this.evict();
+							DenyDuplicationsFilter.this.cacheEvict();
 						} catch (Exception e) {
+							throw new RuntimeException( "An error occurred while evicting the cache of previously evaluated log items.", e );
 						}
 					}
 
 				}
+				log.info("Thread {} is terminating.");
 			}
 
 		});
-		evicting.setName("CacheEvictor");
+		evicting.setName( String.format("%s-cache-evictor", getClass().getSimpleName().toLowerCase()) );
+		evicting.setDaemon(true);
+		log.info("Starting up thread {}.", evicting.getName());
 		evicting.start();
 
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
 			@Override
 			public void run() {
+				log.info("Shutting down thread {} before termination.", evicting.getName());
 				evicting.interrupt();
 			}
 		}));
 
 	}
+		
+	@Override
+	public FilterReply decide(ILoggingEvent e) {
 	
-	public void setSecondsBetweenEvictions(int seconds){
-		millisBetweenEvictions = TimeUnit.MILLISECONDS.convert(seconds, TimeUnit.SECONDS);
+		String message = e.getFormattedMessage();
+		long timeStamp = e.getTimeStamp();
+		Long lastTimestamp = cacheGet(message);
+	
+		FilterReply result;
+		if (lastTimestamp != null) {
+	
+			cachePut(message, timeStamp);
+	
+			long deltaFromLastOccurence = timeStamp - lastTimestamp;
+			result = (deltaFromLastOccurence > maxAgeInMillis) ? FilterReply.NEUTRAL
+					: FilterReply.DENY;
+		} else {
+				
+			cachePut(message, timeStamp);
+	
+			result = FilterReply.NEUTRAL;
+		}
+	
+		return result;
+	
 	}
-	
-	protected void evict() {
+
+	private Long cacheGet(String message) {
+		return message2lasttimestamp.get(message);
+	}
+
+	private synchronized void cacheEvict() {
 		long now = System.currentTimeMillis();
 		ArrayList<String> toBeRemoved = new ArrayList<String>();
 		for (Map.Entry<String, Long> e : this.message2lasttimestamp.entrySet()) {
@@ -104,7 +139,7 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 		}
 	}
 	
-	private void cachePut(String message, long timestamp) {
+	private synchronized void cachePut(String message, long timestamp) {
 		
 		Long previous = message2lasttimestamp.put(message, timestamp);
 		if(previous!=null){
@@ -121,7 +156,7 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 		
 	}
 
-	private void cacheRemove(String toBeRemoved) {
+	private synchronized void cacheRemove(String toBeRemoved) {
 		Long remove = message2lasttimestamp.remove(toBeRemoved);
 		boolean removed = messages.remove(toBeRemoved);
 		if(!( (removed && remove!=null) || (!removed && remove==null) )){
@@ -136,41 +171,6 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 		}
 		return size;
 	}	
-
-	@Override
-	public FilterReply decide(ILoggingEvent e) {
-
-		String message = e.getFormattedMessage();
-		long timeStamp = e.getTimeStamp();
-		Long lastTimestamp = message2lasttimestamp.get(message);
-
-		FilterReply result;
-		if (lastTimestamp != null) {
-
-			// update the item in the cache putting the message at the beginning
-			// of the list
-			cachePut(message, timeStamp);
-
-			long deltaFromLastOccurence = timeStamp - lastTimestamp;
-			result = (deltaFromLastOccurence > maxAgeInMillis) ? FilterReply.NEUTRAL
-					: FilterReply.DENY;
-		} else {
-
-			// add the item at the beginning of the list, removing any item if
-			// the list is too big
-			message2lasttimestamp.put(message, timeStamp);
-			messages.addFirst(message);
-			while (messages.size() > maxSize) {
-				String removeLast = messages.removeLast();
-				message2lasttimestamp.remove(removeLast);
-			}
-
-			result = FilterReply.NEUTRAL;
-		}
-
-		return result;
-
-	}
 
 	/** Number of log events in the cache. */
 	public int itemsInCache() {
@@ -201,7 +201,11 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 	/**
 	 * Set the interval between two subsequent run of the eviction.
 	 */
-	private long millisBetweenEvictions() {
+	public void setSecondsBetweenEvictions(int seconds){
+		millisBetweenEvictions = TimeUnit.MILLISECONDS.convert(seconds, TimeUnit.SECONDS);
+	}
+	
+	public long millisBetweenEvictions() {
 		return millisBetweenEvictions;
 	}
 
