@@ -15,6 +15,17 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.AbstractMatcherFilter;
 import ch.qos.logback.core.spi.FilterReply;
 
+/**
+ * This filter denies the same log message to be repeatedly written.
+ * When it has to decide about an {@link ILoggingEvent} A, it checks whether it has already 
+ * allowed another {@link ILoggingEvent} B with the same text in the close past. If that proves
+ * to be {@literal true}, the logging event is denied.
+ * The behaviour of the filter can be fine tuned through a couple of properties, even though
+ * it comes with reasonable defaults.  
+ * 
+ * @author danidemi
+ *
+ */
 public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent> {
 	
 	private static final Logger log = LoggerFactory.getLogger(DenyDuplicationsFilter.class);
@@ -28,10 +39,11 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 
 	private long millisBetweenEvictions;
 
-
 	public DenyDuplicationsFilter() {
+		
 		setThreshold(TimeUnit.MILLISECONDS.convert(30, TimeUnit.MINUTES));
 		setMaxSize(50);
+		
 		evicting = new Thread(new Runnable() {
 
 			@Override
@@ -165,20 +177,28 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 
 	}
 
-
-
-	public void setThreshold(long threshold) {
-		this.threshold = threshold;
-	}
-
+	/** Number of log events in the cache. */
 	public int itemsInCache() {
 		return message2lasttimestamp.size();
 	}
 
+	/** 
+	 * The max number of previous logging events to be contained in memory.
+	 * Bigger values means the filter will more likely deny duplicated log messages in scenarios
+	 * where lot of different log messages are issued. However, it will make the filter to consume more memory.
+	 */
 	public void setMaxSize(int i) {
 		this.maxSize = i;
 	}
+	
+	public void setThreshold(long threshold) {
+		this.threshold = threshold;
+	}	
 
+	/**
+	 * How many seconds should elapse to consider a new log event as not duplicated even if its message
+	 * was indeed previously accepted.  
+	 */
 	public void setItemMaxAgeInSeconds(int i) {
 		maxAgeInMillis = TimeUnit.MILLISECONDS.convert(i, TimeUnit.SECONDS);
 	}
