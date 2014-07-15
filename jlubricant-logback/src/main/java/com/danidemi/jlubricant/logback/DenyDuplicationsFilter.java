@@ -94,21 +94,17 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 	public FilterReply decide(ILoggingEvent e) {
 	
 		String message = e.getFormattedMessage();
-		long timeStamp = e.getTimeStamp();
+		long timestamp = e.getTimeStamp();
 		Long lastTimestamp = cacheGet(message);
 	
+		cachePut(message, timestamp);
+		
 		FilterReply result;
 		if (lastTimestamp != null) {
-	
-			cachePut(message, timeStamp);
-	
-			long deltaFromLastOccurence = timeStamp - lastTimestamp;
+			long deltaFromLastOccurence = timestamp - lastTimestamp;
 			result = (deltaFromLastOccurence > maxAgeInMillis) ? FilterReply.NEUTRAL
 					: FilterReply.DENY;
 		} else {
-				
-			cachePut(message, timeStamp);
-	
 			result = FilterReply.NEUTRAL;
 		}
 	
@@ -207,6 +203,14 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 	
 	public long millisBetweenEvictions() {
 		return millisBetweenEvictions;
+	}
+
+	/**
+	 * Empty the cache.
+	 */
+	public synchronized void clear() {
+		this.message2lasttimestamp.clear();
+		this.messages.clear();
 	}
 
 }
