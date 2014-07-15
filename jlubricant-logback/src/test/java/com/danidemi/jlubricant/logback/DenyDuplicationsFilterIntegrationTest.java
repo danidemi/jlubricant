@@ -73,7 +73,6 @@ public class DenyDuplicationsFilterIntegrationTest {
 	    // then
 	    appender.stop();
 	    String string = out.toString();
-	    System.out.println( string );
 		assertThat( string, equalTo("[TRACE Hello World][INFO Hello Italy]") );
 	   
 	}

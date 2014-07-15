@@ -3,3 +3,5 @@
 /.settings
 /.ant-targets-build.xml
 /jlubricant-internal-contracts/target/
+/release.properties
+
