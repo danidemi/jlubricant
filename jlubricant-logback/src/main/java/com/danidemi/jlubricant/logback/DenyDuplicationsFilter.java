@@ -20,6 +20,8 @@ import ch.qos.logback.core.spi.FilterReply;
  * When it has to decide about an {@link ILoggingEvent} A, it checks whether it has already 
  * allowed another {@link ILoggingEvent} B with the same text in the close past. If that proves
  * to be {@literal true}, the logging event is denied.
+ *  
+ * 
  * The behaviour of the filter can be fine tuned through a couple of properties, even though
  * it comes with reasonable defaults.  
  * 
@@ -32,7 +34,6 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 
 	private final Map<String, Long> message2lasttimestamp = new HashMap<String, Long>();
 	private final LinkedList<String> messages = new LinkedList<String>();
-	private long threshold;
 	private int maxSize;
 	private Thread evicting;
 	private long maxAgeInMillis;
@@ -41,7 +42,7 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 
 	public DenyDuplicationsFilter() {
 		
-		setThreshold(TimeUnit.MILLISECONDS.convert(30, TimeUnit.MINUTES));
+		setItemMaxAgeInSeconds( TimeUnit.SECONDS.convert(30, TimeUnit.MINUTES) );
 		setMaxSize(50);
 		
 		evicting = new Thread(new Runnable() {
@@ -49,23 +50,21 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 			@Override
 			public void run() {
 				while (!Thread.currentThread().isInterrupted()) {
-					
+
 					try {
 						Thread.sleep(millisBetweenEvictions());
 					} catch (InterruptedException e) {
-						
+
 					}
-					
-					if(!Thread.currentThread().isInterrupted()){
-					try {
-						DenyDuplicationsFilter.this.evict();
-					} catch (Exception e) {
+
+					if (!Thread.currentThread().isInterrupted()) {
+						try {
+							DenyDuplicationsFilter.this.evict();
+						} catch (Exception e) {
+						}
 					}
-					}
-					
+
 				}
-
-
 			}
 
 		});
@@ -86,10 +85,6 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 		millisBetweenEvictions = TimeUnit.MILLISECONDS.convert(seconds, TimeUnit.SECONDS);
 	}
 	
-	private long millisBetweenEvictions() {
-		return millisBetweenEvictions;
-	}
-
 	protected void evict() {
 		long now = System.currentTimeMillis();
 		ArrayList<String> toBeRemoved = new ArrayList<String>();
@@ -157,7 +152,7 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 			cachePut(message, timeStamp);
 
 			long deltaFromLastOccurence = timeStamp - lastTimestamp;
-			result = (deltaFromLastOccurence > threshold) ? FilterReply.NEUTRAL
+			result = (deltaFromLastOccurence > maxAgeInMillis) ? FilterReply.NEUTRAL
 					: FilterReply.DENY;
 		} else {
 
@@ -191,16 +186,23 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 		this.maxSize = i;
 	}
 	
-	public void setThreshold(long threshold) {
-		this.threshold = threshold;
-	}	
-
 	/**
 	 * How many seconds should elapse to consider a new log event as not duplicated even if its message
 	 * was indeed previously accepted.  
 	 */
-	public void setItemMaxAgeInSeconds(int i) {
-		maxAgeInMillis = TimeUnit.MILLISECONDS.convert(i, TimeUnit.SECONDS);
+	public void setItemMaxAgeInSeconds(long seconds) {
+		maxAgeInMillis = TimeUnit.MILLISECONDS.convert(seconds, TimeUnit.SECONDS);
+	}
+	
+	public void setItemMaxAgeInMillis(long millis) {
+		maxAgeInMillis = millis;
+	}	
+	
+	/**
+	 * Set the interval between two subsequent run of the eviction.
+	 */
+	private long millisBetweenEvictions() {
+		return millisBetweenEvictions;
 	}
 
 }

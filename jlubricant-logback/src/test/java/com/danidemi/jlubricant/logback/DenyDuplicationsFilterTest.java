@@ -170,7 +170,7 @@ public class DenyDuplicationsFilterTest {
 		// ...the threshold is smaller than the difference between two equal
 		// messages, they should be allowed.
 		DenyDuplicationsFilter filter = new DenyDuplicationsFilter();
-		filter.setThreshold(10);
+		filter.setItemMaxAgeInMillis(10);
 		FilterReply outcome1 = filter.decide(event1);
 		FilterReply outcome2 = filter.decide(event2);
 		
@@ -182,7 +182,7 @@ public class DenyDuplicationsFilterTest {
 		// ...the threshold is bigger than the difference between two equal
 		// messages, they should be allowed.		
 		filter = new DenyDuplicationsFilter();
-		filter.setThreshold(11);
+		filter.setItemMaxAgeInMillis(11);
 		outcome1 = filter.decide(event1);
 		outcome2 = filter.decide(event2);
 		
