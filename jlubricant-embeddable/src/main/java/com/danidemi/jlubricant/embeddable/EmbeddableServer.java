@@ -1,5 +1,7 @@
 package com.danidemi.jlubricant.embeddable;
 
+import javax.sql.DataSource;
+
 public interface EmbeddableServer {
 
 	/**

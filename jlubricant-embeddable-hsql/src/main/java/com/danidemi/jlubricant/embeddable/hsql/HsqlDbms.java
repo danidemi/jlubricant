@@ -6,11 +6,14 @@ import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.hsqldb.Server;
 
+import com.danidemi.jlubricant.embeddable.BasicDataSource;
 import com.danidemi.jlubricant.embeddable.Dbms;
 import com.danidemi.jlubricant.embeddable.EmbeddableServer;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
@@ -125,6 +128,12 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 
 	}
+	
+	/** Returns a DataSource on the given database. */
+	@Override
+	public DataSource dataSourceByName(String dbName) {
+		return new BasicDataSource( dbByName(dbName) );
+	}
 
 	@Override
 	public HsqlDatabase dbByName(final String dbName) {
@@ -150,8 +159,5 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	public String getHostName() {
 		return "localhost";
 	}
-
-
-
 
 }

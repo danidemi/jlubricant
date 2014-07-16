@@ -7,12 +7,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.h2.tools.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.danidemi.jlubricant.embeddable.BasicDataSource;
 import com.danidemi.jlubricant.embeddable.Database;
 import com.danidemi.jlubricant.embeddable.Dbms;
 import com.danidemi.jlubricant.embeddable.EmbeddableServer;
@@ -95,6 +98,11 @@ public class H2Dbms implements EmbeddableServer, Dbms {
 	/** Add a database. */
 	public void add(H2DatabaseDescription h2Database) {
 		dbs.add(h2Database);
+	}
+	
+	@Override
+	public DataSource dataSourceByName(String dbName) {
+		return new BasicDataSource( dbByName(dbName) );
 	}
 
 	/** Get a database by its name. */

@@ -134,6 +134,10 @@ public class HsqlDatabase implements Database {
 		this.dbms = hsqlDbms;
 	}
 
+	/** 
+	 * Enables the syntax for the specific database.
+	 * Under the hood it executes a {@code set database sql syntax <syntax> true } statement.
+	 */
 	void setSyntax(String syntax) {
 		executeStm("set database sql syntax "
 				+ syntax
@@ -141,6 +145,9 @@ public class HsqlDatabase implements Database {
 				+ "true");
 	}
 
+	/** 
+	 * Enables MVCC.
+	 */
 	void setTransactionControl() {
 		executeStm("set database transaction control");
 	}
