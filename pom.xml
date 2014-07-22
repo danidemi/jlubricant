@@ -1,7 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>com.danidemi.jlubricant</groupId>
 	<artifactId>jlubricant</artifactId>
 	<version>0.0.5-SNAPSHOT</version>
@@ -11,12 +12,12 @@
 
 	<packaging>pom</packaging>
 	<url>https://github.com/danidemi/jlubricant/wiki</url>
-	
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>9</version>
-  </parent>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>9</version>
+	</parent>
 
 	<modules>
 		<module>jlubricant-spring-batch</module>
@@ -25,10 +26,10 @@
 		<module>jlubricant-embeddable-hsql</module>
 		<module>jlubricant-embeddable-h2</module>
 		<module>jlubricant-utils</module>
-	 <module>jlubricant-internal-contracts</module>
-	 <module>jlubricant-logback</module>
+		<module>jlubricant-internal-contracts</module>
+		<module>jlubricant-logback</module>
 	</modules>
-	
+
 	<properties>
 		<plugin.maven-source-plugin.version>2.2.1</plugin.maven-source-plugin.version>
 		<plugin.maven-javadoc-plugin.version>2.9.1</plugin.maven-javadoc-plugin.version>
@@ -49,9 +50,9 @@
 		<connection>scm:git:git@github.com:danidemi/jlubricant.git</connection>
 		<developerConnection>scm:git:git@github.com:danidemi/jlubricant.git</developerConnection>
 		<url>git@github.com:danidemi/jlubricant.git</url>
-	  <tag>HEAD</tag>
-        </scm>
-	
+		<tag>HEAD</tag>
+	</scm>
+
 	<developers>
 		<developer>
 			<name>Daniele Demichelis</name>
@@ -62,133 +63,132 @@
 			<id>danidemi</id>
 		</developer>
 	</developers>
-        
-        <dependencyManagement>
 
-            <dependencies>
-                
-                    <!-- =============================================== -->
-                    <!-- Utils                                           -->
-                    <!-- =============================================== -->
-                    <dependency>
-                            <groupId>org.apache.commons</groupId>
-                            <artifactId>commons-collections4</artifactId>
-                            <version>4.0</version>
-                    </dependency>
-                    <dependency>
-                            <groupId>org.apache.commons</groupId>
-                            <artifactId>commons-lang3</artifactId>
-                            <version>3.3.2</version>
-                    </dependency>
-                    <dependency>
-                            <groupId>commons-io</groupId>
-                            <artifactId>commons-io</artifactId>
-                            <version>2.4</version>
-                    </dependency>                    
-                    <!-- =============================================== -->
-                    <!-- Utils                                           -->
-                    <!-- =============================================== -->                    
+	<dependencyManagement>
 
-                    <!-- =============================================== -->
-                    <!-- Logging                                         -->
-                    <!-- =============================================== -->
-                    <dependency>
-                            <groupId>org.slf4j</groupId>
-                            <artifactId>slf4j-api</artifactId>
-                            <version>1.7.7</version>
-                    </dependency>
-                    <dependency>
-                            <!-- logback is 'provided' because it will be responsibility of the project that
-                            will use JLubricant to choose the underlying logging library -->
-                            <groupId>ch.qos.logback</groupId>
-                            <artifactId>logback-classic</artifactId>
-                            <version>1.1.2</version>
-                            <scope>provided</scope>
-                    </dependency>
-                    <!-- =============================================== -->
-                    <!-- Logging                                         -->
-                    <!-- =============================================== -->
+		<dependencies>
+
+			<!-- =============================================== -->
+			<!-- Utils -->
+			<!-- =============================================== -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-collections4</artifactId>
+				<version>4.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.3.2</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.4</version>
+			</dependency>
+			<!-- =============================================== -->
+			<!-- Utils -->
+			<!-- =============================================== -->
+
+			<!-- =============================================== -->
+			<!-- Logging -->
+			<!-- =============================================== -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.7</version>
+			</dependency>
+			<dependency>
+				<!-- logback is 'provided' because it will be responsibility of the project 
+					that will use JLubricant to choose the underlying logging library -->
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>1.1.2</version>
+				<scope>provided</scope>
+			</dependency>
+			<!-- =============================================== -->
+			<!-- Logging -->
+			<!-- =============================================== -->
 
 
-                    <!-- =============================================== -->
-                    <!-- TEST                                            -->
-                    <!-- =============================================== -->	
-                    <dependency>
-                            <groupId>junit</groupId>
-                            <artifactId>junit</artifactId>
-                            <version>4.11</version>
-                            <scope>test</scope>
-                    </dependency>
-                    <dependency>
-                            <groupId>org.mockito</groupId>
-                            <artifactId>mockito-core</artifactId>
-                            <version>1.9.5</version>
-                            <scope>test</scope>
-                    </dependency>
-                    <dependency>
-                            <groupId>org.hamcrest</groupId>
-                            <artifactId>hamcrest-core</artifactId>
-                            <version>1.3</version>
-                            <scope>test</scope>
-                    </dependency>
-                    <dependency>
-                            <groupId>org.hamcrest</groupId>
-                            <artifactId>hamcrest-integration</artifactId>
-                            <version>1.3</version>
-                            <scope>test</scope>
-                    </dependency>
-                    <!-- =============================================== -->
-                    <!-- TEST                                            -->
-                    <!-- =============================================== -->
+			<!-- =============================================== -->
+			<!-- TEST -->
+			<!-- =============================================== -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>1.9.5</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-core</artifactId>
+				<version>1.3</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-integration</artifactId>
+				<version>1.3</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- =============================================== -->
+			<!-- TEST -->
+			<!-- =============================================== -->
 
-            </dependencies>
-            
-        </dependencyManagement>            
-            
-        <build>
+		</dependencies>
+
+	</dependencyManagement>
+
+	<build>
 		<plugins>
-		
-			<!-- Install plugin configured like this allow to install only after all the tests passed -->
-			<plugin>
-			   <groupId>org.apache.maven.plugins</groupId>
-			   <artifactId>maven-install-plugin</artifactId>
-			   <version>${plugin.maven-install-plugin.version}</version>
-			  <configuration>
-			    <installAtEnd>true</installAtEnd>
-			  </configuration>			   
-			</plugin>
-			
-			<!-- Deploy plugin configured like this allow to deploy only after all the tests passed -->
-			<plugin>
-			   <groupId>org.apache.maven.plugins</groupId>
-			   <artifactId>maven-deploy-plugin</artifactId>
-			   <version>2.8</version>
-			  <configuration>
-			    <deployAtEnd>true</deployAtEnd>
-			  </configuration>			   
-			</plugin>
-			
-			<!--
-			This plugin is used to release a project with Maven, saving a lot of repetitive, manual work. 
-			Releasing a project is made in two steps: prepare and perform.  
-			-->
-	        <plugin>
-	          <artifactId>maven-release-plugin</artifactId>
-	          <version>${plugin.maven-release-plugin.version}</version>
-	          <configuration>
-				<mavenExecutorId>forked-path</mavenExecutorId>
-				<!--  
-	            <mavenExecutorId>invoker</mavenExecutorId>
-				-->
-	            <useReleaseProfile>false</useReleaseProfile>
-	            <arguments>-Psonatype-oss-release</arguments>
-	          </configuration>
-	        </plugin>
 
-			
+			<!-- Install plugin configured like this allow to install only after all 
+				the tests passed -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>${plugin.maven-install-plugin.version}</version>
+				<configuration>
+					<installAtEnd>true</installAtEnd>
+				</configuration>
+			</plugin>
 
-	
-		
+			<!-- Deploy plugin configured like this allow to deploy only after all 
+				the tests passed -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<deployAtEnd>true</deployAtEnd>
+				</configuration>
+			</plugin>
+
+			<!-- This plugin is used to release a project with Maven, saving a lot 
+				of repetitive, manual work. Releasing a project is made in two steps: prepare 
+				and perform. -->
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>${plugin.maven-release-plugin.version}</version>
+				<configuration>
+					<mavenExecutorId>forked-path</mavenExecutorId>
+					<!-- <mavenExecutorId>invoker</mavenExecutorId> -->
+					<useReleaseProfile>false</useReleaseProfile>
+					<arguments>-Psonatype-oss-release</arguments>
+				</configuration>
+			</plugin>
+
+
+
+
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -203,40 +203,16 @@
 					</execution>
 				</executions>
 			</plugin>
-		
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${plugin.maven-javadoc-plugin.version}</version>
-			
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>${plugin.maven-gpg-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>			
-		
+
+
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-javadoc-plugin</artifactId> 
+				<version>${plugin.maven-javadoc-plugin.version}</version> <executions> <execution> 
+				<id>attach-javadocs</id> <phase>verify</phase> <goals> <goal>jar</goal> </goals> 
+				</execution> </executions> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-gpg-plugin</artifactId> <version>${plugin.maven-gpg-plugin.version}</version> 
+				<executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> <goals> 
+				<goal>sign</goal> </goals> </execution> </executions> </plugin> -->
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -247,51 +223,58 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-				<!-- This plugin is used to release a project with Maven, saving a lot 
-					of repetitive, manual work. Releasing a project is made in two steps: prepare 
-					and perform. Note: Maven 3 users are encouraged to use at least Maven-3.0.4 
-					due to some settings related issues. http://maven.apache.org/maven-release/maven-release-plugin/ -->
-				<!--  
+			<!-- This plugin is used to release a project with Maven, saving a lot 
+				of repetitive, manual work. Releasing a project is made in two steps: prepare 
+				and perform. Note: Maven 3 users are encouraged to use at least Maven-3.0.4 
+				due to some settings related issues. http://maven.apache.org/maven-release/maven-release-plugin/ -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-release-plugin</artifactId> 
+				<version>2.0-beta-9</version> </plugin> -->
+
+
+
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.0-beta-9</version>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
 			</plugin>
-				-->
-				
-			
-
-			
-			<plugin>
-			        <groupId>org.apache.maven.plugins</groupId>
-			        <artifactId>maven-resources-plugin</artifactId>
-			        <version>2.6</version>
-			        <configuration>
-			          <encoding>UTF-8</encoding>
-			        </configuration>
-			      </plugin>
 		</plugins>
-		
 
-		
+
+
 	</build>
 
-	<!--  
+
 	<profiles>
 		<profile>
-			<id>release-sign-artifacts</id>
-			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
+			<id>release</id>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${plugin.maven-javadoc-plugin.version}</version>
+
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+
+					</plugin>
+
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.1</version>
+						<version>${plugin.maven-gpg-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -306,6 +289,12 @@
 			</build>
 		</profile>
 	</profiles>
-	-->
+
+	<!-- <profiles> <profile> <id>release-sign-artifacts</id> <activation> <property> 
+		<name>performRelease</name> <value>true</value> </property> </activation> 
+		<build> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
+		<version>1.1</version> <executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> 
+		<goals> <goal>sign</goal> </goals> </execution> </executions> </plugin> </plugins> 
+		</build> </profile> </profiles> -->
 
 </project>
