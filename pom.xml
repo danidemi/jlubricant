@@ -18,7 +18,7 @@
 		<artifactId>oss-parent</artifactId>
 		<version>9</version>
 	</parent>
-
+	
 	<modules>
 		<module>jlubricant-spring-batch</module>
 		<module>jlubricant-test</module>
@@ -28,9 +28,11 @@
 		<module>jlubricant-utils</module>
 		<module>jlubricant-internal-contracts</module>
 		<module>jlubricant-logback</module>
+		<module>jlubricant-spring-context</module>
 	</modules>
 
 	<properties>
+		<spring.version>4.0.6.RELEASE</spring.version>
 		<plugin.maven-source-plugin.version>2.2.1</plugin.maven-source-plugin.version>
 		<plugin.maven-javadoc-plugin.version>2.9.1</plugin.maven-javadoc-plugin.version>
 		<plugin.maven-gpg-plugin.version>1.4</plugin.maven-gpg-plugin.version>
@@ -67,6 +69,58 @@
 	<dependencyManagement>
 
 		<dependencies>
+		
+			<!-- =============================================== -->
+			<!-- JLubricant -->
+			<!-- =============================================== -->
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-embeddable</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-embeddable-h2</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-embeddable-hsql</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-internal-contracts</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-logback</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-spring-batch</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-spring-context</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-test</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-utils</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- =============================================== -->
+			<!-- JLubricant -->
+			<!-- =============================================== -->			
 
 			<!-- =============================================== -->
 			<!-- Utils -->
@@ -141,6 +195,39 @@
 			<!-- =============================================== -->
 			<!-- TEST -->
 			<!-- =============================================== -->
+
+        <!-- ======================================== -->
+        <!-- Spring Framework                         -->
+        <!-- ======================================== -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- ======================================== -->
+        <!-- Spring Framework                         -->
+        <!-- ======================================== -->        
 
 		</dependencies>
 
