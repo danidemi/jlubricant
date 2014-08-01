@@ -134,7 +134,7 @@ public class DenyDuplicationsFilterTest {
 		
 	}
 	
-	@Test public void countItems() {
+	@Test public void shouldCountItems() {
 		
 		// given
 		DenyDuplicationsFilter f = new DenyDuplicationsFilter();

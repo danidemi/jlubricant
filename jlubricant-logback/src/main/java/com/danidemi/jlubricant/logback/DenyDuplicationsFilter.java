@@ -1,9 +1,5 @@
 package com.danidemi.jlubricant.logback;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -35,18 +31,19 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 	
 	private static final Logger log = LoggerFactory.getLogger(DenyDuplicationsFilter.class);
 
-	private final Map<String, Long> message2lasttimestamp = new HashMap<String, Long>();
-	private final LinkedList<String> messages = new LinkedList<String>();
+
+	private final Cache cache = new MemoryCache();
 	private int maxSize;
 	private Thread evicting;
 	private long maxAgeInMillis;
+
 
 	private long millisBetweenEvictions;
 
 	public DenyDuplicationsFilter() {
 		
 		setItemMaxAgeInSeconds( TimeUnit.SECONDS.convert(30, TimeUnit.MINUTES) );
-		setMaxSize(50);
+		cache.setMaxSize(50);
 		setSecondsBetweenEvictions(30);
 		
 		evicting = new Thread(new Runnable() {
@@ -92,14 +89,18 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 
 	}
 		
+	protected void cacheEvict() {
+		cache.cacheEvict(maxAgeInMillis);
+	}
+
 	@Override
 	public FilterReply decide(ILoggingEvent e) {
 	
 		String message = e.getFormattedMessage();
 		long timestamp = e.getTimeStamp();
-		Long lastTimestamp = cacheGet(message);
+		Long lastTimestamp = cache.timestampOfLastOccurence(message);
 	
-		cachePut(message, timestamp);
+		cache.put(message, timestamp);
 		
 		FilterReply result;
 		if (lastTimestamp != null) {
@@ -114,75 +115,13 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 	
 	}
 
-	private Long cacheGet(String message) {
-		return message2lasttimestamp.get(message);
-	}
 
-	private synchronized void cacheEvict() {
-		long now = System.currentTimeMillis();
-		ArrayList<String> toBeRemoved = new ArrayList<String>();
-		for (Map.Entry<String, Long> e : this.message2lasttimestamp.entrySet()) {
-			if( now - e.getValue() > maxAgeInMillis ){
-				toBeRemoved.add( e.getKey() );
-			}
-		}
 
-		if(!toBeRemoved.isEmpty()){
-			long preSize = cacheSize();
-			for (String string : toBeRemoved) {
-				cacheRemove(string);
-			}
-			long postSize = cacheSize();
-			log.trace("{} items evicted from cache, size decreased from {} to {}", toBeRemoved.size(), preSize, postSize);
-		}
-	}
-	
-	private synchronized void cachePut(String message, long timestamp) {
-		
-		Long previous = message2lasttimestamp.put(message, timestamp);
-		if(previous!=null){
-			boolean contained = messages.remove( message );
-			messages.addFirst(message);
-		}else{
-			messages.addFirst(message);
-			while (messages.size() > maxSize) {
-				String removeLast = messages.removeLast();
-				message2lasttimestamp.remove(removeLast);
-			}			
-		}
-		
-		
-	}
 
-	private synchronized void cacheRemove(String toBeRemoved) {
-		Long remove = message2lasttimestamp.remove(toBeRemoved);
-		boolean removed = messages.remove(toBeRemoved);
-		if(!( (removed && remove!=null) || (!removed && remove==null) )){
-			throw new RuntimeException("Cache is out of sync");
-		}
-	}
-	
-	private long cacheSize() {
-		int size = message2lasttimestamp.size();
-		if(size - messages.size() != 0){
-			throw new RuntimeException("Cache is out of sync");
-		}
-		return size;
-	}	
 
-	/** Number of log events in the cache. */
-	public int itemsInCache() {
-		return message2lasttimestamp.size();
-	}
 
-	/** 
-	 * The max number of previous logging events to be contained in memory.
-	 * Bigger values means the filter will more likely deny duplicated log messages in scenarios
-	 * where lot of different log messages are issued. However, it will make the filter to consume more memory.
-	 */
-	public void setMaxSize(int i) {
-		this.maxSize = i;
-	}
+
+
 	
 	/**
 	 * How many seconds should elapse to consider a new log event as not duplicated even if its message
@@ -212,8 +151,15 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 	 * Empty the cache.
 	 */
 	public synchronized void clear() {
-		this.message2lasttimestamp.clear();
-		this.messages.clear();
+		cache.clear();
+	}
+
+	public Integer itemsInCache() {
+		return cache.itemsInCache();
+	}
+
+	public void setMaxSize(int i) {
+		cache.setMaxSize(i);
 	}
 
 }
