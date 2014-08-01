@@ -24,6 +24,31 @@ import ch.qos.logback.core.spi.FilterReply;
  * The behaviour of the filter can be fine tuned through a set of properties, even if
  * it comes with reasonable defaults.  
  * 
+ * Here's an example about using it with a FileSystemCache that ensure it will keep on working even across restarts.
+ * 
+ * {@code
+ * <configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	
+		<filter class="com.danidemi.jlubricant.logback.DenyDuplicationsFilter">
+			<cache class="com.danidemi.jlubricant.logback.FileSystemCache">
+				<filePath>/tmp/cache.bin</filePath>
+				<maxSize>100</maxSize>
+				<ItemMaxAgeInSeconds>3600</ItemMaxAgeInSeconds>
+			</cache>
+		</filter>
+	
+		<encoder>
+			<pattern>[WITH-CACHE]%msg %n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="ALL">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
+ * }
+ * 
  * @author danidemi
  *
  */

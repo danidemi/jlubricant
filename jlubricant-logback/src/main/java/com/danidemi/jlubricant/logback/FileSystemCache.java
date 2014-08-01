@@ -82,7 +82,7 @@ public class FileSystemCache implements Cache {
 		return cache.toString();
 	}
 	
-	private void store() {
+	private synchronized void store() {
 		try(FileOutputStream fileOutputStream = new FileOutputStream(file, false)){
 			SerializationUtils.serialize(cache, fileOutputStream);			
 		} catch (IOException e) {
@@ -96,7 +96,7 @@ public class FileSystemCache implements Cache {
 		}
 	}
 	
-	private MemoryCache retrieve() {
+	private synchronized MemoryCache retrieve() {
 		
 		if(file==null){
 			throw new IllegalStateException("Please provide a file where cache can be stored.");
