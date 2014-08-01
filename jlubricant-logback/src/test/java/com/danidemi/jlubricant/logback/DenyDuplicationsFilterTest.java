@@ -23,20 +23,55 @@ public class DenyDuplicationsFilterTest {
 		logger.setLevel(Level.ALL);
 	}
 	
+	@Test public void shouldFilterEvenAcrossRestart() {
+		
+		// given
+		// ...filter one
+		DenyDuplicationsFilter filter1 = new DenyDuplicationsFilter();
+		
+		// ...that decide for a message
+		filter1.decide( loggingEventWithMessageAndTimestamp("the message", 1000) );
+		
+		
+		
+		// when
+		// ...a new filter is started
+		DenyDuplicationsFilter filter2 = new DenyDuplicationsFilter();
+		
+		// ...and it decided for the very same message...
+		FilterReply outcome = filter2.decide( loggingEventWithMessageAndTimestamp("the message", 2000) );
+		
+		
+		
+		// then
+		// ...it should block the message even though it is a different instance
+		assertThat( outcome, equalTo(FilterReply.DENY));
+		
+	}
+	
 	@Test public void shouldNotEvictTooYoungItems() throws InterruptedException {
 		
 		// given
+		// ...a filter
 		DenyDuplicationsFilter myFilter = new DenyDuplicationsFilter();
+		
+		// ..that continuously evicts the cache
 		myFilter.setSecondsBetweenEvictions(0);
+		
+		// ...and that keeps things for 100 sec
 		myFilter.setItemMaxAgeInSeconds(100);
+		
+		// ...and that keeps at most 100 messages
 		myFilter.setMaxSize(100);
 		
+		// when
+		// ...100 different messages are decided...
 		for(int i = 0; i<100; i++){
 			myFilter.decide( loggingEventWithMessageAndTimestamp("msg {}", System.currentTimeMillis(), i) );			
 		}				
-		
 		Thread.sleep(1000);
 		
+		// the filter should keep all of them, because the max age is 100sec but just 1 sec passed
 		assertThat( myFilter.itemsInCache(), equalTo(100) );
 		
 	}
@@ -249,5 +284,5 @@ public class DenyDuplicationsFilterTest {
 		
 		return event2;
 	}
-
+	
 }

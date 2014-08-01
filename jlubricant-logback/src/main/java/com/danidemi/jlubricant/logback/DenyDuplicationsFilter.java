@@ -60,6 +60,8 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 					} catch (InterruptedException e) {
 
 					}
+					
+					Thread.yield();
 
 					if (!Thread.currentThread().isInterrupted()) {
 						try {
@@ -196,6 +198,7 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 	
 	/**
 	 * Set the interval between two subsequent run of the eviction.
+	 * 0 means the cache is continuously evicted.
 	 */
 	public void setSecondsBetweenEvictions(int seconds){
 		millisBetweenEvictions = TimeUnit.MILLISECONDS.convert(seconds, TimeUnit.SECONDS);
