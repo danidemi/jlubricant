@@ -3,19 +3,50 @@ package com.danidemi.jlubricant.logback;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
+
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class FileSystemCacheTest {
+	
+	public @Rule TemporaryFolder tmp = new TemporaryFolder();
+	
+	@Test
+	public void shouldRetrieveCacheInfoFromPreviousRun() throws Exception {
+		
+		// given
+		FileSystemCache cache1 = new FileSystemCache();
+		File file = tmp.newFile();
+		cache1.setFile(file);
+		cache1.setMaxSize(10);
+		
+		// ...let write some messages
+		cache1.put("bad", 100L);
+		cache1.put("girls", 200L);
+		cache1.put("go", 300L);
+		cache1.put("to", 400L);
+		cache1.put("amsterdam", 500L);
+
+		// when
+		// ...another cache is created, to the same file
+		FileSystemCache cache2 = new FileSystemCache();
+		cache2.setFile(file);
+		
+		// then
+		assertThat(cache2.itemsInCache(), equalTo(5));
+		assertThat(cache2.timestampOfLastOccurence("amsterdam"), equalTo(500L));
+		assertThat(cache2.timestampOfLastOccurence("girls"), equalTo(200L));
+		
+	}	
 
 	@Test
-	public void testCacheEvict() throws Exception {
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public void testPut() throws Exception {
+	public void shouldPutItemsInTheSameCache() throws Exception {
+		
 		// given
 		FileSystemCache cache = new FileSystemCache();
+		cache.setFile(tmp.newFile());
 		cache.setMaxSize(10);
 		
 		// when
@@ -28,26 +59,7 @@ public class FileSystemCacheTest {
 		// then
 		assertThat(count2 - count1, equalTo(1));
 		assertThat(count3 - count2, equalTo(0));
-	}
-
-	@Test
-	public void testTimestampOfLastOccurence() throws Exception {
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public void testItemsInCache() throws Exception {
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public void testClear() throws Exception {
-		throw new RuntimeException("not yet implemented");
-	}
-
-	@Test
-	public void testSetMaxSize() throws Exception {
-		throw new RuntimeException("not yet implemented");
+		
 	}
 
 }

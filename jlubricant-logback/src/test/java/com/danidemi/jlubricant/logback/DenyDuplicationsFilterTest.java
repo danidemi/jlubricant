@@ -7,8 +7,13 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,16 +23,19 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.spi.FilterReply;
 public class DenyDuplicationsFilterTest {
 	
+	@Rule public TemporaryFolder tmp = new TemporaryFolder();
+	
 	@BeforeClass public static void setUpLogging() {
 		ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 		logger.setLevel(Level.ALL);
 	}
-	
-	@Test public void shouldFilterEvenAcrossRestart() {
+		
+	@Test public void shouldFilterEvenAcrossRestart() throws IOException {
 		
 		// given
 		// ...filter one
-		DenyDuplicationsFilter filter1 = new DenyDuplicationsFilter();
+		File cacheFile = tmp.newFile();
+		DenyDuplicationsFilter filter1 = newFilterWithCache(cacheFile);
 		
 		// ...that decide for a message
 		filter1.decide( loggingEventWithMessageAndTimestamp("the message", 1000) );
@@ -36,7 +44,7 @@ public class DenyDuplicationsFilterTest {
 		
 		// when
 		// ...a new filter is started
-		DenyDuplicationsFilter filter2 = new DenyDuplicationsFilter();
+		DenyDuplicationsFilter filter2 = newFilterWithCache(cacheFile);
 		
 		// ...and it decided for the very same message...
 		FilterReply outcome = filter2.decide( loggingEventWithMessageAndTimestamp("the message", 2000) );
@@ -283,6 +291,15 @@ public class DenyDuplicationsFilterTest {
 		}
 		
 		return event2;
+	}
+	
+	private DenyDuplicationsFilter newFilterWithCache(File cacheFile){
+		DenyDuplicationsFilter filter1 = new DenyDuplicationsFilter();
+		FileSystemCache cache1 = new FileSystemCache();
+		cache1.setFile(cacheFile);
+		filter1.setCache( cache1 );
+		filter1.setMaxSize(100);
+		return filter1;
 	}
 	
 }

@@ -32,7 +32,7 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 	private static final Logger log = LoggerFactory.getLogger(DenyDuplicationsFilter.class);
 
 
-	private final Cache cache = new MemoryCache();
+	private Cache cache = new MemoryCache();
 	private int maxSize;
 	private Thread evicting;
 	private long maxAgeInMillis;
@@ -160,6 +160,10 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 
 	public void setMaxSize(int i) {
 		cache.setMaxSize(i);
+	}
+
+	public void setCache(Cache cache) {
+		this.cache = cache;
 	}
 
 }
