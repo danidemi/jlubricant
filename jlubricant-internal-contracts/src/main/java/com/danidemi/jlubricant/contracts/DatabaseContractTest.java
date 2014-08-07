@@ -20,9 +20,7 @@ public abstract class DatabaseContractTest {
 		String[][] usersAndPasswords = {
 				{"username", "password"},
 				{"THEUSER", "THEPASSWORD"},
-				{"usr", ""},
-				{"", "pwd"},
-				{"", ""}
+				{"usr", ""}
 		};
 		
 		for (String[] strings : usersAndPasswords) {

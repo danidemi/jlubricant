@@ -6,10 +6,19 @@ import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 
 public class ServerMode extends Storage {
 
-	private final File dbFolder;
+	private File dbFolder;
 
+	/** The folder where the database files are stored. */
 	public ServerMode(File newFolder) {
 		this.dbFolder = newFolder;
+	}
+	
+	public ServerMode() {
+	
+	}
+	
+	public void setDbFolder(File dbFolder) {
+		this.dbFolder = dbFolder;
 	}
 
 	public String getAbsolutePath() {
@@ -17,6 +26,7 @@ public class ServerMode extends Storage {
 	}
 	
 	@Override
+	/** Whether this storage requires a standalone server. */
 	public boolean requireStandaloneServer() {
 		return true;
 	}	

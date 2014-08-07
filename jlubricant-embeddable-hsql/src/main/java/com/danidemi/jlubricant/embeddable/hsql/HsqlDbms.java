@@ -1,8 +1,13 @@
 package com.danidemi.jlubricant.embeddable.hsql;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -12,6 +17,8 @@ import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.hsqldb.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.danidemi.jlubricant.embeddable.BasicDataSource;
 import com.danidemi.jlubricant.embeddable.Dbms;
@@ -26,6 +33,36 @@ import static org.apache.commons.collections4.CollectionUtils.*;
  * @author danidemi
  */
 public class HsqlDbms implements EmbeddableServer, Dbms {
+	
+	private static Logger log = LoggerFactory.getLogger(HsqlDbms.class);
+	
+	private static class MyWriter extends Writer {
+		
+		private Logger logger;
+		private StringBuilder sb;
+		
+		public MyWriter(Logger log) {
+			this.logger = log;
+			sb = new StringBuilder();
+		}
+
+		@Override
+		public void write(char[] cbuf, int off, int len) throws IOException {
+			sb.append( Arrays.copyOfRange(cbuf, off, off+len) );
+		}
+
+		@Override
+		public void flush() throws IOException {
+			logger.info( sb.toString().trim().replaceAll("\\n$", "") );
+			sb = new StringBuilder();
+		}
+
+		@Override
+		public void close() throws IOException {
+			// nothing really to do.
+		}
+		
+	}
 	
 	static interface Registration {
 		void register(String name, File path);
@@ -48,8 +85,12 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		e.setDbms(this);
 		return dbs.add(e);
 	}
-
-
+	
+	public void setDatabases(List<HsqlDatabase> dbs) {
+		for (HsqlDatabase hsqlDatabase : dbs) {
+			add(hsqlDatabase);
+		}
+	}
 
 	@Override
 	public void start() throws ServerStartException {
@@ -66,9 +107,12 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		if(serverRequired.get()){
 			
 			server = new Server();
+			server.setLogWriter(null);
+			Writer out = new MyWriter(log);
+			server.setLogWriter( new PrintWriter(out) );
 			server.setDaemon(true);
 			server.setSilent(false);
-			server.setTrace(true);
+			server.setTrace(false);
 			server.setNoSystemExit(true);
 
 			final AtomicInteger dbCounter = new AtomicInteger(0);

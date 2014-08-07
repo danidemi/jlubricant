@@ -41,10 +41,17 @@ public class HsqlDatabase implements Database {
 		this.storage = storage;
 	}
 	
+	/**
+	 * Change the database compatibility.
+	 * If not set, {@link HsqlCompatibility} is intended.
+	 */
 	public void setCompatibility(Compatibility compatibility) {
 		this.compatibility = compatibility;
 	}
 	
+	/**
+	 * Set the hsql db name.
+	 */
 	public void setDbName(String dbName) {
 		this.dbName = dbName;
 	}
@@ -93,13 +100,45 @@ public class HsqlDatabase implements Database {
 		log.info("Creating new user {}/{}", username, password);
 		
 		try(Connection con = newConnection()){
-			PreparedStatement call = con.prepareStatement("CREATE USER \"" + username + "\" PASSWORD '" + password + "' ADMIN");
-//			call.setString(1, username);
-//			call.setString(2, password);
-			call.execute();
+			
+			ResultSet rs;
+			
+			// first of all'let's check whether the specified username already exists.
+//			PreparedStatement prepareStatement = con.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS");
+//			rs = prepareStatement.executeQuery();
+//			while(rs.next()){
+//				int columnCount = rs.getMetaData().getColumnCount();
+//				for(int i=1; i<=columnCount; i++){
+//					System.out.println(rs.getMetaData().getColumnName(i));
+//				}
+//			}
+			
+			
+			
+			PreparedStatement prepareStatement = con.prepareStatement("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SYSTEM_USERS WHERE USER_NAME = ?");
+			prepareStatement.setString(1, username);
+			rs = prepareStatement.executeQuery();
+			rs.next();
+			boolean existingUser = rs.getLong(1) == 1L;
+			rs.close();
+			prepareStatement.close();
+			
+			PreparedStatement call;
+			if(existingUser){
+				//throw new IllegalArgumentException("Cannot change password to an existing user '" + username + "'");
+//				log.info("User exists, altering it to use the new password.");
+//				call = con.prepareStatement("ALTER USER \"" + username + "\" SET PASSWORD '" + password + "'");
+//				call.execute();			
+			}else{
+				log.info("User does not exists, granting it ADMIN privileges.");
+				call = con.prepareStatement("CREATE USER \"" + username + "\" PASSWORD '" + password + "' ADMIN");
+				call.execute();				
+			}
+			
+			
 			
 			call = con.prepareCall("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS");
-			ResultSet rs = call.executeQuery();
+			rs = call.executeQuery();
 			while(rs.next()){
 				log.info("User " + rs.getObject(1) + " " + rs.getObject(2));
 			}
@@ -196,6 +235,11 @@ public class HsqlDatabase implements Database {
 	}
 	
 	public void setUsername(String username) {
+		
+		if(username == null || username.trim().length() == 0){
+			throw new IllegalArgumentException("Invalid user '" + username + "'");
+		}
+		
 		this.username = username;
 	}
 	
