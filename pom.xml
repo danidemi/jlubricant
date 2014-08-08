@@ -28,6 +28,7 @@
 		<module>jlubricant-utils</module>
 		<module>jlubricant-internal-contracts</module>
 		<module>jlubricant-logback</module>
+		<module>jlubricant-slf4j</module>
 		<module>jlubricant-spring-context</module>
 	</modules>
 
@@ -96,6 +97,11 @@
 			<dependency>
 				<groupId>com.danidemi.jlubricant</groupId>
 				<artifactId>jlubricant-logback</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-slf4j</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

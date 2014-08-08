@@ -25,6 +25,7 @@ import com.danidemi.jlubricant.embeddable.Dbms;
 import com.danidemi.jlubricant.embeddable.EmbeddableServer;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
+import com.danidemi.jlubricant.slf4j.utils.LubricantLoggerWriter;
 
 import static org.apache.commons.collections4.CollectionUtils.*;
 
@@ -36,33 +37,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	
 	private static Logger log = LoggerFactory.getLogger(HsqlDbms.class);
 	
-	private static class MyWriter extends Writer {
-		
-		private Logger logger;
-		private StringBuilder sb;
-		
-		public MyWriter(Logger log) {
-			this.logger = log;
-			sb = new StringBuilder();
-		}
 
-		@Override
-		public void write(char[] cbuf, int off, int len) throws IOException {
-			sb.append( Arrays.copyOfRange(cbuf, off, off+len) );
-		}
-
-		@Override
-		public void flush() throws IOException {
-			logger.info( sb.toString().trim().replaceAll("\\n$", "") );
-			sb = new StringBuilder();
-		}
-
-		@Override
-		public void close() throws IOException {
-			// nothing really to do.
-		}
-		
-	}
 	
 	static interface Registration {
 		void register(String name, File path);
@@ -108,7 +83,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 			
 			server = new Server();
 			server.setLogWriter(null);
-			Writer out = new MyWriter(log);
+			Writer out = new LubricantLoggerWriter( com.danidemi.jlubricant.slf4j.LoggerFactory.getLogger(log), com.danidemi.jlubricant.slf4j.Logger.TRACE );
 			server.setLogWriter( new PrintWriter(out) );
 			server.setDaemon(true);
 			server.setSilent(false);
