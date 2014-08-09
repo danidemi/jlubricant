@@ -26,6 +26,8 @@ import com.danidemi.jlubricant.embeddable.EmbeddableServer;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
 import com.danidemi.jlubricant.slf4j.utils.LubricantLoggerWriter;
+import com.danidemi.jlubricant.slf4j.utils.OneLogLineForEachFlush;
+import com.danidemi.jlubricant.slf4j.utils.Replace;
 
 import static org.apache.commons.collections4.CollectionUtils.*;
 
@@ -36,7 +38,7 @@ import static org.apache.commons.collections4.CollectionUtils.*;
 public class HsqlDbms implements EmbeddableServer, Dbms {
 	
 	private static Logger log = LoggerFactory.getLogger(HsqlDbms.class);
-	
+	private static Logger hsql = LoggerFactory.getLogger(HsqlDbms.class.getName() + ".hsql");
 
 	
 	static interface Registration {
@@ -83,7 +85,11 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 			
 			server = new Server();
 			server.setLogWriter(null);
-			Writer out = new LubricantLoggerWriter( com.danidemi.jlubricant.slf4j.LoggerFactory.getLogger(log), com.danidemi.jlubricant.slf4j.Logger.TRACE );
+			Writer out = new LubricantLoggerWriter( 
+					hsql,
+					new Replace(new OneLogLineForEachFlush(),  "\\[[\\w\\W]*\\]: ", "") ,
+					com.danidemi.jlubricant.slf4j.Logger.TRACE 
+			);
 			server.setLogWriter( new PrintWriter(out) );
 			server.setDaemon(true);
 			server.setSilent(false);

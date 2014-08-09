@@ -16,7 +16,7 @@ public class WaitForTest {
 		long end = System.currentTimeMillis();
 		
 		// then
-		assertThat(end - start, greaterThan(2000L));
+		assertThat(end - start, not(lessThan(2000L)));
 		
 	}
 	

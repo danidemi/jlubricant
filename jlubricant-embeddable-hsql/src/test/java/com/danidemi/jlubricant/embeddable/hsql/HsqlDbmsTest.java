@@ -20,7 +20,7 @@ public class HsqlDbmsTest {
 
 	public @Rule TemporaryFolder tmp = new TemporaryFolder();
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void shouldNotSupportChangingThePredefinedSAUser() throws ServerStopException, ServerStartException {
 		
 		HsqlDatabase db = new HsqlDatabase();
@@ -45,7 +45,7 @@ public class HsqlDbmsTest {
 	public void shouldSupportInProcessInMemoryDatabase() throws ServerException {
 				
 		HsqlDatabase db = new HsqlDatabase();
-		db.setDbName("memdb");
+		db.setDbName("memdb2");
 		db.setStorage(new InProcessInMemory());		
 		
 		HsqlDbms dbms = new HsqlDbms();

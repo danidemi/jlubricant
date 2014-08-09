@@ -3,6 +3,12 @@ package com.danidemi.jlubricant.slf4j;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
+/**
+ * A {@link LubricantLogger} behaves like SLF4J's logger but offer the chance to specify the logging level a message should be written.
+ * 
+ * @author danidemi
+ *
+ */
 public class LubricantLogger implements Logger {
 
 	private org.slf4j.Logger logger;

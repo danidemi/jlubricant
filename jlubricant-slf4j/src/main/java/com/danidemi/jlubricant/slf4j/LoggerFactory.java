@@ -1,6 +1,8 @@
 package com.danidemi.jlubricant.slf4j;
 
-
+/**
+ * {@link LoggerFactory} that mimic SLF4J's Logger Factory, but return instances of {@link LubricantLogger} instead of SLF4J's loggers.
+ */
 public class LoggerFactory  {
 
 	private LoggerFactory() {
