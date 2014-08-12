@@ -50,6 +50,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
         
         /** The list of HSQL databases. */
 	ArrayList<HsqlDatabase> dbs;
+		private LubricantLoggerWriter lubricantLoggerWriter;
 
 	public HsqlDbms() {
 		dbs = new ArrayList<>(0);
@@ -72,6 +73,8 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	@Override
 	public void start() throws ServerStartException {
 		
+		
+		// ...evaluate whether a stand alone server is needed or not 
 		final AtomicBoolean serverRequired = new AtomicBoolean(false);		
 		forAllDo(dbs, new Closure<HsqlDatabase>() {
 			@Override
@@ -83,14 +86,15 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		
 		if(serverRequired.get()){
 			
+			log.info("Starting HSQL standalone DBMS...");
+			
 			server = new Server();
-			server.setLogWriter(null);
-			Writer out = new LubricantLoggerWriter( 
+			lubricantLoggerWriter = new LubricantLoggerWriter( 
 					hsql,
 					new Replace(new OneLogLineForEachFlush(),  "\\[[\\w\\W]*\\]: ", "") ,
 					com.danidemi.jlubricant.slf4j.Logger.TRACE 
 			);
-			server.setLogWriter( new PrintWriter(out) );
+			server.setLogWriter( lubricantLoggerWriter.asPrintWriter() );
 			server.setDaemon(true);
 			server.setSilent(false);
 			server.setTrace(false);
@@ -104,8 +108,9 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 						@Override
 						public void register(String name, File path) {
-							HsqlDbms.register( server, dbCounter.getAndAdd(1), name, path );
 							
+							log.info("Registering db #{} : '{}' stored on '{}'", dbCounter, name, path);
+							HsqlDbms.register( server, dbCounter.getAndAdd(1), name, path );							
 						} 
 						
 					} );
@@ -113,13 +118,30 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 				}
 			}
 
-			server.start();
+			log.info("Starting server.");
+			int state = server.start();
+			
+			try{
+				while (state != 1) {
+					log.trace("Waiting for confirmation from server " + state + ".");
+					Thread.yield();
+					Thread.sleep(100);
+					state = server.getState();
+				}
+			}catch(Exception e){
+				throw new ServerStartException(e);
+			}
+			
 			
 		}
-		
+
+		log.info("Post setup in progress...");
 		for (HsqlDatabase db : dbs) {
 			db.postStartSetUp();
 		}
+		
+		log.info("HSQL standalone DBMS is ready");			
+		
 	}
 	
 
@@ -144,6 +166,8 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 				Thread.sleep(100);
 				state = server.getState();
 			}
+			
+			lubricantLoggerWriter.close();
 			
 		}catch(Exception e){
 			

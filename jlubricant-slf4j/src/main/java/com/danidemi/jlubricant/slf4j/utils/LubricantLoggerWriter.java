@@ -1,5 +1,6 @@
 package com.danidemi.jlubricant.slf4j.utils;
 
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.slf4j.Logger;
@@ -60,6 +61,10 @@ public class LubricantLoggerWriter extends AbstractLoggerWriter {
 	@Override
 	protected void log(String logmessage) {
 		logger.log(guessLevel.forMessage(logmessage), logmessage);		
+	}
+	
+	public final PrintWriter asPrintWriter() {
+		return new PrintWriter(this);
 	}
 
 }

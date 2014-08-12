@@ -11,7 +11,6 @@
         <dependency>
             <groupId>com.danidemi.jlubricant</groupId>
             <artifactId>jlubricant-embeddable</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
