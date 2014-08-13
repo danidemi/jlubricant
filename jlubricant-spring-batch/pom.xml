@@ -12,6 +12,12 @@
 		</license>
 	</licenses>
 	
+	<parent>
+		<groupId>com.danidemi.jlubricant</groupId>
+		<artifactId>jlubricant</artifactId>
+		<version>0.0.5-SNAPSHOT</version>
+	</parent>
+	
 	<developers>
 		<developer>
 			<name>Daniele Demichelis</name>
@@ -24,6 +30,12 @@
 	</developers>
 	
 	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	
 		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-core</artifactId>
@@ -39,19 +51,13 @@
 		<dependency>
 			<groupId>com.danidemi.jlubricant</groupId>
 			<artifactId>jlubricant-test</artifactId>
-			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.danidemi.jlubricant</groupId>
 			<artifactId>jlubricant-embeddable-hsql</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-	<parent>
-		<groupId>com.danidemi.jlubricant</groupId>
-		<artifactId>jlubricant</artifactId>
-		<version>0.0.5-SNAPSHOT</version>
-	</parent>
+
 </project>
