@@ -10,7 +10,7 @@ public class ServerMode extends Storage {
 
 	/** The folder where the database files are stored. */
 	public ServerMode(File newFolder) {
-		this.dbFolder = newFolder;
+		setDbFolder(newFolder);
 	}
 	
 	public ServerMode() {
@@ -18,6 +18,10 @@ public class ServerMode extends Storage {
 	}
 	
 	public void setDbFolder(File dbFolder) {
+		
+		//if(!dbFolder.exists()) throw new IllegalArgumentException("Folder " + dbFolder + " does no exist.");
+		//if(!dbFolder.isDirectory()) throw new IllegalArgumentException("Path " + dbFolder + " is a file, not a dir!");		
+		
 		this.dbFolder = dbFolder;
 	}
 
