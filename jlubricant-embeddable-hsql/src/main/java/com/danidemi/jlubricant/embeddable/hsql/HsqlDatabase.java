@@ -62,13 +62,15 @@ public class HsqlDatabase implements Database {
 	
 	public Connection newConnection() throws SQLException {
 		
+		Connection conn = DriverManager.getConnection(getJdbcUrl(), "sa", "");
+		return conn;
+	}
+
+	private String getJdbcUrl() {
 		String protocol = storage.getProtocol();
 		String location = storage.getLocation( dbName, dbms );
 		String jdbcUrl1 = "jdbc:hsqldb:" + protocol + ":" + location;
-		String jdbcUrl = jdbcUrl1;
-		
-		Connection conn = DriverManager.getConnection(jdbcUrl, "sa", "");
-		return conn;
+		return jdbcUrl1;
 	}
 
 	public String getDriverName() {
@@ -213,9 +215,7 @@ public class HsqlDatabase implements Database {
 
 	@Override
 	public String getUrl() {
-		String protocol = storage.getProtocol();
-		String location = storage.getLocation( dbName, dbms );
-		String jdbcUrl = "jdbc:hsqldb:" + protocol + ":" + location;
+		String jdbcUrl = getJdbcUrl();
 		return jdbcUrl;
 	}
 
