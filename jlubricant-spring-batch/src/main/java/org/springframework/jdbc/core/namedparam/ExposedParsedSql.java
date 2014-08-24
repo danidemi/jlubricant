@@ -2,6 +2,12 @@ package org.springframework.jdbc.core.namedparam;
 
 import java.util.List;
 
+/**
+ * This is a wrapper that makes public most of the private methods available in {@link ParsedSql}.
+ * For this reason that class has to be placed in the same {@link ParsedSql}'s package. 
+ * @author danidemi
+ *
+ */
 public class ExposedParsedSql {
 
 	private ParsedSql delegate;

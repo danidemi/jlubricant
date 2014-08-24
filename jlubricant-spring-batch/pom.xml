@@ -12,6 +12,12 @@
 		</license>
 	</licenses>
 	
+	<parent>
+		<groupId>com.danidemi.jlubricant</groupId>
+		<artifactId>jlubricant</artifactId>
+		<version>0.0.5</version>
+	</parent>
+	
 	<developers>
 		<developer>
 			<name>Daniele Demichelis</name>
@@ -24,6 +30,12 @@
 	</developers>
 	
 	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	
 		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-core</artifactId>
@@ -54,4 +66,5 @@
 		<artifactId>jlubricant</artifactId>
 		<version>0.0.5</version>
 	</parent>
+
 </project>

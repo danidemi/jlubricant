@@ -140,7 +140,12 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 			db.postStartSetUp();
 		}
 		
-		log.info("HSQL standalone DBMS is ready");			
+		
+		log.info("HSQL standalone DBMS is ready");
+		
+		for (HsqlDatabase db : dbs) {
+			log.info( "Connection to db {}: {}, account {}/{} ", db.getName(), db.getUrl(), db.getName(), db.getPassword() );
+		}
 		
 	}
 	
