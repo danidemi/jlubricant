@@ -37,27 +37,31 @@ import static org.apache.commons.collections4.CollectionUtils.*;
  */
 public class HsqlDbms implements EmbeddableServer, Dbms {
 	
+	private static final int DEFAULT_PORT = 9001;
 	private static Logger log = LoggerFactory.getLogger(HsqlDbms.class);
 	private static Logger hsql = LoggerFactory.getLogger(HsqlDbms.class.getName() + ".hsql");
-
 	
+		
 	static interface Registration {
 		void register(String name, File path);
 	}
 
-        /** The Hsql server. */
+	/** The Hsql server. */
 	private Server server;
-        
-        /** The list of HSQL databases. */
-	ArrayList<HsqlDatabase> dbs;
-		private LubricantLoggerWriter lubricantLoggerWriter;
+
+	/** The list of HSQL databases. */
+	private ArrayList<HsqlDatabase> dbs;
+	private LubricantLoggerWriter lubricantLoggerWriter;
+	private int port = DEFAULT_PORT;
 
 	public HsqlDbms() {
 		dbs = new ArrayList<>(0);
 		server = null;
 	}
 	
-	
+	public void setPort(int port) {
+		this.port = port;
+	}
 
 	public boolean add(HsqlDatabase e) {
 		e.setDbms(this);
@@ -99,6 +103,8 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 			server.setSilent(false);
 			server.setTrace(false);
 			server.setNoSystemExit(true);
+			server.setPort(port);
+
 
 			final AtomicInteger dbCounter = new AtomicInteger(0);
 			for (HsqlDatabase db : dbs) {
@@ -118,7 +124,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 				}
 			}
 
-			log.info("Starting server.");
+			log.info("Starting server on port {}.", server.getPort());
 			int state = server.start();
 			
 			try{
@@ -156,6 +162,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		server2.setDatabasePath(dbCounter, path.getAbsolutePath());		
 	}
 
+	
 
 
 	@Override
