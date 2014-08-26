@@ -33,7 +33,10 @@
 	</modules>
 
 	<properties>
+		
 		<spring.version>4.0.6.RELEASE</spring.version>
+		<powermock.version>1.5.5</powermock.version>
+		
 		<plugin.maven-source-plugin.version>2.2.1</plugin.maven-source-plugin.version>
 		<plugin.maven-javadoc-plugin.version>2.9.1</plugin.maven-javadoc-plugin.version>
 		<plugin.maven-gpg-plugin.version>1.4</plugin.maven-gpg-plugin.version>
@@ -198,6 +201,18 @@
 				<version>1.3</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-module-junit4</artifactId>
+				<version>${powermock.version}</version>
+				<scope>test</scope>
+			</dependency>
+		   <dependency>
+		      <groupId>org.powermock</groupId>
+		      <artifactId>powermock-api-mockito</artifactId>
+		      <version>${powermock.version}</version>
+		      <scope>test</scope>
+		   </dependency> 
 			<!-- =============================================== -->
 			<!-- TEST -->
 			<!-- =============================================== -->
