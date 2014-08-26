@@ -1,6 +1,7 @@
 package com.danidemi.jlubricant.spring.context.trigger;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.Trigger;
@@ -15,13 +16,15 @@ public class TriggerBuilder {
 
 	Trigger build(String triggerExpression) {
 
+		// high priority for cron, without any particular format
 		Trigger trigger = null;
 		try {
 			trigger = new CronTrigger(triggerExpression);
 		} catch (Exception e) {
 			// simply, not a cron!
 		}
-
+		
+		// high priority for commas
 		if (triggerExpression != null && trigger == null) {
 			if (triggerExpression.contains(",")) {
 				String[] split = triggerExpression.split(",");
@@ -31,6 +34,40 @@ public class TriggerBuilder {
 				}
 				return combinedTrigger;
 			}
+		}
+		
+		if (triggerExpression != null && trigger == null) {
+			
+			try{
+				
+				if (triggerExpression.startsWith("timerange:")) {
+					String exp = triggerExpression.substring("timerange:".length());
+					String[] split = exp.split("->");
+					
+					Trigger tg = null;
+					String subExp = split[2];
+					if(subExp.startsWith("(") && subExp.endsWith(")")){
+						subExp = subExp.substring(1, subExp.length()-1);
+						tg = build(subExp);
+						if(tg == null){
+							throw new IllegalArgumentException("subexpression is wrong");
+						}
+					}else{
+						throw new IllegalArgumentException("expression is wrong");
+					}
+					
+					TimelyRangedTrigger timelyRangedTrigger = new TimelyRangedTrigger();
+					timelyRangedTrigger.setStart(split[0]);
+					timelyRangedTrigger.setEnd(split[1]);
+					timelyRangedTrigger.setDelegate(tg);
+					trigger = timelyRangedTrigger;
+					
+				}
+				
+			}catch(Exception e){
+				trigger = null;
+			}
+			
 		}
 
 		if (triggerExpression != null && trigger == null) {
