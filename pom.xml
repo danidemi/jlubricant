@@ -260,13 +260,21 @@
 		will get to a remote repository when it is deployed. The repository elements 
 		will be used for snapshot distribution if the snapshotRepository is not defined -->
 	<distributionManagement>
+
+		<site>
+			<id>nexus-site</id>
+			<url>dav:http://localhost:8081/nexus/content/sites/site/</url>
+		</site>
+	  
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	
 
 	<build>
+	
 		<plugins>
 
 			<plugin>
@@ -397,6 +405,14 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.0</version>
+			</plugin>
+
+			
 		</plugins>
 
 

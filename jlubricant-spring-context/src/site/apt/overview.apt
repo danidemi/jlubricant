@@ -1,0 +1,16 @@
+JLubricant Spring Context is a library providing extensions to some of the basic Spring features.
+
+Triggers
+	
+	Springs offers three kinds of triggers off the shelf: cron based triggers, delayed triggers and fixed rate triggers.
+	On top of those, JLubricant Spring Context offers:
+	
+	*	OnceTrigger, to run a task just once.
+	
+	*	NeverTrigger, needless to say it never run a task. Useful sometimes when you want to quickly turn off a task.
+	
+	* 	CombinedTrigger to mix more Triggers. For instance it is possible to combine two cron based trigger to trigger a task
+		every firts day of the month and every Monday.
+		
+	*	TimelyRangedTrigger, allows you to set a period in a day in which a task should trigger. For instance you can specify a trigger that
+		triggers every 10 seconds, but only from 10:00 to 17:34.   

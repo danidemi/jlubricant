@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jlubricant-spring-context">
+
+	<publishDate position="right" />
+	<version position="right" />
+
+	<body>
+
+		<menu name="Overview">
+			<item name="Overview" href="overview.html" />
+		</menu>
+		<menu ref="parent" />
+		<menu ref="reports" />
+
+	</body>
+
+</project>

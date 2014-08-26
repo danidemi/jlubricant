@@ -1,14 +1,13 @@
 package com.danidemi.jlubricant.spring.context.trigger;
 
 
-import org.apache.commons.lang3.StringUtils;
+import static java.lang.String.format;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.scheduling.support.PeriodicTrigger;
-
-import static java.lang.String.format;
 
 public class TriggerBuilder {
 
