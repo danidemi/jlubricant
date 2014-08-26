@@ -16,11 +16,11 @@ import javax.sql.DataSource;
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.hsqldb.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.danidemi.jlubricant.embeddable.BasicDataSource;
 import com.danidemi.jlubricant.embeddable.Dbms;
 import com.danidemi.jlubricant.embeddable.EmbeddableServer;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
@@ -61,6 +61,10 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	
 	public void setPort(int port) {
 		this.port = port;
+	}
+	
+	public int getPort() {
+		return port;
 	}
 
 	public boolean add(HsqlDatabase e) {
@@ -190,10 +194,13 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 	}
 	
-	/** Returns a DataSource on the given database. */
-	@Override
+	/** 
+	 * Returns a DataSource on the given database.
+	 * @deprecated Databases are {@link DataSource} now. 
+	 * */
+	@Override @Deprecated
 	public DataSource dataSourceByName(String dbName) {
-		return new BasicDataSource( dbByName(dbName) );
+		return new com.danidemi.jlubricant.embeddable.BasicDataSource( dbByName(dbName) );
 	}
 
 	@Override
@@ -219,6 +226,15 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 	public String getHostName() {
 		return "localhost";
+	}
+
+	DataSource getFastDataSource(HsqlDatabase hsqlDatabase) {
+		BasicDataSource bds = new BasicDataSource();
+		bds.setDriverClassName( hsqlDatabase.getDriverClassName() );
+		bds.setUsername( hsqlDatabase.getUsername() );
+		bds.setPassword( hsqlDatabase.getPassword() );
+		bds.setUrl( hsqlDatabase.getUrl() );
+		return bds;
 	}
 
 }

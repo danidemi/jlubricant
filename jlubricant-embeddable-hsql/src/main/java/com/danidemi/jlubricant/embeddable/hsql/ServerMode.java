@@ -47,7 +47,7 @@ public class ServerMode extends Storage {
 
 	@Override
 	public String getLocation(String dbName, HsqlDbms dbms) {
-		return "//" + dbms.getHostName() + "/" + dbName;
+		return "//" + dbms.getHostName() + ":" + dbms.getPort() + "/" + dbName;
 	}
 
 

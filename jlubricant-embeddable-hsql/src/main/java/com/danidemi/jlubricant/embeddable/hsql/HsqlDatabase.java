@@ -1,12 +1,16 @@
 package com.danidemi.jlubricant.embeddable.hsql;
 
+import java.io.PrintWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
+
+import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.danidemi.jlubricant.embeddable.Database;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 
-public class HsqlDatabase implements Database {
+public class HsqlDatabase implements Database, DataSource {
 	
 	private static Logger log = LoggerFactory.getLogger(HsqlDatabase.class);
 
@@ -24,6 +28,7 @@ public class HsqlDatabase implements Database {
 	private HsqlDbms dbms;
 	private String password;
 	private String username;
+	private DataSource delegatedDataSource;
 	
 
 	public HsqlDatabase() {
@@ -62,7 +67,8 @@ public class HsqlDatabase implements Database {
 	
 	public Connection newConnection() throws SQLException {
 		
-		Connection conn = DriverManager.getConnection(getJdbcUrl(), "sa", "");
+		String jdbcUrl = getJdbcUrl();
+		Connection conn = DriverManager.getConnection(jdbcUrl, "sa", "");
 		return conn;
 	}
 
@@ -246,5 +252,68 @@ public class HsqlDatabase implements Database {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	
+	// Datasource
+
+	private void ensureFastDatasource() {
+		if(delegatedDataSource==null){
+			delegatedDataSource = dbms.getFastDataSource(this);
+			if(delegatedDataSource == null){
+				throw new RuntimeException("Unable to obtain datasource from dbms");
+			}
+		}
+	}
+	
+	public PrintWriter getLogWriter() throws SQLException {
+		ensureFastDatasource();
+		return delegatedDataSource.getLogWriter();
+	}
+
+
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		ensureFastDatasource();
+		return delegatedDataSource.unwrap(iface);
+	}
+
+	public void setLogWriter(PrintWriter out) throws SQLException {
+		ensureFastDatasource();
+		delegatedDataSource.setLogWriter(out);
+	}
+
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		ensureFastDatasource();
+		return delegatedDataSource.isWrapperFor(iface);
+	}
+
+	public Connection getConnection() throws SQLException {
+		ensureFastDatasource();
+		return delegatedDataSource.getConnection();
+	}
+
+	public void setLoginTimeout(int seconds) throws SQLException {
+		ensureFastDatasource();
+		delegatedDataSource.setLoginTimeout(seconds);
+	}
+
+	public Connection getConnection(String username, String password)
+			throws SQLException {
+		ensureFastDatasource();
+		return delegatedDataSource.getConnection(username, password);
+	}
+
+	public int getLoginTimeout() throws SQLException {
+		ensureFastDatasource();
+		return delegatedDataSource.getLoginTimeout();
+	}
+
+	public java.util.logging.Logger getParentLogger()
+			throws SQLFeatureNotSupportedException {
+		ensureFastDatasource();
+		return delegatedDataSource.getParentLogger();
+	}
+
+	
+	
 	
 }
