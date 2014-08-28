@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.danidemi.jlubricant</groupId>
 		<artifactId>jlubricant</artifactId>
-		<version>0.0.6</version>
+		<version>0.0.7-SNAPSHOT</version>
 	</parent>
 	<artifactId>jlubricant-spring-context</artifactId>
 	<description>A series of utilities to work with spring-context classes.</description>
