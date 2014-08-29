@@ -272,7 +272,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	}
 	
 	public int getPort() {
-		return definedPort;
+		return definedPort == null ? DEFAULT_PORT : definedPort;
 	}
 	
 	public void setIp(String ip){
@@ -280,7 +280,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	}
 	
 	public String getIp() {
-		return address;
+		return address != null ? address : DEFAULT_IP;
 	}
 	
 	public boolean add(HsqlDatabase e) {
