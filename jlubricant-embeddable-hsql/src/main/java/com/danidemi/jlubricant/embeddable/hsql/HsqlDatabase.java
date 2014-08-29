@@ -171,7 +171,6 @@ public class HsqlDatabase implements Database, DataSource {
 
 	public void register(Registration registration) {
 		storage.register(this, registration);
-		
 	}
 
 	void setDbms(HsqlDbms hsqlDbms) {
