@@ -14,12 +14,12 @@ public class DatabaseContract extends DatabaseContractTest {
 	}
 	
 	@Override
-	public void stopTest() throws ServerStopException {
+	public void stopTest() throws ServerException {
 		dbms.stop();
 	}
 		
 	@Override
-	protected Database buildADatabaseWithUsernameAndPassword(String username, String password) throws ServerStartException {
+	protected Database buildADatabaseWithUsernameAndPassword(String username, String password) throws ServerException {
 
 		HsqlDatabase db = new HsqlDatabase();
 		db.setUsername(username);

@@ -31,14 +31,14 @@ public class HsqlDbmsTest {
 	}
 	
 	@After
-	public void stopDb() throws ServerStopException{
+	public void stopDb() throws ServerException{
 			
 		dbms.stop();
 		
 	}
 	
 	@Test
-	public void shouldNotSupportChangingThePredefinedSAUser() throws ServerStopException, ServerStartException {
+	public void shouldNotSupportChangingThePredefinedSAUser() throws ServerException {
 		
 		HsqlDatabase db;
 		db = new HsqlDatabase();
