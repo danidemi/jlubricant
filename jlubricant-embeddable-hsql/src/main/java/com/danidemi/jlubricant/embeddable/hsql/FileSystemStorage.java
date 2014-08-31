@@ -25,15 +25,9 @@ public class FileSystemStorage extends Storage {
 	public String getAbsolutePath() {
 		return dbFolder.getAbsolutePath();
 	}
-	
+		
 	@Override
-	/** Whether this storage requires a standalone server. */
-	public boolean requireStandaloneServer() {
-		return true;
-	}	
-	
-	@Override
-	protected void doRegister(HsqlDatabase hsqlDatabase, Registration registration) {
+	public void register(HsqlDatabase hsqlDatabase, Registration registration) {
 		registration.register(hsqlDatabase.getName(), "file:" + dbFolder);
 	}
 

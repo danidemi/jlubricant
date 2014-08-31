@@ -1,5 +1,7 @@
 package com.danidemi.jlubricant.embeddable.hsql;
 
+import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
+
 public class ResourceStorage extends Storage {
 
 	private String resourcePath;
@@ -10,11 +12,6 @@ public class ResourceStorage extends Storage {
 	}
 
 	@Override
-	public boolean requireStandaloneServer() {
-		return false;
-	}
-
-	@Override
 	public String getProtocol() {
 		return "res";
 	}
@@ -22,6 +19,11 @@ public class ResourceStorage extends Storage {
 	@Override
 	public String getLocation(String dbName, HsqlDbms dbms) {
 		return resourcePath;
+	}
+
+	@Override
+	public void register(HsqlDatabase hsqlDatabase, Registration registration) {
+		registration.register(hsqlDatabase.getName(), "res:" + resourcePath);
 	}
 
 }

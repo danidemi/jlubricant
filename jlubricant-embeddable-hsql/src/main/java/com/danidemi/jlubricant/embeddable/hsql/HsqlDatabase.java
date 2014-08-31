@@ -97,10 +97,6 @@ public class HsqlDatabase implements Database, DataSource {
 
 	}
 
-	public boolean requireStandaloneServer() {
-		return storage.requireStandaloneServer();
-	}
-
 	public void postStartSetUp() {
 		
 		if (compatibility != null) {
