@@ -18,6 +18,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hsqldb.Server;
+import org.hsqldb.persist.HsqlProperties;
+import org.hsqldb.server.ServerProperties;
+import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +72,8 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		
 	static interface Registration {
 		void register(String name, File path);
+
+		void register(String dbName, String location);
 	}
 	
 	private Status currentStatus;
@@ -96,13 +101,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	public void start() throws ServerException {
 		
 		currentStatus.onStart();
-		
-		
-	}
-	
-	private static void register(Server server, int dbIndex, String name, File path) {
-		server.setDatabaseName(dbIndex, name);
-		server.setDatabasePath(dbIndex, path.getAbsolutePath());		
+				
 	}
 	
 	@Override
@@ -111,6 +110,24 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		currentStatus.onStop();
 		
 	}
+	
+	private static void register(Server server, int dbIndex, String name, File path, HsqlProperties hsqlProp) {
+//		server.setDatabaseName(dbIndex, name);
+//		server.setDatabasePath(dbIndex, path.getAbsolutePath());
+		register(server, dbIndex, name, path.getAbsolutePath(), hsqlProp);
+	}
+	
+	private static void register(Server server, int dbIndex, String name, String path, HsqlProperties hsqlProp) {
+		
+		if(!(path.startsWith("file:") || path.startsWith("res:") || path.startsWith("mem:") )){
+			throw new IllegalArgumentException(path);
+		}
+		
+//		server.setDatabaseName(dbIndex, name);
+//		server.setDatabasePath(dbIndex, path);		
+		hsqlProp.setProperty("server.database." + dbIndex, path);
+		hsqlProp.setProperty("server.dbname." + dbIndex, name);
+	}	
 
 	void stopEngine() throws ServerStopException {
 		if(server == null) return;
@@ -146,6 +163,128 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	// Management
 	// ===============================================================
 	
+	void startEngine() throws ServerStartException {
+		// ...evaluate whether a stand alone server is needed or not 
+		final AtomicBoolean serverRequired = new AtomicBoolean(false);		
+		forAllDo(dbs, new Closure<HsqlDatabase>() {
+			@Override
+			public void execute(HsqlDatabase input) {
+				serverRequired.set( serverRequired.get() || input.requireStandaloneServer() );
+			}
+		});
+		
+		
+		if(serverRequired.get()){
+			
+			// setting up the server
+			final boolean isDaemon = true;
+			final boolean isSilent = false;
+			
+
+			
+			
+			
+			
+			final HsqlProperties hsqlProp = new HsqlProperties();
+			
+			// Register the databases
+			final AtomicInteger dbCounter = new AtomicInteger(0);
+			for (HsqlDatabase db : dbs) {
+				if(db.requireStandaloneServer()){
+					
+					db.register( new Registration(){
+	
+						@Override
+						public void register(String dbName, File dbDirectory) {
+							
+							log.info("Registering db #{} : '{}' stored on '{}'", dbCounter, dbName, dbDirectory);
+							HsqlDbms.register( server, dbCounter.getAndAdd(1), dbName, dbDirectory, hsqlProp );							
+						}
+						
+						@Override
+						public void register(String dbName, String location) {
+							
+							log.info("Registering db #{} : '{}' stored on '{}'", dbCounter, dbName, location);
+							HsqlDbms.register( server, dbCounter.getAndAdd(1), dbName, location, hsqlProp );							
+						} 						
+						
+					} );
+					
+				}
+			}
+			// avoid to open a db remotely
+			server = new Server();
+			hsqlProp.setProperty("server.remote_open", false);
+			try {
+				server.setProperties(hsqlProp);
+			} catch (IOException | AclFormatException e1) {
+				throw new ServerStartException(e1);
+			}
+			lubricantLoggerWriter = new LubricantLoggerWriter( 
+					hsqlWriterLogger,
+					new Replace(new OneLogLineForEachFlush(),  "\\[[\\w\\W]*\\]: ", "") ,
+					com.danidemi.jlubricant.slf4j.Logger.TRACE 
+			);
+			server.setLogWriter( lubricantLoggerWriter.asPrintWriter() );
+			server.setDaemon(isDaemon);
+			server.setSilent(isSilent);
+			server.setTrace(false);
+			server.setNoSystemExit(true);
+		
+			if(definedPort != null){
+				server.setPort(definedPort);				
+			}
+			if(this.address != null){
+				server.setAddress(this.address);				
+			}
+
+			for(int i=0; i<this.dbs.size(); i++){
+				log.info( "db " + i );
+				log.info( server.getDatabaseType(i) );
+				log.info( server.getDatabaseName(i, true) );
+				log.info( server.getDatabasePath(i, true) );
+			}
+			
+			// dump config
+			log.info("Starting HSQL standalone DBMS...");
+			log.info("is daemon: {}", isDaemon);
+			log.info("is silent: {}", isSilent);
+			log.info("port: {} ", (definedPort != null ? definedPort : "HSQL default") );
+			log.info("address: {} ", (address != null ? address : "HSQL default") );			
+	
+			log.info("Waiting for hsql engine to start...");
+			int state = server.start();			
+			while (state != 1) {
+				log.trace("Waiting '-1' as confirmation from hsql engine, got '{}'.", state);
+				Thread.yield();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// nothing special
+				}
+				state = server.getState();
+			}
+			log.info("Hsql engine started.");
+			
+		}
+	
+		log.info("Starting databases post setup...");
+		for(int i=0; i<dbs.size(); i++){
+			final HsqlDatabase db = dbs.get(0);
+			log.info("Post start up for db {}/{}.", db, dbs.size());
+			db.postStartSetUp();
+		}
+		log.info("Post setup completed.");		
+		
+		log.info("Dump connection strings:");
+		for (HsqlDatabase db : dbs) {
+			log.info( "Connection to db {}: {}, account {}/{} ", db.getName(), db.getUrl(), db.getName(), db.getPassword() );
+		}
+		
+		log.info("HSQL standalone DBMS is ready");
+		
+	}
+
 	/** 
 	 * Returns a DataSource on the given database.
 	 * @deprecated Databases are {@link DataSource} now. 
@@ -201,125 +340,36 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		return "localhost";
 	}
 	
-	public void setPort(int port) {
-		this.definedPort = port;
-	}
-	
 	public int getPort() {
 		return definedPort == null ? DEFAULT_PORT : definedPort;
 	}
 	
-	public void setIp(String ip){
-		this.address = ip;
+	public void setPort(int port) {	
+		currentStatus.onPropertyChange();
+		this.definedPort = port;
 	}
 	
 	public String getIp() {
 		return address != null ? address : DEFAULT_IP;
 	}
 	
+	public void setIp(String ip){
+		currentStatus.onPropertyChange();
+		this.address = ip;
+	}
+	
+	
 	public boolean add(HsqlDatabase e) {
+		currentStatus.onPropertyChange();
 		e.setDbms(this);
 		return dbs.add(e);
 	}
 	
 	public void setDatabases(List<HsqlDatabase> dbs) {
+		currentStatus.onPropertyChange();
 		for (HsqlDatabase hsqlDatabase : dbs) {
 			add(hsqlDatabase);
 		}
-	}
-
-	void startEngine() {
-		// ...evaluate whether a stand alone server is needed or not 
-		final AtomicBoolean serverRequired = new AtomicBoolean(false);		
-		forAllDo(dbs, new Closure<HsqlDatabase>() {
-			@Override
-			public void execute(HsqlDatabase input) {
-				serverRequired.set( serverRequired.get() || input.requireStandaloneServer() );
-			}
-		});
-		
-		
-		if(serverRequired.get()){
-			
-			// setting up the server
-			final boolean isDaemon = true;
-			final boolean isSilent = false;
-			
-			server = new Server();
-			lubricantLoggerWriter = new LubricantLoggerWriter( 
-					hsqlWriterLogger,
-					new Replace(new OneLogLineForEachFlush(),  "\\[[\\w\\W]*\\]: ", "") ,
-					com.danidemi.jlubricant.slf4j.Logger.TRACE 
-			);
-			server.setLogWriter( lubricantLoggerWriter.asPrintWriter() );
-			server.setDaemon(isDaemon);
-			server.setSilent(isSilent);
-			server.setTrace(false);
-			server.setNoSystemExit(true);
-			if(definedPort != null){
-				server.setPort(definedPort);				
-			}
-			if(this.address != null){
-				server.setAddress(this.address);				
-			}
-			
-			// dump config
-			log.info("Starting HSQL standalone DBMS...");
-			log.info("is daemon: {}", isDaemon);
-			log.info("is silent: {}", isSilent);
-			log.info("port: {} ", (definedPort != null ? definedPort : "HSQL default") );
-			log.info("address: {} ", (address != null ? address : "HSQL default") );			
-			
-			// Register the databases
-			final AtomicInteger dbCounter = new AtomicInteger(0);
-			for (HsqlDatabase db : dbs) {
-				if(db.requireStandaloneServer()){
-					
-					db.register( new Registration(){
-
-						@Override
-						public void register(String dbName, File dbDirectory) {
-							
-							log.info("Registering db #{} : '{}' stored on '{}'", dbCounter, dbName, dbDirectory);
-							HsqlDbms.register( server, dbCounter.getAndAdd(1), dbName, dbDirectory );							
-						} 
-						
-					} );
-					
-				}
-			}
-
-			log.info("Waiting for hsql engine to start...");
-			int state = server.start();			
-			while (state != 1) {
-				log.trace("Waiting '-1' as confirmation from hsql engine, got '{}'.", state);
-				Thread.yield();
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// nothing special
-				}
-				state = server.getState();
-			}
-			log.info("Hsql engine started.");
-			
-		}
-
-		log.info("Starting databases post setup...");
-		for(int i=0; i<dbs.size(); i++){
-			final HsqlDatabase db = dbs.get(0);
-			log.info("Post start up for db {}/{}.", db, dbs.size());
-			db.postStartSetUp();
-		}
-		log.info("Post setup completed.");		
-		
-		log.info("Dump connection strings:");
-		for (HsqlDatabase db : dbs) {
-			log.info( "Connection to db {}: {}, account {}/{} ", db.getName(), db.getUrl(), db.getName(), db.getPassword() );
-		}
-		
-		log.info("HSQL standalone DBMS is ready");
-		
 	}
 
 	void transitionTo(Status newStatus) {

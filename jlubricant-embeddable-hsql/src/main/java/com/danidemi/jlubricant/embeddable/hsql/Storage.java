@@ -4,6 +4,11 @@ import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 
 public abstract class Storage {
 
+	/**
+	 * @deprecated 
+	 * If the storage requires the server to be started in standaolne mode. 
+	 */
+	@Deprecated
 	public abstract boolean requireStandaloneServer();
 
 	public final void register(HsqlDatabase hsqlDatabase, Registration registration) {
@@ -17,8 +22,6 @@ public abstract class Storage {
 	}
 
 	public abstract String getProtocol();
-
-	
 
 	public abstract String getLocation(String dbName, HsqlDbms dbms);
 

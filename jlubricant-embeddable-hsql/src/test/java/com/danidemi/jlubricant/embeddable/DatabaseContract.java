@@ -3,6 +3,7 @@ package com.danidemi.jlubricant.embeddable;
 import com.danidemi.jlubricant.contracts.DatabaseContractTest;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDatabase;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms;
+import com.danidemi.jlubricant.embeddable.hsql.MemoryStorage;
 
 public class DatabaseContract extends DatabaseContractTest {
 
@@ -21,7 +22,7 @@ public class DatabaseContract extends DatabaseContractTest {
 	@Override
 	protected Database buildADatabaseWithUsernameAndPassword(String username, String password) throws ServerException {
 
-		HsqlDatabase db = new HsqlDatabase();
+		HsqlDatabase db = new HsqlDatabase("adb", new MemoryStorage());
 		db.setUsername(username);
 		db.setPassword(password);
 		dbms.add( db );

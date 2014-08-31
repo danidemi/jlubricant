@@ -1,6 +1,13 @@
 package com.danidemi.jlubricant.embeddable.hsql;
 
-public class InProcessInMemory extends Storage {
+public class ResourceStorage extends Storage {
+
+	private String resourcePath;
+	
+	public ResourceStorage(String resourcePath) {
+		super();
+		this.resourcePath = resourcePath;
+	}
 
 	@Override
 	public boolean requireStandaloneServer() {
@@ -9,12 +16,12 @@ public class InProcessInMemory extends Storage {
 
 	@Override
 	public String getProtocol() {
-		return "mem";
+		return "res";
 	}
 
 	@Override
 	public String getLocation(String dbName, HsqlDbms dbms) {
-		return dbName;
+		return resourcePath;
 	}
 
 }

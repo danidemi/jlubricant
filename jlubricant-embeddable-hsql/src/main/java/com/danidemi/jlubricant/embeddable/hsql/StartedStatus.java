@@ -24,4 +24,9 @@ public class StartedStatus implements Status {
 		
 	}
 
+	@Override
+	public void onPropertyChange() {
+		throw new RuntimeException("Cannot change dbms properties while starter.");
+	}
+
 }

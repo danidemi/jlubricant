@@ -14,9 +14,9 @@ import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDatabase;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms;
-import com.danidemi.jlubricant.embeddable.hsql.InProcessInMemory;
+import com.danidemi.jlubricant.embeddable.hsql.MemoryStorage;
 import com.danidemi.jlubricant.embeddable.hsql.OracleCompatibility;
-import com.danidemi.jlubricant.embeddable.hsql.ServerMode;
+import com.danidemi.jlubricant.embeddable.hsql.FileSystemStorage;
 
 public class HsqlDbmsTest {
 
@@ -43,7 +43,7 @@ public class HsqlDbmsTest {
 		HsqlDatabase db;
 		db = new HsqlDatabase();
 		db.setDbName("memdb");
-		db.setStorage(new InProcessInMemory());
+		db.setStorage(new MemoryStorage());
 		db.setUsername("SA");
 		db.setPassword("thePassword");
 		
@@ -61,7 +61,7 @@ public class HsqlDbmsTest {
 				
 		HsqlDatabase db = new HsqlDatabase();
 		db.setDbName("memdb2");
-		db.setStorage(new InProcessInMemory());		
+		db.setStorage(new MemoryStorage());		
 		
 		dbms.add(db);
 		
@@ -78,7 +78,7 @@ public class HsqlDbmsTest {
 		HsqlDatabase db = new HsqlDatabase();
 		db.setDbName("oracle-like");
 		db.setCompatibility( new OracleCompatibility() );
-		db.setStorage(new ServerMode(tmp.newFolder("oracle-like")));
+		db.setStorage(new FileSystemStorage(tmp.newFolder("oracle-like")));
 		
 			
 		dbms.add(db);
@@ -98,7 +98,7 @@ public class HsqlDbmsTest {
 		for(int i=0; i<maxDbs; i++){
 			HsqlDatabase db = new HsqlDatabase();
 			db.setDbName("db" + i);
-			db.setStorage(new ServerMode(tmp.newFolder("db" + i)));			
+			db.setStorage(new FileSystemStorage(tmp.newFolder("db" + i)));			
 			dbms.add(db);			
 		}
 		dbms.start();
@@ -115,13 +115,13 @@ public class HsqlDbmsTest {
 	public void shouldSupportOracle() throws IOException, ServerException  {
 		
 		HsqlDatabase oraLikeDb = new HsqlDatabase();
-		oraLikeDb.setDbName("oracle-like");
-		oraLikeDb.setStorage(new ServerMode(tmp.newFolder("oracle-like")));
+		oraLikeDb.setDbName("oracle-like-2");
+		oraLikeDb.setStorage(new FileSystemStorage(tmp.newFolder("oracle-like")));
 
 		dbms.add(oraLikeDb);
 		dbms.start();
 		
-		HsqlDatabase dbByName = dbms.dbByName("oracle-like");
+		HsqlDatabase dbByName = dbms.dbByName("oracle-like-2");
 		dbByName.executeStm("CREATE TABLE PEOPLE(NAME varchar(164))");
 		dbByName.executeStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
 

@@ -11,12 +11,12 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
 
-public class InProcessInMemoryTest extends InProcessInMemory {
+public class MemoryStorageTest extends MemoryStorage {
 
 	@Test
 	public void shouldWorkInMemory() throws Exception {
 		
-		HsqlDatabase memoryDb = new HsqlDatabase( "mem", new InProcessInMemory() );
+		HsqlDatabase memoryDb = new HsqlDatabase( "mem", new MemoryStorage() );
 		
 		HsqlDbms dbms = new HsqlDbms();
 		dbms.add(memoryDb);

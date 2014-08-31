@@ -33,7 +33,7 @@ public class HsqlDatabase implements Database, DataSource {
 
 	public HsqlDatabase() {
 		setCompatibility(new HsqlCompatibility());
-		storage = new InProcessInMemory();
+		storage = new MemoryStorage();
 	}
 	
 	public HsqlDatabase(String name, Storage storage) {
@@ -68,15 +68,17 @@ public class HsqlDatabase implements Database, DataSource {
 	public Connection newConnection() throws SQLException {
 		
 		String jdbcUrl = getJdbcUrl();
+				
 		Connection conn = DriverManager.getConnection(jdbcUrl, "sa", "");
 		return conn;
 	}
 
 	private String getJdbcUrl() {
-		String protocol = storage.getProtocol();
-		String location = storage.getLocation( dbName, dbms );
-		String jdbcUrl1 = "jdbc:hsqldb:" + protocol + ":" + location;
-		return jdbcUrl1;
+		//jdbc:hsqldb:<protocol>//<host>[:<port>]/<db_alias>
+		//jdbc:hsqldb:hsql://localhost/europrices
+		//jdbc:hsqldb:hsql//localhost:9001/memdb
+		//<protocol> = hsql, hsqls, http, https
+		return "jdbc:hsqldb:hsql://" + this.dbms.getHostName() + ":" + dbms.getPort() + "/" + this.dbName;
 	}
 
 	public String getDriverName() {

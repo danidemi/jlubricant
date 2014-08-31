@@ -1,5 +1,8 @@
 package com.danidemi.jlubricant.embeddable.hsql;
 
+import com.danidemi.jlubricant.embeddable.ServerException;
+import com.danidemi.jlubricant.embeddable.ServerStartException;
+
 
 class StoppedStatus implements Status {
 
@@ -10,7 +13,7 @@ class StoppedStatus implements Status {
 	}
 
 	@Override
-	public void onStart() {
+	public void onStart() throws ServerException {
 		
 		hsqlDbms.startEngine();
 		
@@ -20,9 +23,12 @@ class StoppedStatus implements Status {
 	
 	@Override
 	public void onStop() {
-	
 		// nothing to do, already stopped
-		
+	}
+
+	@Override
+	public void onPropertyChange() {
+		// when stoppes, all properties can be changed
 	}
 
 }

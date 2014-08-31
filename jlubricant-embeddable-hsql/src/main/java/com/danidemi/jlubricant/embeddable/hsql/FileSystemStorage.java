@@ -4,24 +4,21 @@ import java.io.File;
 
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 
-public class ServerMode extends Storage {
+public class FileSystemStorage extends Storage {
 
 	private File dbFolder;
 
 	/** The folder where the database files are stored. */
-	public ServerMode(File newFolder) {
+	public FileSystemStorage(File newFolder) {
 		setDbFolder(newFolder);
 	}
 	
-	public ServerMode() {
+	public FileSystemStorage() {
 	
 	}
 	
 	public void setDbFolder(File dbFolder) {
-		
-		//if(!dbFolder.exists()) throw new IllegalArgumentException("Folder " + dbFolder + " does no exist.");
-		//if(!dbFolder.isDirectory()) throw new IllegalArgumentException("Path " + dbFolder + " is a file, not a dir!");		
-		
+				
 		this.dbFolder = dbFolder;
 	}
 
@@ -37,7 +34,7 @@ public class ServerMode extends Storage {
 	
 	@Override
 	protected void doRegister(HsqlDatabase hsqlDatabase, Registration registration) {
-		registration.register(hsqlDatabase.getName(), dbFolder);
+		registration.register(hsqlDatabase.getName(), "file:" + dbFolder);
 	}
 
 	@Override

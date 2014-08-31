@@ -8,4 +8,6 @@ public interface Status {
 
 	void onStop() throws ServerException;
 
+	void onPropertyChange();
+
 }
