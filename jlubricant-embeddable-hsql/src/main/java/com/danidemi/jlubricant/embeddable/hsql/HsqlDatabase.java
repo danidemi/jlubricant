@@ -21,6 +21,9 @@ import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 public class HsqlDatabase implements Database, DataSource {
 	
 	private static Logger log = LoggerFactory.getLogger(HsqlDatabase.class);
+	
+	private final HsqlDatabaseStatus NOT_READY = new UnconnectedHsqlDatabaseStatus();
+	private final HsqlDatabaseStatus READY = new ConnectedHsqlDatabaseStatus(this); 
 
 	private Storage storage;
 	private Compatibility compatibility;
@@ -29,22 +32,33 @@ public class HsqlDatabase implements Database, DataSource {
 	private String password;
 	private String username;
 	private DataSource delegatedDataSource;
+	private HsqlDatabaseStatus currentStatus;
 	
 
 	public HsqlDatabase() {
 		setCompatibility(new HsqlCompatibility());
 		storage = new MemoryStorage();
+		currentStatus = NOT_READY;
 	}
 	
 	public HsqlDatabase(String name, Storage storage) {
 		super();
 		this.dbName = name;
 		this.storage = storage;
+		currentStatus = NOT_READY;
 	}
 
 	public void setStorage(Storage storage) {
 		this.storage = storage;
 	}
+	
+	void ready() {
+		currentStatus = READY;
+	}
+	
+	void unready() {
+		currentStatus = NOT_READY;
+	}	
 	
 	/**
 	 * Change the database compatibility.
@@ -259,7 +273,7 @@ public class HsqlDatabase implements Database, DataSource {
 	
 	// Datasource
 
-	private void ensureFastDatasource() {
+	void ensureFastDatasource() {
 		if(delegatedDataSource==null){
 			delegatedDataSource = dbms.getFastDataSource(this);
 			if(delegatedDataSource == null){
@@ -290,8 +304,9 @@ public class HsqlDatabase implements Database, DataSource {
 	}
 
 	public Connection getConnection() throws SQLException {
-		ensureFastDatasource();
-		return delegatedDataSource.getConnection();
+		return currentStatus.getConnection();
+//		ensureFastDatasource();
+//		return delegatedDataSource.getConnection();
 	}
 
 	public void setLoginTimeout(int seconds) throws SQLException {
@@ -314,6 +329,10 @@ public class HsqlDatabase implements Database, DataSource {
 			throws SQLFeatureNotSupportedException {
 		ensureFastDatasource();
 		return delegatedDataSource.getParentLogger();
+	}
+
+	public DataSource delegatedDataSource() {
+		return delegatedDataSource;
 	}
 	
 }
