@@ -30,17 +30,5 @@ public class FileSystemStorage extends Storage {
 	public void register(HsqlDatabase hsqlDatabase, Registration registration) {
 		registration.register(hsqlDatabase.getName(), "file:" + dbFolder);
 	}
-
-	@Override
-	public String getProtocol() {
-		return "hsql";
-	}
-
-	@Override
-	public String getLocation(String dbName, HsqlDbms dbms) {
-		return "//" + dbms.getHostName() + ":" + dbms.getPort() + "/" + dbName;
-	}
-
-
 	
 }

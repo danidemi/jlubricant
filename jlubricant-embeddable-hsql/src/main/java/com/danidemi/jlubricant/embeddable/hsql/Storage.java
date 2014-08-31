@@ -6,8 +6,4 @@ public abstract class Storage {
 
 	public abstract void register(HsqlDatabase hsqlDatabase, Registration registration);
 
-	public abstract String getProtocol();
-
-	public abstract String getLocation(String dbName, HsqlDbms dbms);
-
 }

@@ -12,16 +12,6 @@ public class ResourceStorage extends Storage {
 	}
 
 	@Override
-	public String getProtocol() {
-		return "res";
-	}
-
-	@Override
-	public String getLocation(String dbName, HsqlDbms dbms) {
-		return resourcePath;
-	}
-
-	@Override
 	public void register(HsqlDatabase hsqlDatabase, Registration registration) {
 		registration.register(hsqlDatabase.getName(), "res:" + resourcePath);
 	}
