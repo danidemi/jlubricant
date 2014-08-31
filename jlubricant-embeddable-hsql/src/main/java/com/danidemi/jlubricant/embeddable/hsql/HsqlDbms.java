@@ -123,8 +123,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	}
 
 	void stopEngine() throws ServerStopException {
-		if (server == null)
-			return;
+
 		server.shutdown();
 
 		try {
