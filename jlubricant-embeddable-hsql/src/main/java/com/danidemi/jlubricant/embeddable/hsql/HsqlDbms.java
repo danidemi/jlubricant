@@ -71,8 +71,6 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	private ArrayList<HsqlDatabase> dbs;
 
 	static interface Registration {
-		void register(String name, File path);
-
 		void register(String dbName, String location);
 	}
 
@@ -112,23 +110,14 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 	}
 
-	private static void register(Server server, int dbIndex, String name,
-			File path, HsqlProperties hsqlProp) {
-		// server.setDatabaseName(dbIndex, name);
-		// server.setDatabasePath(dbIndex, path.getAbsolutePath());
-		register(server, dbIndex, name, path.getAbsolutePath(), hsqlProp);
-	}
-
-	private static void register(Server server, int dbIndex, String name,
-			String path, HsqlProperties hsqlProp) {
+	private static void register(HsqlProperties hsqlProp, int dbIndex, String name,
+			String path) {
 
 		if (!(path.startsWith("file:") || path.startsWith("res:") || path
 				.startsWith("mem:"))) {
 			throw new IllegalArgumentException(path);
 		}
 
-		// server.setDatabaseName(dbIndex, name);
-		// server.setDatabasePath(dbIndex, path);
 		hsqlProp.setProperty("server.database." + dbIndex, path);
 		hsqlProp.setProperty("server.dbname." + dbIndex, name);
 	}
@@ -182,21 +171,12 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 			db.register(new Registration() {
 
 				@Override
-				public void register(String dbName, File dbDirectory) {
-
-					log.info("Registering db #{} : '{}' stored on '{}'",
-							dbCounter, dbName, dbDirectory);
-					HsqlDbms.register(server, dbCounter.getAndAdd(1), dbName,
-							dbDirectory, hsqlProp);
-				}
-
-				@Override
 				public void register(String dbName, String location) {
 
 					log.info("Registering db #{} : '{}' stored on '{}'",
 							dbCounter, dbName, location);
-					HsqlDbms.register(server, dbCounter.getAndAdd(1), dbName,
-							location, hsqlProp);
+					HsqlDbms.register(hsqlProp, dbCounter.getAndAdd(1), dbName,
+							location);
 				}
 
 			});
