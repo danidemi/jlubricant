@@ -133,8 +133,8 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 			int state = server.getState();
 			while (state != 16) {
 				log.trace(
-						"Waiting '16' as confirmation from hsql engine, got '{}'.",
-						state);
+						"Waiting '16' as confirmation from hsql engine, got '{}:{}'.",
+						state, server.getStateDescriptor());
 				Thread.yield();
 				Thread.sleep(100);
 				state = server.getState();
