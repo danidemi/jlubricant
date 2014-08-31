@@ -1,25 +1,18 @@
 package com.danidemi.jlubricant.embeddable.hsql;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hsqldb.Server;
 import org.hsqldb.persist.HsqlProperties;
-import org.hsqldb.server.ServerProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +25,6 @@ import com.danidemi.jlubricant.embeddable.ServerStopException;
 import com.danidemi.jlubricant.slf4j.utils.LubricantLoggerWriter;
 import com.danidemi.jlubricant.slf4j.utils.OneLogLineForEachFlush;
 import com.danidemi.jlubricant.slf4j.utils.Replace;
-
-import static org.apache.commons.collections4.CollectionUtils.*;
 
 /**
  * An embeddable database engine based on Hsql.
@@ -221,19 +212,23 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		log.info("address: {} ", (address != null ? address : "HSQL default"));
 
 		log.info("Waiting for hsql engine to start...");
-		int state = server.start();
-		while (state != 1) {
-			log.trace(
-					"Waiting '-1' as confirmation from hsql engine, got '{}'.",
-					state);
+		
+		
+		Integer state = server.start();
+		Throwable serverError = server.getServerError();
+		if(serverError!=null){
+			throw new ServerStartException(serverError);
+		}			
+		do {
+			state = server.getState();
 			Thread.yield();
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// nothing special
-			}
-			state = server.getState();
-		}
+			}			
+		}while(state != 1);
+		
 		log.info("Hsql engine started.");
 
 		try{
@@ -312,7 +307,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	// ===============================================================
 
 	public String getHostName() {
-		return "localhost";
+		return address != null ? address : "localhost";
 	}
 
 	public int getPort() {
