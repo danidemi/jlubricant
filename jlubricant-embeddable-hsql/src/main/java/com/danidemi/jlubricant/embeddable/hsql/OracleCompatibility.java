@@ -1,5 +1,7 @@
 package com.danidemi.jlubricant.embeddable.hsql;
 
+import java.sql.SQLException;
+
 
 public class OracleCompatibility extends Compatibility {
 
@@ -8,7 +10,7 @@ public class OracleCompatibility extends Compatibility {
 	}
 
 	@Override
-	public void apply(HsqlDatabase hsqlDatabase) {
+	public void apply(HsqlDatabase hsqlDatabase) throws SQLException {
 		hsqlDatabase.setSyntax("ORA");
 		hsqlDatabase.setTransactionControl();
 		hsqlDatabase.setTransactionRollbackOnConflict(true);

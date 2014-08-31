@@ -236,13 +236,17 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		}
 		log.info("Hsql engine started.");
 
-		log.info("Starting databases post setup...");
-		for (int i = 0; i < dbs.size(); i++) {
-			final HsqlDatabase db = dbs.get(0);
-			log.info("Post start up for db {}/{}.", db, dbs.size());
-			db.postStartSetUp();
+		try{
+			log.info("Starting databases post setup...");
+			for (int i = 0; i < dbs.size(); i++) {
+				final HsqlDatabase db = dbs.get(0);
+				log.info("Post start up for db {}/{}.", db, dbs.size());
+				db.postStartSetUp();
+			}
+			log.info("Post setup completed.");			
+		}catch(Exception e){
+			throw new ServerStartException("An error occurred during post setup.");
 		}
-		log.info("Post setup completed.");
 
 		log.info("Dump connection strings:");
 		for (HsqlDatabase db : dbs) {

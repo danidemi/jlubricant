@@ -97,7 +97,7 @@ public class HsqlDatabase implements Database, DataSource {
 
 	}
 
-	public void postStartSetUp() {
+	public void postStartSetUp() throws SQLException {
 		
 		if (compatibility != null) {
 			compatibility.apply(this);

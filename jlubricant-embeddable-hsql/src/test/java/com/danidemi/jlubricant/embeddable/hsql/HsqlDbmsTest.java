@@ -38,7 +38,7 @@ public class HsqlDbmsTest {
 	}
 	
 	@Test
-	public void shouldNotSupportChangingThePredefinedSAUser() throws ServerException {
+	public void shouldNotSupportChangingThePredefinedSAUser() throws ServerException, SQLException {
 		
 		HsqlDatabase db;
 		db = new HsqlDatabase();
@@ -57,7 +57,7 @@ public class HsqlDbmsTest {
 	}
 	
 	@Test
-	public void shouldSupportInProcessInMemoryDatabase() throws ServerException {
+	public void shouldSupportInProcessInMemoryDatabase() throws ServerException, SQLException {
 				
 		HsqlDatabase db = new HsqlDatabase();
 		db.setDbName("memdb2");
@@ -73,7 +73,7 @@ public class HsqlDbmsTest {
 	}
 		
 	@Test
-	public void test() throws ServerException, IOException {
+	public void test() throws ServerException, IOException, SQLException {
 				
 		HsqlDatabase db = new HsqlDatabase();
 		db.setDbName("oracle-like");
@@ -92,7 +92,7 @@ public class HsqlDbmsTest {
 	}	
 	
 	@Test
-	public void shouldSupportMultipleDbs() throws IOException, ServerException  {
+	public void shouldSupportMultipleDbs() throws IOException, ServerException, SQLException  {
 		
 		int maxDbs = 4;
 		for(int i=0; i<maxDbs; i++){
@@ -112,7 +112,7 @@ public class HsqlDbmsTest {
 	}
 	
 	@Test
-	public void shouldSupportOracle() throws IOException, ServerException  {
+	public void shouldSupportOracle() throws IOException, ServerException, SQLException  {
 		
 		HsqlDatabase oraLikeDb = new HsqlDatabase();
 		oraLikeDb.setDbName("oracle-like-2");
