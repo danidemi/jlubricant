@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.danidemi.jlubricant</groupId>
 	<artifactId>jlubricant</artifactId>
-	<version>0.0.12</version>
+	<version>0.0.7-SNAPSHOT</version>
 
 	<name>jlubricant</name>
 	<description>Java Power Ups!</description>
@@ -55,7 +56,7 @@
 		<connection>scm:git:git@github.com:danidemi/jlubricant.git</connection>
 		<developerConnection>scm:git:git@github.com:danidemi/jlubricant.git</developerConnection>
 		<url>git@github.com:danidemi/jlubricant.git</url>
-		<tag>jlubricant-0.0.12</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<developers>
