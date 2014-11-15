@@ -38,7 +38,7 @@
         </exec>
     </target>	
 	
-	<target name="clean" description="Clean project through Maven">
+	<target name="clean" description="Clean project through Maven. mvn clean">
 	    <antcall target="___runMaven">
 	        <param name="maven.profile" value=""/>
 	    	<param name="maven.targets" value="clean"/>
