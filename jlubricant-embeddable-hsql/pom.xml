@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.danidemi.jlubricant</groupId>
         <artifactId>jlubricant</artifactId>
-        <version>0.0.10</version>
+        <version>0.0.11-SNAPSHOT</version>
     </parent>
     <artifactId>jlubricant-embeddable-hsql</artifactId>
     <name>jlubricant - embeddable - hsql</name>
