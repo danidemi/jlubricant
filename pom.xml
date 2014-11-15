@@ -275,7 +275,7 @@
 
 		<site>
 			<id>nexus-site</id>
-			<url>dav:http://localhost:8081/nexus/content/sites/site/</url>
+			<url>file:///tmp/</url>
 		</site>
 	  
 		<snapshotRepository>
