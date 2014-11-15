@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.danidemi.jlubricant</groupId>
     <artifactId>jlubricant</artifactId>
-    <version>0.0.12</version>
+    <version>0.0.13-SNAPSHOT</version>
   </parent>
   <name>jlubricant - embeddable</name>
   <artifactId>jlubricant-embeddable</artifactId>
