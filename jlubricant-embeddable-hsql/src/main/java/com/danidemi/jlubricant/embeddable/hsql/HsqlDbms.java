@@ -234,8 +234,8 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		try{
 			log.info("Starting databases post setup...");
 			for (int i = 0; i < dbs.size(); i++) {
-				final HsqlDatabase db = dbs.get(0);
-				log.info("Post start up for db {}/{}.", db, dbs.size());
+				final HsqlDatabase db = dbs.get(i);
+				log.info("Post start up for db '{}', {}/{}.", db.getName(), i+1, dbs.size());
 				db.postStartSetUp();
 				db.ready();
 			}
@@ -333,6 +333,13 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		currentStatus.onPropertyChange();
 		e.setDbms(this);
 		return dbs.add(e);
+	}
+	
+	public void addMultiple(HsqlDatabase... dbs) {
+		for (HsqlDatabase hsqlDatabase : dbs) {
+			add(hsqlDatabase);
+		}
+		
 	}
 
 	public void setDatabases(List<HsqlDatabase> dbs) {

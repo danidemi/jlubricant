@@ -3,11 +3,15 @@ package com.danidemi.jlubricant.embeddable.hsql;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.skife.jdbi.v2.DBI;
+import org.skife.jdbi.v2.Handle;
 
 import com.danidemi.jlubricant.embeddable.ServerException;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
@@ -25,16 +29,12 @@ public class HsqlDbmsTest {
 	
 	@Before
 	public void createDb(){
-		
 		dbms = new HsqlDbms();
-		
 	}
 	
 	@After
 	public void stopDb() throws ServerException{
-			
 		dbms.stop();
-		
 	}
 	
 	@Test
@@ -89,7 +89,35 @@ public class HsqlDbmsTest {
 		dbByName.executeStm("CREATE TABLE PEOPLE(NAME varchar(164))");
 		dbByName.executeStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
 				
-	}	
+	}
+	
+	@Test
+	public void shouldSupportTwoDatabases() throws ServerException, IOException, SQLException {
+				
+		HsqlDatabase db1 = new HsqlDatabase();
+		db1.setDbName("oracle-like");
+		db1.setCompatibility( new OracleCompatibility() );
+		db1.setStorage(new FileSystemStorage(tmp.newFolder("oracle-like")));
+		
+		HsqlDatabase db2 = new HsqlDatabase();
+		db2.setDbName("hsql-like");
+		db2.setStorage(new MemoryStorage());		
+		
+		dbms.addMultiple(db1, db2);
+		
+		dbms.start();
+				
+		DBI dbi = new DBI(db1);
+		Handle h = dbi.open();
+		h.execute("CREATE TABLE PEOPLE(NAME varchar(164))");
+		h.execute("INSERT INTO PEOPLE(NAME)VALUES(?)", "Brian");
+		h.close();
+		h = dbi.open(db2);
+		h.execute("CREATE TABLE PEOPLE(NAME varchar(164))");
+		h.execute("INSERT INTO PEOPLE(NAME)VALUES(?)", "Brian");
+		h.close();		
+						
+	}
 	
 	@Test
 	public void shouldSupportMultipleDbs() throws IOException, ServerException, SQLException  {

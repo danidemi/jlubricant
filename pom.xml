@@ -211,7 +211,13 @@
 		      <artifactId>powermock-api-mockito</artifactId>
 		      <version>${powermock.version}</version>
 		      <scope>test</scope>
-		   </dependency> 
+		   </dependency>
+			<dependency>
+				<groupId>org.jdbi</groupId>
+				<artifactId>jdbi</artifactId>
+				<version>2.55</version>
+				<scope>test</scope>
+			</dependency>
 			<!-- =============================================== -->
 			<!-- TEST -->
 			<!-- =============================================== -->
