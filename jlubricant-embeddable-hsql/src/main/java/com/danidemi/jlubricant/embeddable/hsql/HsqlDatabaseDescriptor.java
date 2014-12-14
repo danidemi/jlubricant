@@ -14,6 +14,7 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hsqldb.jdbcDriver;
 import org.hsqldb.lib.StringUtil;
 import org.slf4j.Logger;
@@ -30,14 +31,15 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	private final HsqlDatabaseStatus NOT_READY = new UnconnectedHsqlDatabaseStatus();
 	private final HsqlDatabaseStatus READY = new ConnectedHsqlDatabaseStatus(this); 
 
-	private String dbName;
-	private Storage storage;
-	private Compatibility compatibility;
+	private final String dbName;
+	private final Storage storage;
+	private final Compatibility compatibility;
+	private final Account desiredAccount;
 	private HsqlDbms dbms;
-	private String password;
-	private String username;
-	private DataSource delegatedDataSource;
 	private HsqlDatabaseStatus currentStatus;
+	private DataSource delegatedDataSource;
+	
+	private Account currentAccount;
 		
 	public HsqlDatabaseDescriptor(
 			String dbName, 
@@ -45,8 +47,9 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 			Compatibility compatibility, 
 			String mainAccountUsername, 
 			String mainAccountPassword) {
-		super();
 		
+		super();
+				
 		Arguments.checkNotBlank(dbName, "DbName cannot be blank.");
 		Arguments.checkNotBlank(mainAccountUsername, "Username cannot be blank.");
 		Arguments.checkNotEquals(mainAccountUsername, "SA", "Sorry, you cannot specify 'SA' username.");
@@ -54,11 +57,13 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		Arguments.checkNotNull(compatibility, "Please provide a %s.", Compatibility.class.getSimpleName());
 		Arguments.checkNotNull(storage, "Please provide a %s.", Storage.class.getSimpleName());
 		
+		currentAccount = new Account("SA","");
+		desiredAccount = new Account(mainAccountUsername, mainAccountPassword);
+		
+		
 		this.dbName = dbName;
 		this.storage = storage;
 		this.compatibility = compatibility;
-		this.password = mainAccountPassword;
-		this.username = mainAccountUsername;
 		this.currentStatus = NOT_READY;
 	}
 
@@ -104,9 +109,9 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 			compatibility.apply(this);
 		}
 
-		if(username!=null){
+		
 			
-			log.info("Creating new user {}/{}", username, password);
+			log.info("Creating new user {}", desiredAccount);
 			try (Connection con = getPrivateConnection()) {
 	
 				ResultSet rs;
@@ -125,7 +130,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	
 				PreparedStatement prepareStatement = con
 						.prepareStatement("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SYSTEM_USERS WHERE USER_NAME = ?");
-				prepareStatement.setString(1, username);
+				prepareStatement.setString(1, desiredAccount.getUsername());
 				rs = prepareStatement.executeQuery();
 				rs.next();
 				boolean existingUser = rs.getLong(1) == 1L;
@@ -137,14 +142,14 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 					// throw new
 					// IllegalArgumentException("Cannot change password to an existing user '"
 					// + username + "'");
-					// log.info("User exists, altering it to use the new password.");
-					// call = con.prepareStatement("ALTER USER \"" + username +
-					// "\" SET PASSWORD '" + password + "'");
-					// call.execute();
+					 log.info("User exists, altering it to use the new password.");
+					 call = con.prepareStatement("ALTER USER \"" + desiredAccount.getUsername() +
+					 "\" SET PASSWORD '" + desiredAccount.getPassword() + "'");
+					 call.execute();
 				} else {
 					log.info("User does not exists, granting it ADMIN privileges.");
-					call = con.prepareStatement("CREATE USER \"" + username
-							+ "\" PASSWORD '" + password + "' ADMIN");
+					call = con.prepareStatement("CREATE USER \"" + desiredAccount.getUsername()
+							+ "\" PASSWORD '" + desiredAccount.getPassword() + "' ADMIN");
 					call.execute();
 				}
 	
@@ -154,12 +159,14 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 				while (rs.next()) {
 					log.info("User " + rs.getObject(1) + " " + rs.getObject(2));
 				}
+				
+				currentAccount = desiredAccount;
 	
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
 
-		}
+		
 		
 		try (Connection con = getPrivateConnection()) {
 			CallableStatement call = con
@@ -230,7 +237,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	@Override
 	public String getPassword() {
-		return password;
+		return desiredAccount.getPassword();
 	}
 
 	@Override
@@ -240,7 +247,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	@Override
 	public String getUsername() {
-		return username;
+		return desiredAccount.getUsername();
 	}
 		
 	// Datasource
@@ -291,7 +298,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		} catch (ClassNotFoundException e) {
 			// this should really not happen
 		}
-		return DriverManager.getConnection(getUrl(), "SA", "");
+		return DriverManager.getConnection(getUrl(), currentAccount.getUsername(), currentAccount.getPassword());
 	}
 
 	public void setLoginTimeout(int seconds) throws SQLException {
@@ -323,6 +330,28 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	@Override
 	public String toString() {
 		return format("%s/%s/%s", dbName, this.compatibility, this.storage);
+	}
+	
+	private class Account {
+		private String password;
+		private String username;
+		public Account(String username, String password) {
+			super();
+			Arguments.checkNotBlank(username);
+			Arguments.checkNotNull(password);
+			this.password = password;
+			this.username = username;
+		}
+		public String getUsername() {
+			return username;
+		}
+		public String getPassword() {
+			return password;
+		}
+		@Override
+		public String toString() {
+			return "[" + username + "/" + (password.length() == 0 ? "<blank>" : password) + "]";
+		}
 	}
 	
 }
