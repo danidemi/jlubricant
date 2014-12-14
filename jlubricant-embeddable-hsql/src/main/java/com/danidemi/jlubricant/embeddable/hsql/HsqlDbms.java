@@ -64,8 +64,12 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	/** The list of HSQL databases that will be run by this {@link HsqlDbms}. */
 	private ArrayList<HsqlDatabaseDescriptor> dbs;
 
-	static interface Registration {
-		void register(String dbName, String location);
+	/** Service that a database should use to participate in the server configuration. */	
+	static interface LocationConfiguration {
+		
+		/** Allow to specify the location of the HSQL database. */
+		void setLocation(String dbName, String dbLocation);
+		
 	}
 
 	private Status currentStatus;
@@ -113,19 +117,6 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		currentStatus.onStop();
 	}
 
-	private static void register(HsqlProperties hsqlProp, int dbIndex, String name,
-			String path) {
-
-		if (!(path.startsWith("file:") || path.startsWith("res:") || path
-				.startsWith("mem:"))) {
-			throw new IllegalArgumentException(path);
-		}
-
-		hsqlProp.setProperty("server.database." + dbIndex, path);
-		hsqlProp.setProperty("server.dbname." + dbIndex, name);
-		
-	}
-
 	void stopEngine() throws ServerStopException {
 
 		server.shutdown();
@@ -167,19 +158,24 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 		final HsqlProperties hsqlProp = new HsqlProperties();
 
-		// Register the databases
+		// gives the chance to the descriptors to contribute to the server configuration.
 		final AtomicInteger dbCounter = new AtomicInteger(0);
 		for (HsqlDatabaseDescriptor db : dbs) {
-
-			db.register(new Registration() {
+			
+			db.contributeToServerConfiguration(new LocationConfiguration() {
 
 				@Override
-				public void register(String dbName, String location) {
+				public void setLocation(String dbName, String location) {
 
-					log.info("Registering db #{} : '{}' stored on '{}'",
-							dbCounter, dbName, location);
-					HsqlDbms.register(hsqlProp, dbCounter.getAndAdd(1), dbName,
-							location);
+					log.info("Registering db #{} : '{}' stored on '{}'", dbCounter, dbName, location);
+					int dbIndex = dbCounter.getAndAdd(1);
+					if (!(location.startsWith("file:") || location.startsWith("res:") || location
+							.startsWith("mem:"))) {
+						throw new IllegalArgumentException(location);
+					}
+					
+					hsqlProp.setProperty("server.database." + dbIndex, location);
+					hsqlProp.setProperty("server.dbname." + dbIndex, dbName);
 				}
 
 			});

@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
-import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
+import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.LocationConfiguration;
 import com.danidemi.jlubricant.utils.hoare.Arguments;
 
 public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSource {
@@ -66,43 +66,17 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		this.compatibility = compatibility;
 		this.currentStatus = NOT_READY;
 	}
-
-	void goReady() {
-		currentStatus = READY;
-	}
 	
-	void goUnready() {
-		currentStatus = NOT_READY;
+	// ------------------------------------------------------------
+	// lyfecycle
+	// ------------------------------------------------------------
+	
+	/** Invoked during start up phase to give the database the chace to partecipate in the server configuration. */
+	public void contributeToServerConfiguration(LocationConfiguration registration) {
+		storage.contributeToServerConfiguration(this, registration);
 	}	
-			
-	public String getDriverName() {
-		return jdbcDriver.class.getName();
-	}
 	
-	public String getDbName() {
-		return dbName;
-	}
-	
-	void executePublicStm(String statement) {
-
-		try (Connection conn = getConnection(); Statement stm = conn.createStatement()) {
-			stm.execute(statement);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
-	}
-	
-	void executePrivateStm(String statement) {
-
-		try (Connection conn = getPrivateConnection(); Statement stm = conn.createStatement()) {
-			stm.execute(statement);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
-	}	
-
+	/** Invoked after server has started up. Here the database can connect to himself. */
 	public void postStartSetUp() throws SQLException {
 		
 		if (compatibility != null) {
@@ -179,18 +153,77 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 			new RuntimeException(e);
 		}
 
+	}	
+	
+	void goReady() {
+		currentStatus = READY;
 	}
 
-	public void register(Registration registration) {
-		storage.register(this, registration);
+	void goUnready() {
+		currentStatus = NOT_READY;
+	}	
+	
+	// ------------------------------------------------------------
+	// properties
+	// ------------------------------------------------------------				
+	public String getDriverName() {
+		return jdbcDriver.class.getName();
 	}
-
+	
+	public String getDbName() {
+		return dbName;
+	}
+	
 	void setDbms(HsqlDbms hsqlDbms) {
 		if(dbms!=null){
 			throw new IllegalStateException("Already registered to a dbms");
 		}
 		this.dbms = hsqlDbms;
 	}
+	
+	@Override
+	public String getUrl() {
+		return "jdbc:hsqldb:hsql://" + this.dbms.getHostName() + ":" + dbms.getPort() + "/" + this.dbName;
+	}
+
+	@Override
+	public String getPassword() {
+		return desiredAccount.getPassword();
+	}
+
+	@Override
+	public String getDriverClassName() {
+		return getDriverName();
+	}
+
+	@Override
+	public String getUsername() {
+		return desiredAccount.getUsername();
+	}	
+
+	
+	// ------------------------------------------------------------
+	// others
+	// ------------------------------------------------------------
+	void executePublicStm(String statement) {
+
+		try (Connection conn = getConnection(); Statement stm = conn.createStatement()) {
+			stm.execute(statement);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+	
+	void executePrivateStm(String statement) {
+
+		try (Connection conn = getPrivateConnection(); Statement stm = conn.createStatement()) {
+			stm.execute(statement);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}	
 
 	/** 
 	 * Enables the syntax for the specific database.
@@ -230,25 +263,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 				+ setDatabaseSqlUniqueNulls);
 	}
 
-	@Override
-	public String getUrl() {
-		return "jdbc:hsqldb:hsql://" + this.dbms.getHostName() + ":" + dbms.getPort() + "/" + this.dbName;
-	}
 
-	@Override
-	public String getPassword() {
-		return desiredAccount.getPassword();
-	}
-
-	@Override
-	public String getDriverClassName() {
-		return getDriverName();
-	}
-
-	@Override
-	public String getUsername() {
-		return desiredAccount.getUsername();
-	}
 		
 	// Datasource
 

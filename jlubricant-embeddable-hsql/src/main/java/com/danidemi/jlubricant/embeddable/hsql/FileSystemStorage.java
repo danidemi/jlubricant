@@ -2,7 +2,7 @@ package com.danidemi.jlubricant.embeddable.hsql;
 
 import java.io.File;
 
-import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
+import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.LocationConfiguration;
 
 public class FileSystemStorage extends Storage {
 
@@ -27,8 +27,8 @@ public class FileSystemStorage extends Storage {
 	}
 		
 	@Override
-	public void register(HsqlDatabaseDescriptor hsqlDatabase, Registration registration) {
-		registration.register(hsqlDatabase.getDbName(), "file:" + dbFolder);
+	public void contributeToServerConfiguration(HsqlDatabaseDescriptor hsqlDatabase, LocationConfiguration registration) {
+		registration.setLocation(hsqlDatabase.getDbName(), "file:" + dbFolder);
 	}
 	
 }
