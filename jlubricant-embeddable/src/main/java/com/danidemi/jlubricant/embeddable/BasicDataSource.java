@@ -13,9 +13,9 @@ public class BasicDataSource implements DataSource {
 
 	private PrintWriter pw;
 	private int loginTimeoutInSeconds;
-	private Database db;
+	private JdbcDatabaseDescriptor db;
 	
-	public BasicDataSource(Database db) {
+	public BasicDataSource(JdbcDatabaseDescriptor db) {
 		this.db = db;
 		loginTimeoutInSeconds = 10;
 		pw = null;

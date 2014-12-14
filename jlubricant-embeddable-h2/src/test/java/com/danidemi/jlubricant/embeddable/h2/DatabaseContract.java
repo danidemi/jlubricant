@@ -17,7 +17,7 @@
 package com.danidemi.jlubricant.embeddable.h2;
 
 import com.danidemi.jlubricant.contracts.DatabaseContractTest;
-import com.danidemi.jlubricant.embeddable.Database;
+import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
 
 /**
  *
@@ -34,7 +34,7 @@ public class DatabaseContract extends DatabaseContractTest {
     }
 
     @Override
-    protected Database buildADatabaseWithUsernameAndPassword(String username, String password) throws Exception {
+    protected JdbcDatabaseDescriptor buildADatabaseWithUsernameAndPassword(String username, String password) throws Exception {
         H2Dbms h2Dbms = new H2Dbms();
         H2Storage storage = new MemoryStorage();
         String dbName = "test-db";

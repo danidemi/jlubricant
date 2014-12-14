@@ -1,16 +1,18 @@
 package com.danidemi.jlubricant.embeddable.h2;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.danidemi.jlubricant.embeddable.Database;
+import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 
-public class H2DatabaseWorking implements Database {
+public class H2DatabaseWorking implements JdbcDatabaseDescriptor {
 	
 	private static final Logger log = LoggerFactory.getLogger(H2DatabaseWorking.class);
 	
@@ -61,6 +63,11 @@ public class H2DatabaseWorking implements Database {
 		return conn;
 		
 	}
+	
+	@Override
+	public Connection getConnection() throws SQLException {
+		return newConnection();
+	}
 
 	public String getName() {
 		return descriptor.getDbName();
@@ -88,6 +95,63 @@ public class H2DatabaseWorking implements Database {
 	@Override
 	public String getUsername() {
 		return descriptor.getUsername();
+	}
+
+
+	@Override
+	public Connection getConnection(String username, String password)
+			throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+
+	@Override
+	public PrintWriter getLogWriter() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setLogWriter(PrintWriter out) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setLoginTimeout(int seconds) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public int getLoginTimeout() throws SQLException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public java.util.logging.Logger getParentLogger()
+			throws SQLFeatureNotSupportedException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

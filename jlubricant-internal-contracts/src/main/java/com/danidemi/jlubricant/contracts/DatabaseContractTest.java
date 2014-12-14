@@ -1,6 +1,6 @@
 package com.danidemi.jlubricant.contracts;
 
-import com.danidemi.jlubricant.embeddable.Database;
+import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
 import static org.junit.Assert.*;
 
 import java.sql.Connection;
@@ -31,7 +31,7 @@ public abstract class DatabaseContractTest {
 			String expectedPassword = strings[1];
 			
 			// given
-			Database db = null;
+			JdbcDatabaseDescriptor db = null;
 			try {
 				db = buildADatabaseWithUsernameAndPassword(expectedUsername, expectedPassword);
 			} catch (Exception e1) {
@@ -53,7 +53,7 @@ public abstract class DatabaseContractTest {
 		
 	}
 
-	private void openANewConnectionAndThenClose(Database db) throws Exception {
+	private void openANewConnectionAndThenClose(JdbcDatabaseDescriptor db) throws Exception {
 		String className;
 		String url;
 		String username;
@@ -70,6 +70,6 @@ public abstract class DatabaseContractTest {
 
 	}
 
-	protected abstract Database buildADatabaseWithUsernameAndPassword(String username, String password) throws Exception;
+	protected abstract JdbcDatabaseDescriptor buildADatabaseWithUsernameAndPassword(String username, String password) throws Exception;
 	
 }

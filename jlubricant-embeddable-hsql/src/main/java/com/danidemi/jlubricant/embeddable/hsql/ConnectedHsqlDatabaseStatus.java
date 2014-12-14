@@ -5,9 +5,9 @@ import java.sql.SQLException;
 
 public class ConnectedHsqlDatabaseStatus implements HsqlDatabaseStatus {
 
-	private HsqlDatabase master;
+	private HsqlDatabaseDescriptor master;
 		
-	public ConnectedHsqlDatabaseStatus(HsqlDatabase master) {
+	public ConnectedHsqlDatabaseStatus(HsqlDatabaseDescriptor master) {
 		super();
 		this.master = master;
 	}

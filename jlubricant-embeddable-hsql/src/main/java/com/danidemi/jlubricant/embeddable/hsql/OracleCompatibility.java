@@ -10,7 +10,7 @@ public class OracleCompatibility extends Compatibility {
 	}
 
 	@Override
-	public void apply(HsqlDatabase hsqlDatabase) throws SQLException {
+	public void apply(HsqlDatabaseDescriptor hsqlDatabase) throws SQLException {
 		hsqlDatabase.setSyntax("ORA");
 		hsqlDatabase.setTransactionControl();
 		hsqlDatabase.setTransactionRollbackOnConflict(true);

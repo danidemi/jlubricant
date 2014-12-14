@@ -16,17 +16,15 @@ public class MemoryStorageTest extends MemoryStorage {
 	@Test
 	public void shouldWorkInMemory() throws Exception {
 		
-		HsqlDatabase memoryDb = new HsqlDatabase( "mem", new MemoryStorage() );
+		HsqlDatabaseDescriptor memoryDb = new HsqlDatabaseDescriptor( "mem", new MemoryStorage(), new HsqlCompatibility(), "usr", "pwd" );
 		
-		HsqlDbms dbms = new HsqlDbms();
-		dbms.add(memoryDb);
-		
+		HsqlDbms dbms = new HsqlDbms( memoryDb );		
 		dbms.start();
 		
-		memoryDb.executeStm("CREATE TABLE PEOPLE(NAME VARCHAR(64))");
-		memoryDb.executeStm("INSERT INTO PEOPLE(NAME) VALUES('John')");
+		memoryDb.executePublicStm("CREATE TABLE PEOPLE(NAME VARCHAR(64))");
+		memoryDb.executePublicStm("INSERT INTO PEOPLE(NAME) VALUES('John')");
 		
-		Connection newConnection = memoryDb.newConnection();
+		Connection newConnection = memoryDb.getConnection();
 		PreparedStatement prepareStatement = newConnection.prepareStatement("SELECT COUNT(*) FROM PEOPLE");
 		ResultSet executeQuery = prepareStatement.executeQuery();
 		executeQuery.next();

@@ -12,8 +12,8 @@ public class ResourceStorage extends Storage {
 	}
 
 	@Override
-	public void register(HsqlDatabase hsqlDatabase, Registration registration) {
-		registration.register(hsqlDatabase.getName(), "res:" + resourcePath);
+	public void register(HsqlDatabaseDescriptor hsqlDatabase, Registration registration) {
+		registration.register(hsqlDatabase.getDbName(), "res:" + resourcePath);
 	}
 
 }

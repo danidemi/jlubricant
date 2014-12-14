@@ -5,8 +5,8 @@ import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 public class MemoryStorage extends Storage {
 	
 	@Override
-	public void register(HsqlDatabase hsqlDatabase, Registration registration) {
-		registration.register(hsqlDatabase.getName(), "mem:" + hsqlDatabase.getName());
+	public void register(HsqlDatabaseDescriptor hsqlDatabase, Registration registration) {
+		registration.register(hsqlDatabase.getDbName(), "mem:" + hsqlDatabase.getDbName());
 	}
 
 }

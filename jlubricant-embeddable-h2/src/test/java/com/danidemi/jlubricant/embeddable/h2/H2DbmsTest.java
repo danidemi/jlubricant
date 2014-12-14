@@ -11,9 +11,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.ServerException;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
+
 import java.sql.SQLException;
 
 public class H2DbmsTest {
@@ -64,7 +66,7 @@ public class H2DbmsTest {
 
     private void perfromTest(final String test, H2Dbms tested) throws ServerStartException, SQLException {
         
-        Connection conn = tested.dbByName(test).newConnection();
+        Connection conn = tested.dbByName(test).getConnection();
         
         Statement stm = conn.createStatement();
         stm.execute("CREATE TABLE PEOPLE(NAME CHAR(64))");
@@ -75,7 +77,8 @@ public class H2DbmsTest {
         
         conn.close();
         
-        conn = tested.dbByName(test).newConnection();
+        JdbcDatabaseDescriptor dbByName = tested.dbByName(test);
+		conn = dbByName.getConnection();
         
         stm = conn.createStatement();
         executeQuery = stm.executeQuery("SELECT COUNT(*) AS C FROM PEOPLE");

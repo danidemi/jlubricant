@@ -27,8 +27,8 @@ public class FileSystemStorage extends Storage {
 	}
 		
 	@Override
-	public void register(HsqlDatabase hsqlDatabase, Registration registration) {
-		registration.register(hsqlDatabase.getName(), "file:" + dbFolder);
+	public void register(HsqlDatabaseDescriptor hsqlDatabase, Registration registration) {
+		registration.register(hsqlDatabase.getDbName(), "file:" + dbFolder);
 	}
 	
 }

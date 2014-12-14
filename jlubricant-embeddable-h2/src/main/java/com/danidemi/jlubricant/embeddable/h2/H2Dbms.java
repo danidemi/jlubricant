@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.danidemi.jlubricant.embeddable.BasicDataSource;
-import com.danidemi.jlubricant.embeddable.Database;
+import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.Dbms;
 import com.danidemi.jlubricant.embeddable.EmbeddableServer;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
@@ -107,7 +107,7 @@ public class H2Dbms implements EmbeddableServer, Dbms {
 
 	/** Get a database by its name. */
 	@Override
-	public Database dbByName(final String dbName) {
+	public JdbcDatabaseDescriptor dbByName(final String dbName) {
 		Collection<H2DatabaseWorking> select = CollectionUtils.select(dbsw, new Predicate<H2DatabaseWorking>() {
 
 			@Override

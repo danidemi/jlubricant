@@ -9,18 +9,14 @@ import com.danidemi.jlubricant.embeddable.ServerException;
 public class InMemoryDatabaseTest {
 	
 	private HsqlDbms dbms;
-
-	@Before public void setDb() {
-		dbms = new HsqlDbms();		
-	}
 	
 	@After public void stopDb() throws ServerException {
-		dbms.stop();
+		if(dbms!=null) dbms.stop();
 	}
 
 	@Test public void test() throws ServerException {
 		
-		dbms.add(new HsqlDatabase("mydb", new MemoryStorage()));
+		dbms = new HsqlDbms(new HsqlDatabaseDescriptor("mydb", new MemoryStorage(), new HsqlCompatibility(), "usr", "pwd"));
 		dbms.start();
 		
 	}

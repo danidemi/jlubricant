@@ -9,9 +9,13 @@
     <name>jlubricant - embeddable - hsql</name>
     <dependencies>
         <dependency>
-            <groupId>com.danidemi.jlubricant</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jlubricant-embeddable</artifactId>
         </dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>jlubricant-utils</artifactId>
+		</dependency>	
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>

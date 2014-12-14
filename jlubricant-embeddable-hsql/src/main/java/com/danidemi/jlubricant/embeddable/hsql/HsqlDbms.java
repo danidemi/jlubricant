@@ -1,8 +1,11 @@
 package com.danidemi.jlubricant.embeddable.hsql;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,6 +28,7 @@ import com.danidemi.jlubricant.embeddable.ServerStopException;
 import com.danidemi.jlubricant.slf4j.utils.LubricantLoggerWriter;
 import com.danidemi.jlubricant.slf4j.utils.OneLogLineForEachFlush;
 import com.danidemi.jlubricant.slf4j.utils.Replace;
+import com.danidemi.jlubricant.utils.hoare.Arguments;
 
 /**
  * An embeddable database engine based on Hsql.
@@ -39,27 +43,26 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	/** HSQL default ip binding. Null means to use default hsql binding rules. */
 	private static final String DEFAULT_IP = null;
 
-	/** Classic logger */
+	/** Logger */
 	private static Logger log = LoggerFactory.getLogger(HsqlDbms.class);
 
-	/** Classic logger that receives log messages geenrated by HSQL itself */
-	private static Logger hsqlWriterLogger = LoggerFactory
-			.getLogger(HsqlDbms.class.getName() + ".hsql");
+	/** Logger that receives log messages genenrated by HSQL itself. */ 
+	//private static Logger hsqlWriterLogger = LoggerFactory.getLogger(HsqlDbms.class.getName() + ".hsql");
 
 	/**
 	 * A Writer that can be provided to hsql and redirects messages to a proper
 	 * logger.
+	 * This is needed because HSQL logs through a {@link PrintWriter}.
 	 */
 	private static LubricantLoggerWriter lubricantLoggerWriter = new LubricantLoggerWriter(
-			hsqlWriterLogger, new Replace(new OneLogLineForEachFlush(),
-					"\\[[\\w\\W]*\\]: ", ""),
-			com.danidemi.jlubricant.slf4j.Logger.TRACE);
+			LoggerFactory.getLogger(HsqlDbms.class.getName() + ".hsql"), 
+			new Replace(new OneLogLineForEachFlush(), "\\[[\\w\\W]*\\]: ", ""), com.danidemi.jlubricant.slf4j.Logger.TRACE);
 
 	/** The Hsql server. */
 	private Server server;
 
 	/** The list of HSQL databases that will be run by this {@link HsqlDbms}. */
-	private ArrayList<HsqlDatabase> dbs;
+	private ArrayList<HsqlDatabaseDescriptor> dbs;
 
 	static interface Registration {
 		void register(String dbName, String location);
@@ -74,31 +77,40 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	private Integer definedPort = null;
 	private String address;
 
-	public HsqlDbms() {
-		dbs = new ArrayList<>(0);
+	public HsqlDbms(List<HsqlDatabaseDescriptor> dbs) {
+		Arguments.checkNotEmpty(dbs, "Please, provide a not null not empty list of databases.");
+		this.dbs = new ArrayList<HsqlDatabaseDescriptor>();
 		server = null;
 		currentStatus = new StoppedStatus(this);
+		for (HsqlDatabaseDescriptor hsqlDatabaseDescriptor : dbs) {
+			add(hsqlDatabaseDescriptor);
+		}
 	}
+	
+	public HsqlDbms(HsqlDatabaseDescriptor db) {
+		this(Arrays.asList(db));
+	}	
 
 	// ===============================================================
 	// Lyfecycle
 	// ===============================================================
+
+
 
 	/**
 	 * Synchronously start the server.
 	 */
 	@Override
 	public void start() throws ServerException {
-
 		currentStatus.onStart();
-
 	}
 
+	/**
+	 * Synchronously stop the server.
+	 */	
 	@Override
 	public void stop() throws ServerException {
-
 		currentStatus.onStop();
-
 	}
 
 	private static void register(HsqlProperties hsqlProp, int dbIndex, String name,
@@ -111,6 +123,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 		hsqlProp.setProperty("server.database." + dbIndex, path);
 		hsqlProp.setProperty("server.dbname." + dbIndex, name);
+		
 	}
 
 	void stopEngine() throws ServerStopException {
@@ -156,7 +169,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 		// Register the databases
 		final AtomicInteger dbCounter = new AtomicInteger(0);
-		for (HsqlDatabase db : dbs) {
+		for (HsqlDatabaseDescriptor db : dbs) {
 
 			db.register(new Registration() {
 
@@ -180,9 +193,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		} catch (IOException | AclFormatException e1) {
 			throw new ServerStartException(e1);
 		}
-		lubricantLoggerWriter = new LubricantLoggerWriter(hsqlWriterLogger,
-				new Replace(new OneLogLineForEachFlush(), "\\[[\\w\\W]*\\]: ",
-						""), com.danidemi.jlubricant.slf4j.Logger.TRACE);
+
 		server.setLogWriter(lubricantLoggerWriter.asPrintWriter());
 		server.setDaemon(isDaemon);
 		server.setSilent(isSilent);
@@ -234,20 +245,20 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		try{
 			log.info("Starting databases post setup...");
 			for (int i = 0; i < dbs.size(); i++) {
-				final HsqlDatabase db = dbs.get(i);
-				log.info("Post start up for db '{}', {}/{}.", db.getName(), i+1, dbs.size());
+				final HsqlDatabaseDescriptor db = dbs.get(i);
+				log.info("Post start up for db '{}', {}/{}.", db.getDbName(), i+1, dbs.size());
 				db.postStartSetUp();
-				db.ready();
+				db.goReady();
 			}
 			log.info("Post setup completed.");			
 		}catch(Exception e){
-			throw new ServerStartException("An error occurred during post setup.");
+			throw new ServerStartException("An error occurred during post setup.", e);
 		}
 
 		log.info("Dump connection strings:");
-		for (HsqlDatabase db : dbs) {
-			log.info("Connection to db {}: {}, account {}/{} ", db.getName(),
-					db.getUrl(), db.getName(), db.getPassword());
+		for (HsqlDatabaseDescriptor db : dbs) {
+			log.info("Connection to db {}: {}, account {}/{} ", db.getDbName(),
+					db.getUrl(), db.getDbName(), db.getPassword());
 		}
 
 		log.info("HSQL standalone DBMS is ready");
@@ -267,16 +278,16 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	}
 
 	/**
-	 * Returns the {@link HsqlDatabase} with the given name.
+	 * Returns the {@link HsqlDatabaseDescriptor} with the given name.
 	 */
 	@Override
-	public HsqlDatabase dbByName(final String dbName) {
-		Collection<HsqlDatabase> select = CollectionUtils.select(dbs,
-				new Predicate<HsqlDatabase>() {
+	public HsqlDatabaseDescriptor dbByName(final String dbName) {
+		Collection<HsqlDatabaseDescriptor> select = CollectionUtils.select(dbs,
+				new Predicate<HsqlDatabaseDescriptor>() {
 
 					@Override
-					public boolean evaluate(HsqlDatabase db) {
-						return dbName.equals(db.getName());
+					public boolean evaluate(HsqlDatabaseDescriptor db) {
+						return dbName.equals(db.getDbName());
 					}
 
 				});
@@ -294,7 +305,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	/**
 	 * Return a quick datasource for the given hsqldatabase.
 	 */
-	DataSource getFastDataSource(HsqlDatabase hsqlDatabase) {
+	DataSource getFastDataSource(HsqlDatabaseDescriptor hsqlDatabase) {
 		BasicDataSource bds = new BasicDataSource();
 		bds.setDriverClassName(hsqlDatabase.getDriverClassName());
 		bds.setUsername(hsqlDatabase.getUsername());
@@ -329,22 +340,22 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		this.address = ip;
 	}
 
-	public boolean add(HsqlDatabase e) {
+	private boolean add(HsqlDatabaseDescriptor e) {
 		currentStatus.onPropertyChange();
 		e.setDbms(this);
 		return dbs.add(e);
 	}
 	
-	public void addMultiple(HsqlDatabase... dbs) {
-		for (HsqlDatabase hsqlDatabase : dbs) {
+	private void addMultiple(HsqlDatabaseDescriptor... dbs) {
+		for (HsqlDatabaseDescriptor hsqlDatabase : dbs) {
 			add(hsqlDatabase);
 		}
 		
 	}
 
-	public void setDatabases(List<HsqlDatabase> dbs) {
+	public void setDatabases(List<HsqlDatabaseDescriptor> dbs) {
 		currentStatus.onPropertyChange();
-		for (HsqlDatabase hsqlDatabase : dbs) {
+		for (HsqlDatabaseDescriptor hsqlDatabase : dbs) {
 			add(hsqlDatabase);
 		}
 	}

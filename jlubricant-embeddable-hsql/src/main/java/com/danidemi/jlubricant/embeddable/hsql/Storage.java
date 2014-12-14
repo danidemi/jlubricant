@@ -4,6 +4,6 @@ import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
 
 public abstract class Storage {
 
-	public abstract void register(HsqlDatabase hsqlDatabase, Registration registration);
+	public abstract void register(HsqlDatabaseDescriptor hsqlDatabase, Registration registration);
 
 }

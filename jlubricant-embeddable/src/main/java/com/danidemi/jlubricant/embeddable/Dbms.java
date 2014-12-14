@@ -6,7 +6,7 @@ import javax.sql.DataSource;
 
 public interface Dbms {
 
-	Database dbByName(String dbName);
+	JdbcDatabaseDescriptor dbByName(String dbName);
 
 	DataSource dataSourceByName(String dbName);
 

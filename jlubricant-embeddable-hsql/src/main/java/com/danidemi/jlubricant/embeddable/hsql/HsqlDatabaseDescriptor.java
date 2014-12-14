@@ -1,5 +1,7 @@
 package com.danidemi.jlubricant.embeddable.hsql;
 
+import static java.lang.String.format;
+
 import java.io.PrintWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -12,104 +14,89 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import org.hsqldb.jdbcDriver;
+import org.hsqldb.lib.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.danidemi.jlubricant.embeddable.Database;
+import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.Registration;
+import com.danidemi.jlubricant.utils.hoare.Arguments;
 
-public class HsqlDatabase implements Database, DataSource {
+public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSource {
 	
-	private static Logger log = LoggerFactory.getLogger(HsqlDatabase.class);
+	private static Logger log = LoggerFactory.getLogger(HsqlDatabaseDescriptor.class);
 	
 	private final HsqlDatabaseStatus NOT_READY = new UnconnectedHsqlDatabaseStatus();
 	private final HsqlDatabaseStatus READY = new ConnectedHsqlDatabaseStatus(this); 
 
+	private String dbName;
 	private Storage storage;
 	private Compatibility compatibility;
-	private String dbName;
 	private HsqlDbms dbms;
 	private String password;
 	private String username;
 	private DataSource delegatedDataSource;
 	private HsqlDatabaseStatus currentStatus;
-	
-
-	public HsqlDatabase() {
-		setCompatibility(new HsqlCompatibility());
-		storage = new MemoryStorage();
-		currentStatus = NOT_READY;
-	}
-	
-	public HsqlDatabase(String name, Storage storage) {
+		
+	public HsqlDatabaseDescriptor(
+			String dbName, 
+			Storage storage,
+			Compatibility compatibility, 
+			String mainAccountUsername, 
+			String mainAccountPassword) {
 		super();
-		this.dbName = name;
+		
+		Arguments.checkNotBlank(dbName, "DbName cannot be blank.");
+		Arguments.checkNotBlank(mainAccountUsername, "Username cannot be blank.");
+		Arguments.checkNotEquals(mainAccountUsername, "SA", "Sorry, you cannot specify 'SA' username.");
+		Arguments.checkNotNull(mainAccountPassword, "Password cannot be null (but it can be blank).");
+		Arguments.checkNotNull(compatibility, "Please provide a %s.", Compatibility.class.getSimpleName());
+		Arguments.checkNotNull(storage, "Please provide a %s.", Storage.class.getSimpleName());
+		
+		this.dbName = dbName;
 		this.storage = storage;
-		currentStatus = NOT_READY;
+		this.compatibility = compatibility;
+		this.password = mainAccountPassword;
+		this.username = mainAccountUsername;
+		this.currentStatus = NOT_READY;
 	}
 
-	public void setStorage(Storage storage) {
-		this.storage = storage;
-	}
-	
-	void ready() {
+	void goReady() {
 		currentStatus = READY;
 	}
 	
-	void unready() {
+	void goUnready() {
 		currentStatus = NOT_READY;
 	}	
-	
-	/**
-	 * Change the database compatibility.
-	 * If not set, {@link HsqlCompatibility} is intended.
-	 */
-	public void setCompatibility(Compatibility compatibility) {
-		this.compatibility = compatibility;
+			
+	public String getDriverName() {
+		return jdbcDriver.class.getName();
 	}
 	
-	/**
-	 * Set the hsql db name.
-	 */
-	public void setDbName(String dbName) {
-		this.dbName = dbName;
-	}
-	
-	public String getName() {
+	public String getDbName() {
 		return dbName;
 	}
 	
-	public Connection newConnection() throws SQLException {
-		
-		String jdbcUrl = getJdbcUrl();
-				
-		Connection conn = DriverManager.getConnection(jdbcUrl, "sa", "");
-		return conn;
-	}
+	void executePublicStm(String statement) {
 
-	private String getJdbcUrl() {
-		//jdbc:hsqldb:<protocol>//<host>[:<port>]/<db_alias>
-		//jdbc:hsqldb:hsql://localhost/europrices
-		//jdbc:hsqldb:hsql//localhost:9001/memdb
-		//<protocol> = hsql, hsqls, http, https
-		return "jdbc:hsqldb:hsql://" + this.dbms.getHostName() + ":" + dbms.getPort() + "/" + this.dbName;
-	}
-
-	public String getDriverName() {
-		return "org.hsqldb.jdbcDriver";
-	}
-
-	void executeStm(String statement) {
-
-		try (Connection conn = newConnection(); Statement stm = conn.createStatement()) {
-
+		try (Connection conn = getConnection(); Statement stm = conn.createStatement()) {
 			stm.execute(statement);
-
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
 	}
+	
+	void executePrivateStm(String statement) {
+
+		try (Connection conn = getPrivateConnection(); Statement stm = conn.createStatement()) {
+			stm.execute(statement);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}	
 
 	public void postStartSetUp() throws SQLException {
 		
@@ -120,7 +107,7 @@ public class HsqlDatabase implements Database, DataSource {
 		if(username!=null){
 			
 			log.info("Creating new user {}/{}", username, password);
-			try (Connection con = newConnection()) {
+			try (Connection con = getPrivateConnection()) {
 	
 				ResultSet rs;
 	
@@ -174,7 +161,7 @@ public class HsqlDatabase implements Database, DataSource {
 
 		}
 		
-		try (Connection con = newConnection()) {
+		try (Connection con = getPrivateConnection()) {
 			CallableStatement call = con
 					.prepareCall("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS");
 			ResultSet rs = call.executeQuery();
@@ -203,7 +190,7 @@ public class HsqlDatabase implements Database, DataSource {
 	 * Under the hood it executes a {@code set database sql syntax <syntax> true } statement.
 	 */
 	void setSyntax(String syntax) {
-		executeStm("set database sql syntax "
+		executePrivateStm("set database sql syntax "
 				+ syntax
 				+ " "
 				+ "true");
@@ -213,33 +200,32 @@ public class HsqlDatabase implements Database, DataSource {
 	 * Enables MVCC.
 	 */
 	void setTransactionControl() {
-		executeStm("set database transaction control");
+		executePrivateStm("set database transaction control");
 	}
 
 	void setTransactionRollbackOnConflict(boolean setTransactionRollbackOnConflict) {
-		executeStm("set database transaction rollback on conflict "
+		executePrivateStm("set database transaction rollback on conflict "
 				+ setTransactionRollbackOnConflict);
 	}
 
 	void setDatabaseSqlConcatNulls(boolean setDatabaseSqlConcatNulls) {
-		executeStm("set database sql concat nulls "
+		executePrivateStm("set database sql concat nulls "
 				+ setDatabaseSqlConcatNulls);
 	}
 
 	void setDatabaseSqlNullsFirst(boolean setDatabaseSqlNullsFirst) {
-		executeStm("set database sql nulls first "
+		executePrivateStm("set database sql nulls first "
 				+ setDatabaseSqlNullsFirst);
 	}
 
 	void setDatabaseSqlUniqueNulls(boolean setDatabaseSqlUniqueNulls) {
-		executeStm("set database sql unique nulls "
+		executePrivateStm("set database sql unique nulls "
 				+ setDatabaseSqlUniqueNulls);
 	}
 
 	@Override
 	public String getUrl() {
-		String jdbcUrl = getJdbcUrl();
-		return jdbcUrl;
+		return "jdbc:hsqldb:hsql://" + this.dbms.getHostName() + ":" + dbms.getPort() + "/" + this.dbName;
 	}
 
 	@Override
@@ -256,21 +242,7 @@ public class HsqlDatabase implements Database, DataSource {
 	public String getUsername() {
 		return username;
 	}
-	
-	public void setUsername(String username) {
 		
-		if(username == null || username.trim().length() == 0){
-			throw new IllegalArgumentException("Invalid user '" + username + "'");
-		}
-		
-		this.username = username;
-	}
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	
 	// Datasource
 
 	void ensureFastDatasource() {
@@ -308,6 +280,19 @@ public class HsqlDatabase implements Database, DataSource {
 //		ensureFastDatasource();
 //		return delegatedDataSource.getConnection();
 	}
+	
+	/**
+	 * During the start up phase, you need to have a connection to the db, even though it is not yet publicly declared 'connected'.
+	 * @throws SQLException 
+	 */
+	private Connection getPrivateConnection() throws SQLException{
+		try {
+			Class.forName(jdbcDriver.class.getName());
+		} catch (ClassNotFoundException e) {
+			// this should really not happen
+		}
+		return DriverManager.getConnection(getUrl(), "SA", "");
+	}
 
 	public void setLoginTimeout(int seconds) throws SQLException {
 		ensureFastDatasource();
@@ -333,6 +318,11 @@ public class HsqlDatabase implements Database, DataSource {
 
 	public DataSource delegatedDataSource() {
 		return delegatedDataSource;
+	}
+	
+	@Override
+	public String toString() {
+		return format("%s/%s/%s", dbName, this.compatibility, this.storage);
 	}
 	
 }
