@@ -5,6 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.danidemi.jlubricant.embeddable.ServerException;
+import com.danidemi.jlubricant.embeddable.hsql.core.HsqlCompatibility;
+import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDatabaseDescriptor;
+import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDbms;
+import com.danidemi.jlubricant.embeddable.hsql.core.MemoryStorage;
 
 public class InMemoryDatabaseTest {
 	

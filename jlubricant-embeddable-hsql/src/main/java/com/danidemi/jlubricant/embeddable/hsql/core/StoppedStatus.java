@@ -1,7 +1,6 @@
-package com.danidemi.jlubricant.embeddable.hsql;
+package com.danidemi.jlubricant.embeddable.hsql.core;
 
 import com.danidemi.jlubricant.embeddable.ServerException;
-import com.danidemi.jlubricant.embeddable.ServerStartException;
 
 
 class StoppedStatus implements Status {

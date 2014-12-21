@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.embeddable.hsql;
+package com.danidemi.jlubricant.embeddable.hsql.core;
 
 import com.danidemi.jlubricant.embeddable.ServerStopException;
 

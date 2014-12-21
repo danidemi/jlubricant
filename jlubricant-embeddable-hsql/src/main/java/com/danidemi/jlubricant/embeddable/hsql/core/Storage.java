@@ -1,6 +1,6 @@
-package com.danidemi.jlubricant.embeddable.hsql;
+package com.danidemi.jlubricant.embeddable.hsql.core;
 
-import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.LocationConfiguration;
+import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDbms.LocationConfiguration;
 
 public abstract class Storage {
 

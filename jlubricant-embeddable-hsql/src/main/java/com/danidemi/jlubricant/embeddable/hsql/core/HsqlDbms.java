@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.embeddable.hsql;
+package com.danidemi.jlubricant.embeddable.hsql.core;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 

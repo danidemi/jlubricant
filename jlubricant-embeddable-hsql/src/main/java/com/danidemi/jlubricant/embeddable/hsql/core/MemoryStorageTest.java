@@ -1,15 +1,13 @@
-package com.danidemi.jlubricant.embeddable.hsql;
+package com.danidemi.jlubricant.embeddable.hsql.core;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.*;
 
 public class MemoryStorageTest extends MemoryStorage {
 

@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.embeddable.hsql;
+package com.danidemi.jlubricant.embeddable.hsql.core;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;

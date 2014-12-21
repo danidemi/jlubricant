@@ -1,8 +1,8 @@
-package com.danidemi.jlubricant.embeddable.hsql;
+package com.danidemi.jlubricant.embeddable.hsql.core;
 
 import java.io.File;
 
-import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.LocationConfiguration;
+import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDbms.LocationConfiguration;
 
 public class FileSystemStorage extends Storage {
 

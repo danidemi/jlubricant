@@ -1,16 +1,12 @@
-package com.danidemi.jlubricant.embeddable.hsql;
+package com.danidemi.jlubricant.embeddable.hsql.core;
 
 import static java.lang.String.format;
 
 import java.io.PrintWriter;
-import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -26,7 +22,7 @@ import com.danidemi.jlubricant.embeddable.database.core.Account;
 import com.danidemi.jlubricant.embeddable.database.core.BaseAccount;
 import com.danidemi.jlubricant.embeddable.database.core.ObservableAccount;
 import com.danidemi.jlubricant.embeddable.database.core.Observer;
-import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.LocationConfiguration;
+import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDbms.LocationConfiguration;
 import com.danidemi.jlubricant.utils.hoare.Arguments;
 
 public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSource {

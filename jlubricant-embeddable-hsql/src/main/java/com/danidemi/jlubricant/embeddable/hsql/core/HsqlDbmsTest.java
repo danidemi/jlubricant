@@ -1,15 +1,11 @@
-package com.danidemi.jlubricant.embeddable.hsql;
+package com.danidemi.jlubricant.embeddable.hsql.core;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.sql.DataSource;
-
-import org.hsqldb.lib.HsqlList;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -17,12 +13,6 @@ import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
 import com.danidemi.jlubricant.embeddable.ServerException;
-import com.danidemi.jlubricant.embeddable.ServerStartException;
-import com.danidemi.jlubricant.embeddable.ServerStopException;
-import com.danidemi.jlubricant.embeddable.hsql.HsqlDatabaseDescriptor;
-import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms;
-import com.danidemi.jlubricant.embeddable.hsql.MemoryStorage;
-import com.danidemi.jlubricant.embeddable.hsql.FileSystemStorage;
 
 public class HsqlDbmsTest {
 

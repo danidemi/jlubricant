@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.embeddable.hsql;
+package com.danidemi.jlubricant.embeddable.hsql.core;
 
 
 public class HsqlCompatibility extends Compatibility {
