@@ -90,7 +90,7 @@ public class SetUserContribution implements PostStartContribution {
 				log.info("User " + rs.getObject(1) + " " + rs.getObject(2));
 			}
 		} catch (SQLException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
 
 	}
