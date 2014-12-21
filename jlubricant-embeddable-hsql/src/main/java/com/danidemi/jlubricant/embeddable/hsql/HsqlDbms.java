@@ -2,6 +2,7 @@ package com.danidemi.jlubricant.embeddable.hsql;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -308,6 +309,15 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		bds.setPassword(hsqlDatabase.getPassword());
 		bds.setUrl(hsqlDatabase.getUrl());
 		return bds;
+	}
+	
+	/**
+	 * Close the fast datasource.
+
+	 */
+	public void closeFastDataSource(DataSource ds) throws SQLException {
+		BasicDataSource bds = (BasicDataSource) ds;
+		bds.close();
 	}
 
 	// ===============================================================

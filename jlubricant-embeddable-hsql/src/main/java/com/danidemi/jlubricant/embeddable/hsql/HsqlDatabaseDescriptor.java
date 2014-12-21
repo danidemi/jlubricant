@@ -34,12 +34,18 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	private final String dbName;
 	private final Storage storage;
 	private final Compatibility compatibility;
+	
+	/** The account that will be authorized to access the database once the db completes the start up phase. */
 	private final Account desiredAccount;
+	
+	/** The account that should be used to access the database. During startup phase the two accounts could not match. 
+	 * I.e. during startup the account to use is the default account ("SA" for HSQL) and just after creating the desired user, it can be used. */
+	private Account currentAccount;
+	
 	private HsqlDbms dbms;
 	private HsqlDatabaseStatus currentStatus;
 	private DataSource delegatedDataSource;
 	
-	private Account currentAccount;
 		
 	public HsqlDatabaseDescriptor(
 			String dbName, 
@@ -71,7 +77,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	// lyfecycle
 	// ------------------------------------------------------------
 	
-	/** Invoked during start up phase to give the database the chace to partecipate in the server configuration. */
+	/** Invoked during start up phase to give the database the chance to participate in the server configuration. */
 	public void contributeToServerConfiguration(LocationConfiguration registration) {
 		storage.contributeToServerConfiguration(this, registration);
 	}	
@@ -86,7 +92,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		
 			
 			log.info("Creating new user {}", desiredAccount);
-			try (Connection con = getPrivateConnection()) {
+			try (Connection con = getConnectionWithCurrentAccount()) {
 	
 				ResultSet rs;
 	
@@ -134,7 +140,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 					log.info("User " + rs.getObject(1) + " " + rs.getObject(2));
 				}
 				
-				currentAccount = desiredAccount;
+				setCurrentAccountAndNotify(desiredAccount);
 	
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
@@ -142,7 +148,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 		
 		
-		try (Connection con = getPrivateConnection()) {
+		try (Connection con = getConnectionWithCurrentAccount()) {
 			CallableStatement call = con
 					.prepareCall("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS");
 			ResultSet rs = call.executeQuery();
@@ -155,6 +161,20 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	}	
 	
+	private void setCurrentAccountAndNotify(Account newCurrentAccount) {
+		currentAccount = newCurrentAccount;
+		if(this.delegatedDataSource!=null){
+			try {
+				dbms.closeFastDataSource(delegatedDataSource);
+			} catch (SQLException e) {
+				log.warn("It was not possible to close the current datasource, due to: {}. Ignoring", e.getMessage(), e);
+			} finally {
+				delegatedDataSource = null;
+			}
+		}
+		
+	}
+
 	void goReady() {
 		currentStatus = READY;
 	}
@@ -188,7 +208,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	@Override
 	public String getPassword() {
-		return desiredAccount.getPassword();
+		return currentAccount.getPassword();
 	}
 
 	@Override
@@ -198,7 +218,8 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	@Override
 	public String getUsername() {
-		return desiredAccount.getUsername();
+		//return desiredAccount.getUsername();
+		return currentAccount.getUsername();
 	}	
 
 	
@@ -217,7 +238,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	
 	void executePrivateStm(String statement) {
 
-		try (Connection conn = getPrivateConnection(); Statement stm = conn.createStatement()) {
+		try (Connection conn = getConnectionWithCurrentAccount(); Statement stm = conn.createStatement()) {
 			stm.execute(statement);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -267,13 +288,14 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		
 	// Datasource
 
-	void ensureFastDatasource() {
+	DataSource ensureFastDatasource() {
 		if(delegatedDataSource==null){
 			delegatedDataSource = dbms.getFastDataSource(this);
 			if(delegatedDataSource == null){
 				throw new RuntimeException("Unable to obtain datasource from dbms");
 			}
 		}
+		return delegatedDataSource;
 	}
 	
 	public PrintWriter getLogWriter() throws SQLException {
@@ -305,13 +327,8 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	 * During the start up phase, you need to have a connection to the db, even though it is not yet publicly declared 'connected'.
 	 * @throws SQLException 
 	 */
-	private Connection getPrivateConnection() throws SQLException{
-		try {
-			Class.forName(jdbcDriver.class.getName());
-		} catch (ClassNotFoundException e) {
-			// this should really not happen
-		}
-		return DriverManager.getConnection(getUrl(), currentAccount.getUsername(), currentAccount.getPassword());
+	Connection getConnectionWithCurrentAccount() throws SQLException{
+		return ensureFastDatasource().getConnection();		
 	}
 
 	public void setLoginTimeout(int seconds) throws SQLException {

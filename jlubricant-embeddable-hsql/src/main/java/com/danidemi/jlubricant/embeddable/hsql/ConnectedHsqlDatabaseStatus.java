@@ -3,7 +3,7 @@ package com.danidemi.jlubricant.embeddable.hsql;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectedHsqlDatabaseStatus implements HsqlDatabaseStatus {
+class ConnectedHsqlDatabaseStatus extends HsqlDatabaseStatus {
 
 	private HsqlDatabaseDescriptor master;
 		
@@ -14,8 +14,7 @@ public class ConnectedHsqlDatabaseStatus implements HsqlDatabaseStatus {
 
 	@Override
 	public Connection getConnection() throws SQLException {
-		master.ensureFastDatasource();
-		return master.delegatedDataSource().getConnection();
+		return master.getConnectionWithCurrentAccount();
 	}
 
 }
