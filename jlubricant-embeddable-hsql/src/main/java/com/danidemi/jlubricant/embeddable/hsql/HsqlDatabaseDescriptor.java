@@ -21,7 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
+import com.danidemi.jlubricant.embeddable.database.core.Account;
 import com.danidemi.jlubricant.embeddable.database.core.BaseAccount;
+import com.danidemi.jlubricant.embeddable.database.core.ObservableAccount;
+import com.danidemi.jlubricant.embeddable.database.core.Observer;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.LocationConfiguration;
 import com.danidemi.jlubricant.utils.hoare.Arguments;
 
@@ -41,7 +44,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	
 	/** The account that should be used to access the database. During startup phase the two accounts could not match. 
 	 * I.e. during startup the account to use is the default account ("SA" for HSQL) and just after creating the desired user, it can be used. */
-	private BaseAccount currentAccount;
+	private ObservableAccount currentAccount;
 	
 	private HsqlDbms dbms;
 	private HsqlDatabaseStatus currentStatus;
@@ -64,14 +67,31 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		Arguments.checkNotNull(compatibility, "Please provide a %s.", Compatibility.class.getSimpleName());
 		Arguments.checkNotNull(storage, "Please provide a %s.", Storage.class.getSimpleName());
 		
-		currentAccount = new BaseAccount("SA","");
-		desiredAccount = new BaseAccount(mainAccountUsername, mainAccountPassword);
-		
-		
 		this.dbName = dbName;
 		this.storage = storage;
 		this.compatibility = compatibility;
 		this.currentStatus = NOT_READY;
+		
+		desiredAccount = new BaseAccount(mainAccountUsername, mainAccountPassword);
+		
+		currentAccount = new ObservableAccount( new BaseAccount("SA","") );
+		currentAccount.registerObserver(new Observer() {
+			
+			@Override
+			public void update() {
+				// if the account changed, we should recreate the data source.
+				if(delegatedDataSource!=null){
+					try {
+						dbms.closeFastDataSource(delegatedDataSource);
+					} catch (SQLException e) {
+						log.warn("It was not possible to close the current datasource, due to: {}. Ignoring", e.getMessage(), e);
+					} finally {
+						delegatedDataSource = null;
+					}
+				}
+			}
+		});
+		
 	}
 	
 	// ------------------------------------------------------------
@@ -141,7 +161,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 					log.info("User " + rs.getObject(1) + " " + rs.getObject(2));
 				}
 				
-				setCurrentAccountAndNotify(desiredAccount);
+				currentAccount.set(desiredAccount);
 	
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
@@ -162,19 +182,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	}	
 	
-	private void setCurrentAccountAndNotify(BaseAccount newCurrentAccount) {
-		currentAccount = newCurrentAccount;
-		if(this.delegatedDataSource!=null){
-			try {
-				dbms.closeFastDataSource(delegatedDataSource);
-			} catch (SQLException e) {
-				log.warn("It was not possible to close the current datasource, due to: {}. Ignoring", e.getMessage(), e);
-			} finally {
-				delegatedDataSource = null;
-			}
-		}
-		
-	}
+
 
 	void goReady() {
 		currentStatus = READY;
