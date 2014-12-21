@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
+import com.danidemi.jlubricant.embeddable.database.core.BaseAccount;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms.LocationConfiguration;
 import com.danidemi.jlubricant.utils.hoare.Arguments;
 
@@ -36,11 +37,11 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	private final Compatibility compatibility;
 	
 	/** The account that will be authorized to access the database once the db completes the start up phase. */
-	private final Account desiredAccount;
+	private final BaseAccount desiredAccount;
 	
 	/** The account that should be used to access the database. During startup phase the two accounts could not match. 
 	 * I.e. during startup the account to use is the default account ("SA" for HSQL) and just after creating the desired user, it can be used. */
-	private Account currentAccount;
+	private BaseAccount currentAccount;
 	
 	private HsqlDbms dbms;
 	private HsqlDatabaseStatus currentStatus;
@@ -63,8 +64,8 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		Arguments.checkNotNull(compatibility, "Please provide a %s.", Compatibility.class.getSimpleName());
 		Arguments.checkNotNull(storage, "Please provide a %s.", Storage.class.getSimpleName());
 		
-		currentAccount = new Account("SA","");
-		desiredAccount = new Account(mainAccountUsername, mainAccountPassword);
+		currentAccount = new BaseAccount("SA","");
+		desiredAccount = new BaseAccount(mainAccountUsername, mainAccountPassword);
 		
 		
 		this.dbName = dbName;
@@ -161,7 +162,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	}	
 	
-	private void setCurrentAccountAndNotify(Account newCurrentAccount) {
+	private void setCurrentAccountAndNotify(BaseAccount newCurrentAccount) {
 		currentAccount = newCurrentAccount;
 		if(this.delegatedDataSource!=null){
 			try {
@@ -360,28 +361,6 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	@Override
 	public String toString() {
 		return format("%s/%s/%s", dbName, this.compatibility, this.storage);
-	}
-	
-	private class Account {
-		private String password;
-		private String username;
-		public Account(String username, String password) {
-			super();
-			Arguments.checkNotBlank(username);
-			Arguments.checkNotNull(password);
-			this.password = password;
-			this.username = username;
-		}
-		public String getUsername() {
-			return username;
-		}
-		public String getPassword() {
-			return password;
-		}
-		@Override
-		public String toString() {
-			return "[" + username + "/" + (password.length() == 0 ? "<blank>" : password) + "]";
-		}
 	}
 	
 }
