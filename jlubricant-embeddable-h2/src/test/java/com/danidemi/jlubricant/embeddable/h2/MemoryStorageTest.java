@@ -1,8 +1,9 @@
 package com.danidemi.jlubricant.embeddable.h2;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 public class MemoryStorageTest {
 

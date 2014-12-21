@@ -1,10 +1,11 @@
 package com.danidemi.jlubricant.embeddable.h2;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.junit.Rule;
@@ -15,8 +16,6 @@ import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.ServerException;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
-
-import java.sql.SQLException;
 
 public class H2DbmsTest {
 	

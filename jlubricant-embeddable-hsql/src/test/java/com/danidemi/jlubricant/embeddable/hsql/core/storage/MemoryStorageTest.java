@@ -1,11 +1,7 @@
 package com.danidemi.jlubricant.embeddable.hsql.core.storage;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import org.junit.Test;
 import org.skife.jdbi.v2.DBI;
@@ -15,9 +11,12 @@ import org.skife.jdbi.v2.util.IntegerMapper;
 import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDbms;
 import com.danidemi.jlubricant.embeddable.hsql.core.compatibility.HsqlCompatibility;
-import com.danidemi.jlubricant.embeddable.hsql.core.storage.MemoryStorage;
 
-public class MemoryStorageTest extends MemoryStorage {
+
+
+
+
+public class MemoryStorageTest {
 
 	@Test
 	public void shouldWorkInMemory() throws Exception {

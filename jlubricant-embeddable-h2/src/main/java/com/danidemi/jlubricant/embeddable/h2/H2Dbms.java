@@ -3,7 +3,6 @@ package com.danidemi.jlubricant.embeddable.h2;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,9 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.danidemi.jlubricant.embeddable.BasicDataSource;
-import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.Dbms;
 import com.danidemi.jlubricant.embeddable.EmbeddableServer;
+import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
 

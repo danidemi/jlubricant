@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
-import com.danidemi.jlubricant.embeddable.ServerStartException;
 
 public class H2DatabaseWorking implements JdbcDatabaseDescriptor {
 	

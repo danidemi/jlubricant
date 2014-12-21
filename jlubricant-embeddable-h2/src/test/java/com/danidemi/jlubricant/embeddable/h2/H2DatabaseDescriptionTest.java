@@ -1,8 +1,9 @@
 package com.danidemi.jlubricant.embeddable.h2;
 
-import org.junit.Test;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.*;
+
+import org.junit.Test;
 
 public class H2DatabaseDescriptionTest {
 
