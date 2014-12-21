@@ -10,6 +10,12 @@ import org.slf4j.Marker;
  *
  */
 public class LubricantLogger implements Logger {
+	
+	public static final Level TRACE = new Trace();
+	public static final Level DEBUG = new Debug();
+	public static final Level INFO = new Info();
+	public static final Level WARN = new Warn();
+	public static final Level ERROR = new Error();
 
 	private org.slf4j.Logger logger;
 	

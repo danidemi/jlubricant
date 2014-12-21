@@ -1,0 +1,3 @@
+jlubricant-slf4j offers various utilities to improve SLF4J logging.
+
+logger.debug(LubricantLogger.ERROR, "hello");
