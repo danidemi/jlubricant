@@ -5,18 +5,18 @@ import static java.lang.String.format;
 import java.io.PrintWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hsqldb.jdbcDriver;
-import org.hsqldb.lib.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,10 +38,6 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	private final String dbName;
 	private final Storage storage;
-	private final Compatibility compatibility;
-	
-	/** The account that will be authorized to access the database once the db completes the start up phase. */
-	private final BaseAccount desiredAccount;
 	
 	/** The account that should be used to access the database. During startup phase the two accounts could not match. 
 	 * I.e. during startup the account to use is the default account ("SA" for HSQL) and just after creating the desired user, it can be used. */
@@ -51,7 +47,15 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	private HsqlDatabaseStatus currentStatus;
 	private DataSource delegatedDataSource;
 	
-		
+	private Deque<PostStartContribution> postStartContributions;
+	
+	/**
+	 * @param dbName
+	 * @param storage
+	 * @param compatibility
+	 * @param mainAccountUsername	The username one would use to connect after startup.
+	 * @param mainAccountPassword	The password one would use to connect after startup.
+	 */
 	public HsqlDatabaseDescriptor(
 			String dbName, 
 			Storage storage,
@@ -70,11 +74,8 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		
 		this.dbName = dbName;
 		this.storage = storage;
-		this.compatibility = compatibility;
 		this.currentStatus = NOT_READY;
-		
-		desiredAccount = new BaseAccount(mainAccountUsername, mainAccountPassword);
-		
+				
 		currentAccount = new ObservableAccount( new BaseAccount("SA","") );
 		currentAccount.registerObserver(new Observer() {
 			
@@ -94,6 +95,10 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		});
 		
 		delegatedDataSource = null;
+		
+		postStartContributions = new LinkedList<PostStartContribution>();
+		postStartContributions.push(compatibility);
+		postStartContributions.push(new SetUserContribution(new BaseAccount(mainAccountUsername, mainAccountPassword)));
 	}
 	
 	
@@ -110,80 +115,11 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	/** Invoked after server has started up. Here the database can connect to himself. */
 	public void postStartSetUp() throws SQLException {
 		
-		if (compatibility != null) {
-			compatibility.apply(this);
+		PostStartContribution poll;
+		while( (poll = postStartContributions.poll()) != null){
+			poll.apply(this);
 		}
-
 		
-			
-			log.info("Creating new user {}", desiredAccount);
-			try (Connection con = getFastConnection()) {
-	
-				ResultSet rs;
-	
-				// first of all'let's check whether the specified username already
-				// exists.
-				// PreparedStatement prepareStatement =
-				// con.prepareStatement("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS");
-				// rs = prepareStatement.executeQuery();
-				// while(rs.next()){
-				// int columnCount = rs.getMetaData().getColumnCount();
-				// for(int i=1; i<=columnCount; i++){
-				// System.out.println(rs.getMetaData().getColumnName(i));
-				// }
-				// }
-	
-				PreparedStatement prepareStatement = con
-						.prepareStatement("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SYSTEM_USERS WHERE USER_NAME = ?");
-				prepareStatement.setString(1, desiredAccount.getUsername());
-				rs = prepareStatement.executeQuery();
-				rs.next();
-				boolean existingUser = rs.getLong(1) == 1L;
-				rs.close();
-				prepareStatement.close();
-	
-				PreparedStatement call;
-				if (existingUser) {
-					// throw new
-					// IllegalArgumentException("Cannot change password to an existing user '"
-					// + username + "'");
-					 log.info("User exists, altering it to use the new password.");
-					 call = con.prepareStatement("ALTER USER \"" + desiredAccount.getUsername() +
-					 "\" SET PASSWORD '" + desiredAccount.getPassword() + "'");
-					 call.execute();
-				} else {
-					log.info("User does not exists, granting it ADMIN privileges.");
-					call = con.prepareStatement("CREATE USER \"" + desiredAccount.getUsername()
-							+ "\" PASSWORD '" + desiredAccount.getPassword() + "' ADMIN");
-					call.execute();
-				}
-	
-				call = con
-						.prepareCall("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS");
-				rs = call.executeQuery();
-				while (rs.next()) {
-					log.info("User " + rs.getObject(1) + " " + rs.getObject(2));
-				}
-				
-				currentAccount.set(desiredAccount);
-	
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-
-		
-		
-		try (Connection con = getFastConnection()) {
-			CallableStatement call = con
-					.prepareCall("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS");
-			ResultSet rs = call.executeQuery();
-			while (rs.next()) {
-				log.info("User " + rs.getObject(1) + " " + rs.getObject(2));
-			}
-		} catch (SQLException e) {
-			new RuntimeException(e);
-		}
-
 	}	
 	
 
@@ -263,8 +199,12 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	@Override
 	public String toString() {
-		return format("%s/%s/%s", dbName, this.compatibility, this.storage);
+		return format("%s/%s", dbName, this.storage);
 	}
+	
+	public void setAccount(Account newAccount) {
+		this.currentAccount.set(newAccount);
+	}	
 	
 	// ------------------------------------------------------------
 	// others
@@ -279,45 +219,6 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	}
 	
-	/** 
-	 * Enables the syntax for the specific database.
-	 * Under the hood it executes a {@code set database sql syntax <syntax> true } statement.
-	 */
-	void setSyntax(String syntax) {
-		executeStatement("set database sql syntax "
-		+ syntax
-		+ " "
-		+ "true");
-	}
-
-	/** 
-	 * Enables MVCC.
-	 */
-	void setTransactionControl() {
-		executeStatement("set database transaction control");
-	}
-
-	void setTransactionRollbackOnConflict(boolean setTransactionRollbackOnConflict) {
-		executeStatement("set database transaction rollback on conflict "
-		+ setTransactionRollbackOnConflict);
-	}
-
-	void setDatabaseSqlConcatNulls(boolean setDatabaseSqlConcatNulls) {
-		executeStatement("set database sql concat nulls "
-		+ setDatabaseSqlConcatNulls);
-	}
-
-	void setDatabaseSqlNullsFirst(boolean setDatabaseSqlNullsFirst) {
-		executeStatement("set database sql nulls first "
-		+ setDatabaseSqlNullsFirst);
-	}
-
-	void setDatabaseSqlUniqueNulls(boolean setDatabaseSqlUniqueNulls) {
-		executeStatement("set database sql unique nulls "
-		+ setDatabaseSqlUniqueNulls);
-	}
-
-
 		
 	// Datasource
 	

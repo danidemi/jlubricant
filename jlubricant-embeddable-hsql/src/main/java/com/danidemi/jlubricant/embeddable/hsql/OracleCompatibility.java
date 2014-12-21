@@ -11,12 +11,12 @@ public class OracleCompatibility extends Compatibility {
 
 	@Override
 	public void apply(HsqlDatabaseDescriptor hsqlDatabase) throws SQLException {
-		hsqlDatabase.setSyntax("ORA");
-		hsqlDatabase.setTransactionControl();
-		hsqlDatabase.setTransactionRollbackOnConflict(true);
-		hsqlDatabase.setDatabaseSqlUniqueNulls(true);
-		hsqlDatabase.setDatabaseSqlNullsFirst(false);
-		hsqlDatabase.setDatabaseSqlConcatNulls(true);		
+		setSyntax(hsqlDatabase, "ORA");
+		setTransactionControl(hsqlDatabase);
+		setTransactionRollbackOnConflict(hsqlDatabase, true);
+		setDatabaseSqlUniqueNulls(hsqlDatabase, true);
+		setDatabaseSqlNullsFirst(hsqlDatabase, false);
+		setDatabaseSqlConcatNulls(hsqlDatabase, true);		
 	}
 
 }

@@ -20,8 +20,8 @@ public class ObservableAccount implements Account {
 		observers.add(observer);
 	}
 
-	public void set(BaseAccount account) {
-		this.account = account;
+	public void set(Account newAccount) {
+		this.account = newAccount;
 		if(observers != null){
 			for (Observer observer : observers) {
 				observer.update();							
