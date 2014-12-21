@@ -43,8 +43,8 @@ public class HsqlDbmsTest {
 		
 		dbms.start();
 
-		db.executePublicStm("CREATE TABLE PEOPLE(NAME varchar(164))");
-		db.executePublicStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
+		db.executeStatement("CREATE TABLE PEOPLE(NAME varchar(164))");
+		db.executeStatement("INSERT INTO PEOPLE(NAME)VALUES('John')");
 				
 	}
 	
@@ -57,8 +57,8 @@ public class HsqlDbmsTest {
 		
 		dbms.start();
 		
-		db.executePublicStm("CREATE TABLE PEOPLE(NAME varchar(164))");
-		db.executePublicStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
+		db.executeStatement("CREATE TABLE PEOPLE(NAME varchar(164))");
+		db.executeStatement("INSERT INTO PEOPLE(NAME)VALUES('John')");
 		
 	}
 		
@@ -73,8 +73,8 @@ public class HsqlDbmsTest {
 		dbms.start();
 		
 		HsqlDatabaseDescriptor dbByName = dbms.dbByName("oracle-like");
-		dbByName.executePublicStm("CREATE TABLE PEOPLE(NAME varchar(164))");
-		dbByName.executePublicStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
+		dbByName.executeStatement("CREATE TABLE PEOPLE(NAME varchar(164))");
+		dbByName.executeStatement("INSERT INTO PEOPLE(NAME)VALUES('John')");
 				
 	}
 	
@@ -114,8 +114,8 @@ public class HsqlDbmsTest {
 		
 		for(int i=0; i<maxDbs; i++){
 			HsqlDatabaseDescriptor dbByName = dbms.dbByName("db" + i);
-			dbByName.executePublicStm("CREATE TABLE PEOPLE(NAME varchar(164))");
-			dbByName.executePublicStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
+			dbByName.executeStatement("CREATE TABLE PEOPLE(NAME varchar(164))");
+			dbByName.executeStatement("INSERT INTO PEOPLE(NAME)VALUES('John')");
 		}		
 				
 	}
@@ -133,8 +133,8 @@ public class HsqlDbmsTest {
 		dbms.start();
 		
 		HsqlDatabaseDescriptor dbByName = dbms.dbByName("oracle-like-2");
-		dbByName.executePublicStm("CREATE TABLE PEOPLE(NAME varchar(164))");
-		dbByName.executePublicStm("INSERT INTO PEOPLE(NAME)VALUES('John')");
+		dbByName.executeStatement("CREATE TABLE PEOPLE(NAME varchar(164))");
+		dbByName.executeStatement("INSERT INTO PEOPLE(NAME)VALUES('John')");
 
 	}
 

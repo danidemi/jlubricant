@@ -21,8 +21,8 @@ public class MemoryStorageTest extends MemoryStorage {
 		HsqlDbms dbms = new HsqlDbms( memoryDb );		
 		dbms.start();
 		
-		memoryDb.executePublicStm("CREATE TABLE PEOPLE(NAME VARCHAR(64))");
-		memoryDb.executePublicStm("INSERT INTO PEOPLE(NAME) VALUES('John')");
+		memoryDb.executeStatement("CREATE TABLE PEOPLE(NAME VARCHAR(64))");
+		memoryDb.executeStatement("INSERT INTO PEOPLE(NAME) VALUES('John')");
 		
 		Connection newConnection = memoryDb.getConnection();
 		PreparedStatement prepareStatement = newConnection.prepareStatement("SELECT COUNT(*) FROM PEOPLE");

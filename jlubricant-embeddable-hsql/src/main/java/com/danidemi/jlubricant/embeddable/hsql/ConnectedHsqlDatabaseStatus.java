@@ -14,7 +14,7 @@ class ConnectedHsqlDatabaseStatus extends HsqlDatabaseStatus {
 
 	@Override
 	public Connection getConnection() throws SQLException {
-		return master.getConnectionWithCurrentAccount();
+		return master.getFastConnection();
 	}
 
 }

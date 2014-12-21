@@ -20,6 +20,7 @@ import org.hsqldb.lib.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.danidemi.jlubricant.embeddable.Dbms;
 import com.danidemi.jlubricant.embeddable.JdbcDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.database.core.Account;
 import com.danidemi.jlubricant.embeddable.database.core.BaseAccount;
@@ -92,7 +93,10 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 			}
 		});
 		
+		delegatedDataSource = null;
 	}
+	
+	
 	
 	// ------------------------------------------------------------
 	// lyfecycle
@@ -113,7 +117,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		
 			
 			log.info("Creating new user {}", desiredAccount);
-			try (Connection con = getConnectionWithCurrentAccount()) {
+			try (Connection con = getFastConnection()) {
 	
 				ResultSet rs;
 	
@@ -169,7 +173,7 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 		
 		
-		try (Connection con = getConnectionWithCurrentAccount()) {
+		try (Connection con = getFastConnection()) {
 			CallableStatement call = con
 					.prepareCall("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_USERS");
 			ResultSet rs = call.executeQuery();
@@ -229,75 +233,17 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 	public String getUsername() {
 		//return desiredAccount.getUsername();
 		return currentAccount.getUsername();
-	}	
-
-	
-	// ------------------------------------------------------------
-	// others
-	// ------------------------------------------------------------
-	void executePublicStm(String statement) {
-
-		try (Connection conn = getConnection(); Statement stm = conn.createStatement()) {
-			stm.execute(statement);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
 	}
 	
-	void executePrivateStm(String statement) {
-
-		try (Connection conn = getConnectionWithCurrentAccount(); Statement stm = conn.createStatement()) {
-			stm.execute(statement);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
-	}	
-
-	/** 
-	 * Enables the syntax for the specific database.
-	 * Under the hood it executes a {@code set database sql syntax <syntax> true } statement.
+	
+	// ------------------------------------------------------------
+	// delegate data source
+	// ------------------------------------------------------------	
+	
+	/**
+	 * Returns (and init if needed) a datasource backed by {@link Dbms}'s {@link DataSource}. 
 	 */
-	void setSyntax(String syntax) {
-		executePrivateStm("set database sql syntax "
-				+ syntax
-				+ " "
-				+ "true");
-	}
-
-	/** 
-	 * Enables MVCC.
-	 */
-	void setTransactionControl() {
-		executePrivateStm("set database transaction control");
-	}
-
-	void setTransactionRollbackOnConflict(boolean setTransactionRollbackOnConflict) {
-		executePrivateStm("set database transaction rollback on conflict "
-				+ setTransactionRollbackOnConflict);
-	}
-
-	void setDatabaseSqlConcatNulls(boolean setDatabaseSqlConcatNulls) {
-		executePrivateStm("set database sql concat nulls "
-				+ setDatabaseSqlConcatNulls);
-	}
-
-	void setDatabaseSqlNullsFirst(boolean setDatabaseSqlNullsFirst) {
-		executePrivateStm("set database sql nulls first "
-				+ setDatabaseSqlNullsFirst);
-	}
-
-	void setDatabaseSqlUniqueNulls(boolean setDatabaseSqlUniqueNulls) {
-		executePrivateStm("set database sql unique nulls "
-				+ setDatabaseSqlUniqueNulls);
-	}
-
-
-		
-	// Datasource
-
-	DataSource ensureFastDatasource() {
+	DataSource getFastDatasource() {
 		if(delegatedDataSource==null){
 			delegatedDataSource = dbms.getFastDataSource(this);
 			if(delegatedDataSource == null){
@@ -307,68 +253,127 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 		return delegatedDataSource;
 	}
 	
-	public PrintWriter getLogWriter() throws SQLException {
-		ensureFastDatasource();
-		return delegatedDataSource.getLogWriter();
-	}
-
-
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		ensureFastDatasource();
-		return delegatedDataSource.unwrap(iface);
-	}
-
-	public void setLogWriter(PrintWriter out) throws SQLException {
-		ensureFastDatasource();
-		delegatedDataSource.setLogWriter(out);
-	}
-
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		ensureFastDatasource();
-		return delegatedDataSource.isWrapperFor(iface);
-	}
-
-	public Connection getConnection() throws SQLException {
-		return currentStatus.getConnection();
-	}
-	
 	/**
-	 * During the start up phase, you need to have a connection to the db, even though it is not yet publicly declared 'connected'.
+	 * Return a {@link Connection} obtained from the fast datasource.
 	 * @throws SQLException 
 	 */
-	Connection getConnectionWithCurrentAccount() throws SQLException{
-		return ensureFastDatasource().getConnection();		
-	}
+	Connection getFastConnection() throws SQLException{
+		return getFastDatasource().getConnection();		
+	}	
 
-	public void setLoginTimeout(int seconds) throws SQLException {
-		ensureFastDatasource();
-		delegatedDataSource.setLoginTimeout(seconds);
-	}
-
-	public Connection getConnection(String username, String password)
-			throws SQLException {
-		ensureFastDatasource();
-		return delegatedDataSource.getConnection(username, password);
-	}
-
-	public int getLoginTimeout() throws SQLException {
-		ensureFastDatasource();
-		return delegatedDataSource.getLoginTimeout();
-	}
-
-	public java.util.logging.Logger getParentLogger()
-			throws SQLFeatureNotSupportedException {
-		ensureFastDatasource();
-		return delegatedDataSource.getParentLogger();
-	}
-
-	public DataSource delegatedDataSource() {
-		return delegatedDataSource;
-	}
-	
 	@Override
 	public String toString() {
 		return format("%s/%s/%s", dbName, this.compatibility, this.storage);
 	}
 	
+	// ------------------------------------------------------------
+	// others
+	// ------------------------------------------------------------
+	void executeStatement(String statement) {
+
+		try (Connection conn = getFastConnection(); Statement stm = conn.createStatement()) {
+			stm.execute(statement);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+	
+	/** 
+	 * Enables the syntax for the specific database.
+	 * Under the hood it executes a {@code set database sql syntax <syntax> true } statement.
+	 */
+	void setSyntax(String syntax) {
+		executeStatement("set database sql syntax "
+		+ syntax
+		+ " "
+		+ "true");
+	}
+
+	/** 
+	 * Enables MVCC.
+	 */
+	void setTransactionControl() {
+		executeStatement("set database transaction control");
+	}
+
+	void setTransactionRollbackOnConflict(boolean setTransactionRollbackOnConflict) {
+		executeStatement("set database transaction rollback on conflict "
+		+ setTransactionRollbackOnConflict);
+	}
+
+	void setDatabaseSqlConcatNulls(boolean setDatabaseSqlConcatNulls) {
+		executeStatement("set database sql concat nulls "
+		+ setDatabaseSqlConcatNulls);
+	}
+
+	void setDatabaseSqlNullsFirst(boolean setDatabaseSqlNullsFirst) {
+		executeStatement("set database sql nulls first "
+		+ setDatabaseSqlNullsFirst);
+	}
+
+	void setDatabaseSqlUniqueNulls(boolean setDatabaseSqlUniqueNulls) {
+		executeStatement("set database sql unique nulls "
+		+ setDatabaseSqlUniqueNulls);
+	}
+
+
+		
+	// Datasource
+	
+	@Override
+	public PrintWriter getLogWriter() throws SQLException {
+		getFastDatasource();
+		return delegatedDataSource.getLogWriter();
+	}
+
+	@Override
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		getFastDatasource();
+		return delegatedDataSource.unwrap(iface);
+	}
+
+	@Override
+	public void setLogWriter(PrintWriter out) throws SQLException {
+		getFastDatasource();
+		delegatedDataSource.setLogWriter(out);
+	}
+
+	@Override
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		getFastDatasource();
+		return delegatedDataSource.isWrapperFor(iface);
+	}
+
+	@Override
+	public Connection getConnection() throws SQLException {
+		return currentStatus.getConnection();
+	}
+	
+	@Override
+	public void setLoginTimeout(int seconds) throws SQLException {
+		getFastDatasource();
+		delegatedDataSource.setLoginTimeout(seconds);
+	}
+
+	@Override
+	public Connection getConnection(String username, String password)
+			throws SQLException {
+		getFastDatasource();
+		return delegatedDataSource.getConnection(username, password);
+	}
+
+	@Override
+	public int getLoginTimeout() throws SQLException {
+		getFastDatasource();
+		return delegatedDataSource.getLoginTimeout();
+	}
+
+	@Override
+	public java.util.logging.Logger getParentLogger()
+			throws SQLFeatureNotSupportedException {
+		getFastDatasource();
+		return delegatedDataSource.getParentLogger();
+	}
+		
 }
