@@ -2,6 +2,10 @@ package com.danidemi.jlubricant.embeddable.hsql;
 
 import java.sql.SQLException;
 
+/**
+ * HSQL is able to "emulate" other databases. 
+ * Implementations of this interface should be able to configure an HSQL database to emulate a specific database. 
+ */
 public abstract class Compatibility {
 	
 	/**

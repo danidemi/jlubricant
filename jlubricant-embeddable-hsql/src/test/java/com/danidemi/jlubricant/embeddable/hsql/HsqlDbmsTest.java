@@ -22,7 +22,6 @@ import com.danidemi.jlubricant.embeddable.ServerStopException;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.hsql.HsqlDbms;
 import com.danidemi.jlubricant.embeddable.hsql.MemoryStorage;
-import com.danidemi.jlubricant.embeddable.hsql.OracleCompatibility;
 import com.danidemi.jlubricant.embeddable.hsql.FileSystemStorage;
 
 public class HsqlDbmsTest {

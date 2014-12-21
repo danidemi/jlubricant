@@ -299,8 +299,6 @@ public class HsqlDatabaseDescriptor implements JdbcDatabaseDescriptor, DataSourc
 
 	public Connection getConnection() throws SQLException {
 		return currentStatus.getConnection();
-//		ensureFastDatasource();
-//		return delegatedDataSource.getConnection();
 	}
 	
 	/**
