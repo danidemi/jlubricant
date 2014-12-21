@@ -1,1 +1,5 @@
-This is for the main project
+JLubricant
+
+	JLubricant enables you to build applications quicker, providing you: 
+	* "accelerators" that improves the usage of existing libraries;
+	* and "embeddables" that allows you to quickly set up the server components of an application.

@@ -1,3 +1,7 @@
-jlubricant-slf4j offers various utilities to improve SLF4J logging.
+jlubricant-slf4j 
 
-logger.debug(LubricantLogger.ERROR, "hello");
+	Offers various utilities to improve SLF4J logging.
+	
+	It allows you to specify the log level at runtime.
+
+		logger.debug(LubricantLogger.ERROR, "log");
