@@ -1,6 +1,9 @@
-package com.danidemi.jlubricant.embeddable.hsql.core;
+package com.danidemi.jlubricant.embeddable.hsql.core.compatibility;
 
 import java.sql.SQLException;
+
+import com.danidemi.jlubricant.embeddable.hsql.core.Compatibility;
+import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDatabaseDescriptor;
 
 public class Db2Compatibility extends Compatibility {
 

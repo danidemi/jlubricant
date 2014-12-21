@@ -1,5 +1,8 @@
-package com.danidemi.jlubricant.embeddable.hsql.core;
+package com.danidemi.jlubricant.embeddable.hsql.core.storage;
 
+import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDatabaseDescriptor;
+import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDbms;
+import com.danidemi.jlubricant.embeddable.hsql.core.Storage;
 import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDbms.LocationConfiguration;
 
 public class MemoryStorage extends Storage {

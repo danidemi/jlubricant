@@ -13,6 +13,10 @@ import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
 import com.danidemi.jlubricant.embeddable.ServerException;
+import com.danidemi.jlubricant.embeddable.hsql.core.compatibility.HsqlCompatibility;
+import com.danidemi.jlubricant.embeddable.hsql.core.compatibility.OracleCompatibility;
+import com.danidemi.jlubricant.embeddable.hsql.core.storage.FileSystemStorage;
+import com.danidemi.jlubricant.embeddable.hsql.core.storage.MemoryStorage;
 
 public class HsqlDbmsTest {
 

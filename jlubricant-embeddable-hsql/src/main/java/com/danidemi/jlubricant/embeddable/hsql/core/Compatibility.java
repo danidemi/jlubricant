@@ -20,7 +20,7 @@ public abstract class Compatibility implements PostStartContribution {
 	 * Enables the syntax for the specific database.
 	 * Under the hood it executes a {@code set database sql syntax <syntax> true } statement.
 	 */
-	void setSyntax(HsqlDatabaseDescriptor hdd, String syntax) {
+	protected void setSyntax(HsqlDatabaseDescriptor hdd, String syntax) {
 		hdd.executeStatement("set database sql syntax "
 		+ syntax
 		+ " "
@@ -30,26 +30,26 @@ public abstract class Compatibility implements PostStartContribution {
 	/** 
 	 * Enables MVCC.
 	 */
-	void setTransactionControl(HsqlDatabaseDescriptor hdd) {
+	protected void setTransactionControl(HsqlDatabaseDescriptor hdd) {
 		hdd.executeStatement("set database transaction control");
 	}
 
-	void setTransactionRollbackOnConflict(HsqlDatabaseDescriptor hdd, boolean setTransactionRollbackOnConflict) {
+	protected void setTransactionRollbackOnConflict(HsqlDatabaseDescriptor hdd, boolean setTransactionRollbackOnConflict) {
 		hdd.executeStatement("set database transaction rollback on conflict "
 		+ setTransactionRollbackOnConflict);
 	}
 
-	void setDatabaseSqlConcatNulls(HsqlDatabaseDescriptor hdd, boolean setDatabaseSqlConcatNulls) {
+	protected void setDatabaseSqlConcatNulls(HsqlDatabaseDescriptor hdd, boolean setDatabaseSqlConcatNulls) {
 		hdd.executeStatement("set database sql concat nulls "
 		+ setDatabaseSqlConcatNulls);
 	}
 
-	void setDatabaseSqlNullsFirst(HsqlDatabaseDescriptor hdd, boolean setDatabaseSqlNullsFirst) {
+	protected void setDatabaseSqlNullsFirst(HsqlDatabaseDescriptor hdd, boolean setDatabaseSqlNullsFirst) {
 		hdd.executeStatement("set database sql nulls first "
 		+ setDatabaseSqlNullsFirst);
 	}
 
-	void setDatabaseSqlUniqueNulls(HsqlDatabaseDescriptor hdd, boolean setDatabaseSqlUniqueNulls) {
+	protected void setDatabaseSqlUniqueNulls(HsqlDatabaseDescriptor hdd, boolean setDatabaseSqlUniqueNulls) {
 		hdd.executeStatement("set database sql unique nulls "
 		+ setDatabaseSqlUniqueNulls);
 	}

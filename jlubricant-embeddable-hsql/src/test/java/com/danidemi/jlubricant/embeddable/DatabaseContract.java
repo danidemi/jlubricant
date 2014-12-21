@@ -1,10 +1,10 @@
 package com.danidemi.jlubricant.embeddable;
 
 import com.danidemi.jlubricant.contracts.DatabaseContractTest;
-import com.danidemi.jlubricant.embeddable.hsql.core.HsqlCompatibility;
 import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDatabaseDescriptor;
 import com.danidemi.jlubricant.embeddable.hsql.core.HsqlDbms;
-import com.danidemi.jlubricant.embeddable.hsql.core.MemoryStorage;
+import com.danidemi.jlubricant.embeddable.hsql.core.compatibility.HsqlCompatibility;
+import com.danidemi.jlubricant.embeddable.hsql.core.storage.MemoryStorage;
 
 public class DatabaseContract extends DatabaseContractTest {
 

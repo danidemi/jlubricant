@@ -65,7 +65,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	private ArrayList<HsqlDatabaseDescriptor> dbs;
 
 	/** Service that a database should use to participate in the server configuration. */	
-	static interface LocationConfiguration {
+	public static interface LocationConfiguration {
 		
 		/** Allow to specify the location of the HSQL database. */
 		void setLocation(String dbName, String dbLocation);
