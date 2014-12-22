@@ -1,13 +1,12 @@
 package com.danidemi.jlubricant.utils.classes;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * Return all classes available in a Jar file.
+ */
 public class AllClassesByJar implements ClassFinder {
 
 	private JarFile jarFile;

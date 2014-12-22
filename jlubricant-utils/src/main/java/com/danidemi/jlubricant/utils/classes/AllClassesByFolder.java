@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Return all classes available in a folder.
+ */
 public class AllClassesByFolder implements ClassFinder {
 
 	private File home;

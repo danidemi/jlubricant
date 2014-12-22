@@ -18,7 +18,6 @@ package com.danidemi.jlubricant.utils.hoare;
 
 /**
  *
- * @author danidemi
  */
 public final class Preconditions {
 
@@ -35,7 +34,5 @@ public final class Preconditions {
     private Preconditions(){
         throw new IllegalStateException("Not meant to be instantiated");
     }
-    
-    
-    
+      
 }

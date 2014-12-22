@@ -5,8 +5,7 @@ import java.util.Set;
 
 /**
  * Implementations are able to search for all available classes in a given context.
- * It's up to the implementation to really tell what this contect is.
- * @author danidemi
+ * It's up to the implementation to really tell what this context is.
  */
 public interface ClassFinder {
 

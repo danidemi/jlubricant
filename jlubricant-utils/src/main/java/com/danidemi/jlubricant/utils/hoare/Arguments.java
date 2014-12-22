@@ -10,6 +10,10 @@ public abstract class Arguments {
 		throw new UnsupportedOperationException("Not intended to be instantiated.");
 	}
 
+	/**
+	 * Check the provided string and throws an excpetion if blank (null or empty).
+	 * @param notBlank	String that should not be blank.
+	 */
 	public static void checkNotBlank(String notBlank) {
 		checkNotBlank(notBlank, "Invalid '" + notBlank + "'");
 	}
