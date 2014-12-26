@@ -3,6 +3,9 @@ package com.danidemi.jlubricant.embeddable.database.core;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A mutable {@link Account} that is able to inform {@link Observer Observers} when the account changes.
+ */
 public class ObservableAccount implements Account {
 
 	private List<Observer> observers;

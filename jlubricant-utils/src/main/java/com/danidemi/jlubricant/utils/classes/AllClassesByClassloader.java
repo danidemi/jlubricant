@@ -4,6 +4,9 @@ import com.danidemi.jlubricant.utils.hoare.Preconditions;
 import java.io.IOException;
 import java.util.Set;
 
+/**
+ * Browse all classes available to a class loader.
+ */
 public class AllClassesByClassloader implements ClassFinder {
 
 	private final ClassLoader classLoader;

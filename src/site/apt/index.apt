@@ -1,5 +1,10 @@
-JLubricant
+            ------
+            JLubricant
+            ------
 
-	JLubricant enables you to build applications quicker, providing you: 
-	* "accelerators" that improves the usage of existing libraries;
-	* and "embeddables" that allows you to quickly set up the server components of an application.
+	JLubricant is a set of libraries that brings you:
+	
+	* accelerated development with well known libraries
+	* quick prototyping of applications through embeddable servers.
+	
+	[/home/joe/docs/mylogo.jpeg]
