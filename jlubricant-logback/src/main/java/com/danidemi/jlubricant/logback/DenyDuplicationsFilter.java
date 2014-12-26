@@ -75,10 +75,12 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 
 			@Override
 			public void run() {
+				log.info("Thread {} is starting.", Thread.currentThread().getName());
 				while (!Thread.currentThread().isInterrupted()) {
 
 					try {
-						Thread.sleep(millisBetweenEvictions());
+						long millisBetweenEvictions2 = millisBetweenEvictions();
+						Thread.sleep(millisBetweenEvictions2);
 					} catch (InterruptedException e) {
 
 					}
@@ -94,14 +96,12 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 					}
 
 				}
-				log.info("Thread {} is terminating.");
+				log.info("Thread {} is terminating.", Thread.currentThread().getName());
 			}
 
 		});
 		evicting.setName( String.format("%s-cache-evictor", getClass().getSimpleName().toLowerCase()) );
 		evicting.setDaemon(true);
-		log.info("Starting up thread {}.", evicting.getName());
-		evicting.start();
 
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
@@ -120,6 +120,11 @@ public class DenyDuplicationsFilter extends AbstractMatcherFilter<ILoggingEvent>
 
 	@Override
 	public FilterReply decide(ILoggingEvent e) {
+		
+		if(!evicting.isAlive()){
+			log.info("Starting up thread {}.", evicting.getName());
+			evicting.start();
+		}
 	
 		String message = e.getFormattedMessage();
 		long timestamp = e.getTimeStamp();

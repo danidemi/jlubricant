@@ -4,7 +4,7 @@
 
 	<groupId>com.danidemi.jlubricant</groupId>
 	<artifactId>jlubricant</artifactId>
-	<version>0.0.14-SNAPSHOT</version>
+	<version>0.0.15-SNAPSHOT</version>
 
 	<name>jlubricant</name>
 	<description>Java Power Ups!</description>
@@ -297,7 +297,7 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.5</version>
+				<!-- <version>1.6.5</version> --> <!-- version commented out to always use the latest version -->
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
@@ -393,6 +393,7 @@
 				</executions>
 			</plugin>
 			-->
+			
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
