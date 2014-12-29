@@ -66,6 +66,12 @@
 		<!-- =============================================== -->
 		<!-- TEST -->
 		<!-- =============================================== -->
+		
+		<dependency>
+			<!-- This is the JMS 1.1 API -->
+			<groupId>javax.jms</groupId>
+			<artifactId>jms-api</artifactId>
+		</dependency>		
 	</dependencies>
 
 	<parent>

@@ -24,6 +24,7 @@
 		<module>jlubricant-embeddable</module>
 		<module>jlubricant-embeddable-hsql</module>
 		<module>jlubricant-embeddable-h2</module>
+		<module>jlubricant-embeddable-ffmq</module>
 		<module>jlubricant-utils</module>
 		<module>jlubricant-internal-contracts</module>
 		<module>jlubricant-logback</module>
@@ -265,7 +266,46 @@
 			</dependency>			
 			<!-- ======================================== -->
 			<!-- Dbcp -->
-			<!-- ======================================== -->			
+			<!-- ======================================== -->
+
+			<!-- ======================================== -->
+			<!-- FFMQ                                     -->
+			<!-- ======================================== -->
+			<dependency>
+				<groupId>net.timewalker.ffmq</groupId>
+				<artifactId>ffmq3-core</artifactId>
+				<version>3.0.7</version>
+				<exclusions>
+					<exclusion>
+						<!-- This is excluded because ffmq3 depend explicitly on jms, but that 
+							jar does not exists on maven repos. -->
+						<groupId>javax.jms</groupId>
+						<artifactId>jms</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.timewalker.ffmq</groupId>
+				<artifactId>ffmq3-server</artifactId>
+				<version>3.0.7</version>
+				<exclusions>
+					<exclusion>
+						<!-- This is excluded because ffmq3 depend explicitly on jms, but that 
+							jar doe not exists. -->
+						<groupId>javax.jms</groupId>
+						<artifactId>jms</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<!-- This is the JMS 1.1 API -->
+				<groupId>javax.jms</groupId>
+				<artifactId>jms-api</artifactId>
+				<version>1.1-rev-1</version>
+			</dependency>			
+			<!-- ======================================== -->
+			<!-- FFMQ                                     -->
+			<!-- ======================================== -->				
 
 		</dependencies>
 

@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.danidemi.jlubricant</groupId>
+		<artifactId>jlubricant</artifactId>
+		<version>0.0.15-SNAPSHOT</version>
+	</parent>
+	<artifactId>jlubricant-embeddable-ffmq</artifactId>
+	
+	<dependencies>
+		<!-- ======================================== -->
+		<!-- FFMQ                                     -->
+		<!-- ======================================== -->
+		<dependency>
+			<groupId>net.timewalker.ffmq</groupId>
+			<artifactId>ffmq3-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.timewalker.ffmq</groupId>
+			<artifactId>ffmq3-server</artifactId>
+		</dependency>
+		<dependency>
+			<!-- This is the JMS 1.1 API -->
+			<groupId>javax.jms</groupId>
+			<artifactId>jms-api</artifactId>
+		</dependency>			
+		<!-- ======================================== -->
+		<!-- FFMQ                                     -->
+		<!-- ======================================== -->
+		
+		<!-- =============================================== -->
+		<!-- Logging -->
+		<!-- =============================================== -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<!-- logback is 'provided' because it will be responsibility of the project 
+				that will use JLubricant to choose the underlying logging library -->
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<!-- =============================================== -->
+		<!-- Logging -->
+		<!-- =============================================== -->
+		
+		<dependency>
+			<groupId>com.danidemi.jlubricant</groupId>
+			<artifactId>jlubricant-embeddable</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>com.danidemi.jlubricant</groupId>
+			<artifactId>jlubricant-utils</artifactId>
+		</dependency>		
+	</dependencies>
+</project>
