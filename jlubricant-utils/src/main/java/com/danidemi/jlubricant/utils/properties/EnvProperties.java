@@ -6,6 +6,14 @@ public class EnvProperties extends Properties {
 
 	private static final long serialVersionUID = -7283786686695723783L;
 	
+	public EnvProperties(Properties defaults) {
+		super(defaults);
+	}
+	
+	public EnvProperties() {
+		super();
+	}
+
 	@Override
 	public String getProperty(String key) {
 		

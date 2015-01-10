@@ -33,8 +33,8 @@ import com.danidemi.jlubricant.embeddable.ffmq.sample.MyProducer;
 import com.danidemi.jlubricant.embeddable.ffmq.sample.MySyncReader;
 
 /**
- * Embedded FFMQ sample. Highly inspired by the embeddable {@linkplain http
- * ://timewalker74.github.io/ffmq/doc.html#III} provided in the FFMQ doc.
+ * Embedded FFMQ sample. Highly inspired by the embeddable server 
+ * <a href="http://timewalker74.github.io/ffmq/doc.html#III">provided in the FFMQ doc</a>.
  */
 public class FFMQEmbeddableServer implements EmbeddableServer {
 	
