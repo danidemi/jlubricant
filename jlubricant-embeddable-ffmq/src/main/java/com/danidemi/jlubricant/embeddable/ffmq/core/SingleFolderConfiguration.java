@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.timewalker.ffmq3.FFMQCoreSettings;
+import net.timewalker.ffmq3.utils.Settings;
 
 public class SingleFolderConfiguration {
 
@@ -44,6 +45,10 @@ public class SingleFolderConfiguration {
 	
 	public Properties getProperties() {
 		return usedProps;
+	}
+	
+	public Settings asSettings(){
+		return new Settings(getProperties());
 	}
 	
 }
