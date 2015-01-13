@@ -1,6 +1,8 @@
 package com.danidemi.jlubricant.utils.properties;
 
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EnvProperties extends Properties {
 
@@ -19,13 +21,43 @@ public class EnvProperties extends Properties {
 		
 		String valueFromProperties = super.getProperty(key);
 		
-		if(valueFromProperties.matches("\\$\\{.+\\}")){
-			String envVariable = valueFromProperties.substring("${".length(), valueFromProperties.length()-"}".length());
-			String envValue = System.getenv(envVariable);
-			if (envValue != null) return envValue;
-		}
+		Pattern pattern = Pattern.compile("\\$\\{.+?\\}");
+		Matcher matcher = pattern.matcher(valueFromProperties);
 		
-		return valueFromProperties;
+		StringBuilder sb = new StringBuilder();
+		
+		int index = 0;
+		while (matcher.find()) {
+			int s = matcher.start();
+		    int e = matcher.end();
+		    String envVariable = matcher.group();
+		    		    
+		    String envValue = System.getenv(envVariable.substring(2, envVariable.length()-1));
+		    if(envValue != null){
+		    	
+		    	if(index == 0){
+		    		sb.append( valueFromProperties.substring(0, s) );
+		    	}
+		    	
+		    	sb.append( envValue );
+		    	
+		    }else{
+		    	
+		    	sb.append(envVariable);
+		    	
+		    }
+		    
+		    index = e;
+		    
+		    
+		    
+		}		
+		
+		if(index!=valueFromProperties.length()){
+			sb.append( valueFromProperties.substring(index) );
+		}
+				
+		return sb.toString();
 		
 	}
 	
