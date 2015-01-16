@@ -4,8 +4,8 @@
 	
 	<artifactId>jlubricant-test</artifactId>
 	
-	<name>jlubricant - test</name>
-	<description>Test power ups!</description>
+	<name>test</name>
+	<description>JLubricant Test power ups</description>
 	
 	<packaging>jar</packaging>
 	<url>https://github.com/danidemi/jlubricant/wiki</url>

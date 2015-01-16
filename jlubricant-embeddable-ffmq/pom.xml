@@ -55,4 +55,6 @@
 			<artifactId>jlubricant-utils</artifactId>
 		</dependency>		
 	</dependencies>
+	<name>embeddable-ffmq</name>
+	<description>A JLubricant Embeddable that runs a JMS queue system bases on http://timewalker74.github.io/ffmq/</description>
 </project>

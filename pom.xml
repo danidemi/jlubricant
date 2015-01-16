@@ -30,6 +30,7 @@
 		<module>jlubricant-logback</module>
 		<module>jlubricant-slf4j</module>
 		<module>jlubricant-spring-context</module>
+		<module>jlubricant-samples</module>
 	</modules>
 
 	<properties>
@@ -337,7 +338,7 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<!-- <version>1.6.5</version> --> <!-- version commented out to always use the latest version -->
+				<version>1.6.5</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
@@ -470,8 +471,15 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.4</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-markdown</artifactId>
+						<version>1.6</version>
+					</dependency>
+				</dependencies>
 			</plugin>
-			
+						
 			<!--  
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

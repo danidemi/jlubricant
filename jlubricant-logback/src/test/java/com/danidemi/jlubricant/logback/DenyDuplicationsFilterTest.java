@@ -27,7 +27,7 @@ public class DenyDuplicationsFilterTest {
 	
 	@BeforeClass public static void setUpLogging() {
 		ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		logger.setLevel(Level.ALL);
+		logger.setLevel(Level.OFF); // change level to help debugging
 	}
 		
 	@Test public void shouldFilterEvenAcrossRestart() throws IOException {

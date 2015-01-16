@@ -7,7 +7,7 @@
 	</parent>
 	<artifactId>jlubricant-spring-context</artifactId>
 	<description>A series of utilities to work with spring-context classes.</description>
-	<name>jlubricant - spring - context</name>
+	<name>spring-context</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>

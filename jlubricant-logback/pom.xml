@@ -6,7 +6,7 @@
     <version>0.0.15-SNAPSHOT</version>
   </parent>
   <artifactId>jlubricant-logback</artifactId>
-  <name>jlubricant - logback</name>
+  <name>logback</name>
   <description>JLubricant extensions to logback</description>
   <dependencies>
   

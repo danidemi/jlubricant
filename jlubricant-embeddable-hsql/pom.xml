@@ -6,7 +6,7 @@
         <version>0.0.15-SNAPSHOT</version>
     </parent>
     <artifactId>jlubricant-embeddable-hsql</artifactId>
-    <name>jlubricant - embeddable - hsql</name>
+    <name>embeddable-hsql</name>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -101,4 +101,5 @@
         
     </dependencies>
   
+    <description>A JLubricant Embeddable that runs the HSQLDB - http://hsqldb.org/</description>
 </project>

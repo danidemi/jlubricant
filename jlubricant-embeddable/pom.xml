@@ -5,6 +5,7 @@
     <artifactId>jlubricant</artifactId>
     <version>0.0.15-SNAPSHOT</version>
   </parent>
-  <name>jlubricant - embeddable</name>
+  <name>embeddable</name>
   <artifactId>jlubricant-embeddable</artifactId>
+  <description>Contains all astractions common to Embeddables</description>
 </project>

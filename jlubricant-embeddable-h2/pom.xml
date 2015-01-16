@@ -6,7 +6,7 @@
         <version>0.0.15-SNAPSHOT</version>
     </parent>
     <artifactId>jlubricant-embeddable-h2</artifactId>
-    <name>jlubricant - embeddable - h2</name>
+    <name>embeddable-h2</name>
     <dependencies>  
         <dependency>
             <groupId>com.danidemi.jlubricant</groupId>
@@ -76,4 +76,5 @@
         <!-- TEST                                            -->
         <!-- =============================================== -->
     </dependencies>
+    <description>An Embeddable running the H2 database http://www.h2database.com.</description>
 </project>
