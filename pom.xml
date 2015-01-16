@@ -46,8 +46,8 @@
 
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>The MIT License (MIT)</name>
+			<url>http://danidemi.mit-license.org/</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -373,7 +373,9 @@
 				and perform. -->
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
+				<!--  
 				<version>${plugin.maven-release-plugin.version}</version>
+				-->
 				<configuration>
 					<mavenExecutorId>forked-path</mavenExecutorId>
 					<!-- <mavenExecutorId>invoker</mavenExecutorId> -->

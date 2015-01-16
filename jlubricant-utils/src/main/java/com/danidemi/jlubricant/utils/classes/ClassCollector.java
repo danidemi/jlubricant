@@ -3,6 +3,7 @@ package com.danidemi.jlubricant.utils.classes;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/** A {@link Visitor} that just stores found classes. */
 public class ClassCollector implements Visitor {
 	
 	LinkedHashSet<Class> foundClasses;

@@ -21,18 +21,25 @@ package com.danidemi.jlubricant.utils.hoare;
  */
 public final class Preconditions {
 
-    public static void paramNotNull(Object param) {
-        paramNotNull("Parameter cannot be null", param);
+    public static void paramNotNull(Object shouldNotBeNull) {
+        paramNotNull("Parameter cannot be null", shouldNotBeNull);
     }
     
-    public static void paramNotNull(String message, Object param) {
-        if(param == null){
-            throw new IllegalArgumentException(message);
+    public static void paramNotNull(String exceptionText, Object shouldNotBeNull) {
+        if(shouldNotBeNull == null){
+            throw new IllegalArgumentException(exceptionText);
         }
     }
     
-    private Preconditions(){
-        throw new IllegalStateException("Not meant to be instantiated");
+    /** Throw an IllegalArgumentException when the condition is false. */
+    public static void condition(String exceptionText, boolean shouldBeTrueThat) {
+    	if(shouldBeTrueThat == false) {
+    		  throw new IllegalArgumentException(exceptionText);
+    	}
     }
-      
+    
+    private Preconditions(){
+    	throw new IllegalStateException("Not meant to be instantiated");
+    }
+  
 }

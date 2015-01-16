@@ -10,7 +10,10 @@ import java.util.Set;
 public class AllClassesByClassloader implements ClassFinder {
 
 	private final ClassLoader classLoader;
-	
+
+	/**
+	 * All the classes available to the provided {@link ClassLoader} will be returned through {@link AllClassesByClassloader#allAvailableClasses()}. 
+	 */
 	public AllClassesByClassloader(ClassLoader classLoader) {
             
             Preconditions.paramNotNull("classLoader cannot be null", classLoader);
@@ -18,7 +21,7 @@ public class AllClassesByClassloader implements ClassFinder {
             
 	}
 	
-        /** Return all classes found through the {@link ClassLoader} specified ad instantiation. */
+    /** Return all classes found through the {@link ClassLoader} specified ad instantiation. */
 	@Override
 	public Set<Class> allAvailableClasses() throws IOException {
 		
