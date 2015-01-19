@@ -1,6 +1,8 @@
 # JLubricant
 Java Power Ups!
 
+[![Build Status](https://travis-ci.org/danidemi/jlubricant.svg)](https://travis-ci.org/danidemi/jlubricant)
+
 # Big Picture
 JLubricant has the goal to allows you to quickly prototype applications providing you
 * Java based services 
