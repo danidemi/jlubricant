@@ -6,7 +6,7 @@ Release
 	mvn versions:set -DnewVersion=0.0.15
 	mvn clean test
 	mvn versions:commit
-	mvn clean deploy -Dgpg.passphrase=<gpg_pwd>
+	mvn clean deploy -Dgpg.passphrase=<gpg_pwd> -Prelease
 
 	# old way based on old policies
 	# mvn release:clean release:prepare release:perform -DautoVersionSubmodules=true -Dgpg.passphrase=<gpg_pwd>

@@ -347,8 +347,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- Install plugin configured like this allow to install only after all 
-				the tests passed -->
+			<!-- Install plugin configured like this allow to install only after all the tests passed -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
