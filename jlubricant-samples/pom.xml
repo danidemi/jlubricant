@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.danidemi.jlubricant</groupId>
 		<artifactId>jlubricant</artifactId>
-		<version>0.0.15-SNAPSHOT</version>
+		<version>0.0.15</version>
 	</parent>
 	<artifactId>jlubricant-samples</artifactId>
 	<dependencies>

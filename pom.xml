@@ -4,7 +4,7 @@
 
 	<groupId>com.danidemi.jlubricant</groupId>
 	<artifactId>jlubricant</artifactId>
-	<version>0.0.15-SNAPSHOT</version>
+	<version>0.0.15</version>
 
 	<name>jlubricant</name>
 	<description>Java Power Ups!</description>
