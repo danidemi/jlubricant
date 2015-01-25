@@ -109,6 +109,11 @@
 			</dependency>
 			<dependency>
 				<groupId>com.danidemi.jlubricant</groupId>
+				<artifactId>jlubricant-embeddable-jetty</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.danidemi.jlubricant</groupId>
 				<artifactId>jlubricant-internal-contracts</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -174,6 +179,21 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>log4j-over-slf4j</artifactId>
+				<version>${slf4j-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jul-to-slf4j</artifactId>
 				<version>${slf4j-api.version}</version>
 			</dependency>
 			<dependency>

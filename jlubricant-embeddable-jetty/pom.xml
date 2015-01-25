@@ -11,14 +11,28 @@
 
 	<dependencies>
 	
+		<!-- ========= Logging ========= -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<!-- ========= Logging ========= -->
+	
 		<!-- =============================================== -->
 		<!-- JLubricant -->
 		<!-- =============================================== -->
 		<dependency>
 			<groupId>com.danidemi.jlubricant</groupId>
 			<artifactId>jlubricant-embeddable</artifactId>
-			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.danidemi.jlubricant</groupId>
+			<artifactId>jlubricant-utils</artifactId>
+		</dependency>		
 		<!-- =============================================== -->
 		<!-- JLubricant -->
 		<!-- =============================================== -->			
@@ -145,6 +159,21 @@
 		</dependency>
 		<!-- =============================================== -->
 		<!-- Logging -->
+		<!-- =============================================== -->
+		
+		<!-- =============================================== -->
+		<!-- Utils -->
+		<!-- =============================================== -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<!-- =============================================== -->
+		<!-- Utils -->
 		<!-- =============================================== -->
 				
 	</dependencies>

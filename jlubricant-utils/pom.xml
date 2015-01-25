@@ -72,6 +72,19 @@
 			<groupId>javax.jms</groupId>
 			<artifactId>jms-api</artifactId>
 		</dependency>		
+		
+		<!-- =============================================== -->
+		<!-- Logging -->
+		<!-- =============================================== -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<!-- =============================================== -->
+		<!-- Logging -->
+		<!-- =============================================== -->
+
+		
 	</dependencies>
 
 	<parent>

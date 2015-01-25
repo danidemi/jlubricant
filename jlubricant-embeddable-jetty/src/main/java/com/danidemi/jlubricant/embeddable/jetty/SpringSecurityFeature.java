@@ -3,16 +3,10 @@ package com.danidemi.jlubricant.embeddable.jetty;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import net.sf.cglib.proxy.Dispatcher;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 public class SpringSecurityFeature implements ServletContextListener, Feature {
