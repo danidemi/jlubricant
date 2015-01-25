@@ -29,6 +29,12 @@ public class WebAppFeature implements Feature {
 	
 	private static final Logger log = LoggerFactory.getLogger(WebAppFeature.class);
 	
+	/**
+	 * @param virtualHosts Arrays of virtual hosts to set. If null, no virtual hosts will be set.
+	 * @param webappContextPath The context path of this web app.
+	 * @param dirAllowed Whether directory listing is allowed.
+	 * @param webAppResourcePath The resource path of the folder containing the web app.
+	 */
 	public WebAppFeature(String[] virtualHosts, String webappContextPath,
 			boolean dirAllowed, String webAppResourcePath) {
 		super();

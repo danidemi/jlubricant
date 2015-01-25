@@ -12,6 +12,7 @@ import javax.servlet.ServletRegistration;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.taglibs.standard.lang.jstl.ArraySuffix;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -26,6 +27,8 @@ import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
+
+import com.danidemi.jlubricant.utils.hoare.Preconditions;
 
 public class SpringDispatcherServletFeature implements Feature, ApplicationContextAware {
 
@@ -69,7 +72,11 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 //		webApplicationContext);
 		
 		if(springCtxInWhichJettyRuns == null){
-			throw new RuntimeException("Not yet");
+			throw new RuntimeException(
+					"Spring has not yet provided a reference to the context this feature is running in. "
+					+ "Are you sure you gave Spring the chanche to inject a context into this feature ? "
+					+ "If you are following a Java-based container configuration style, "
+					+ "remember you have to create this feature in a @Bean annotated method, or something similar.");
 		}
 		
 		GenericWebApplicationContext ctx = new GenericWebApplicationContext();
@@ -80,6 +87,8 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 //		embeddableJetty.getHandler().setAttribute(
 //				WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, 
 //				ctx);
+		
+		Preconditions.condition("The Jetty instance where this feature is being installed does not have any handler.", embeddableJetty.getHandler()!=null);
 		
 		embeddableJetty.getHandler().addEventListener( 
 				new InitializerListener(embeddableJetty) 

@@ -6,22 +6,14 @@ import com.danidemi.jlubricant.embeddable.jetty.SpringFeature;
 import com.danidemi.jlubricant.embeddable.jetty.WebAppFeature;
 import com.danidemi.jlubricant.utils.wait.Wait;
 
-public class JettySample {
+public class EmbeddableJettySample {
 
 	public static void main(String[] args) {
 		
 		try {
+			
 			EmbeddableJetty jetty = new EmbeddableJetty();
-			String[] vh = null;
-			String wcp = null;
-			boolean dir = true;
-			
-			WebAppFeature feature = new WebAppFeature(vh, wcp, dir, "/jettySampleWebApp1");
-			feature.setWebappContextPath("/");
-			
-			jetty.addFeature( feature );
-			
-
+			jetty.addFeature( new WebAppFeature(null, "/", true, "/jettySampleWebApp1") );
 			jetty.start();
 			Wait.untilShutdown();			
 			jetty.stop();
