@@ -4,7 +4,7 @@
 
 	<groupId>com.danidemi.jlubricant</groupId>
 	<artifactId>jlubricant</artifactId>
-	<version>0.0.15</version>
+	<version>0.0.16-SNAPSHOT</version>
 
 	<name>jlubricant</name>
 	<description>Java Power Ups!</description>
@@ -31,6 +31,7 @@
 		<module>jlubricant-slf4j</module>
 		<module>jlubricant-spring-context</module>
 		<module>jlubricant-samples</module>
+		<module>jlubricant-embeddable-jetty</module>
 	</modules>
 
 	<properties>
@@ -43,6 +44,19 @@
 		<plugin.maven-gpg-plugin.version>1.4</plugin.maven-gpg-plugin.version>
 		<plugin.maven-release-plugin.version>2.5</plugin.maven-release-plugin.version>
 		<plugin.maven-install-plugin.version>2.5.1</plugin.maven-install-plugin.version>
+		
+		<jetty.version>9.2.2.v20140723</jetty.version>
+		<less.version>1.3.0</less.version>
+		<commons-collections4.version>4.0</commons-collections4.version>
+		<commons-lang3.version>3.3.2</commons-lang3.version>
+		<commons-io.version>2.4</commons-io.version>
+		<slf4j-api.version>1.7.7</slf4j-api.version> 
+		<logback-classic.version>1.1.2</logback-classic.version>
+		<junit.version>4.11</junit.version> 
+		<mockito-core.version>1.9.5</mockito-core.version> 
+		<hamcrest-core.version>1.3</hamcrest-core.version> 
+		<hamcrest-integration.version>1.3</hamcrest-integration.version> 
+		<spring-security.version>3.2.5.RELEASE</spring-security.version>
 	</properties>
 
 	<licenses>
@@ -138,17 +152,17 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-collections4</artifactId>
-				<version>4.0</version>
+				<version>${commons-collections4.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.3.2</version>
+				<version>${commons-lang3.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.4</version>
+				<version>${commons-io.version}</version>
 			</dependency>
 			<!-- =============================================== -->
 			<!-- Utils -->
@@ -160,14 +174,14 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.7.7</version>
+				<version>${slf4j-api.version}</version>
 			</dependency>
 			<dependency>
 				<!-- logback is 'provided' because it will be responsibility of the project 
 					that will use JLubricant to choose the underlying logging library -->
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.1.2</version>
+				<version>${logback-classic.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<!-- =============================================== -->
@@ -181,25 +195,25 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.11</version>
+				<version>${junit.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
-				<version>1.9.5</version>
+				<version>${mockito-core.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-core</artifactId>
-				<version>1.3</version>
+				<version>${hamcrest-core.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-integration</artifactId>
-				<version>1.3</version>
+				<version>${hamcrest-integration.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -249,12 +263,49 @@
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<!-- ======================================== -->
 			<!-- Spring Framework -->
+			<!-- ======================================== -->
+			
+			<!-- ======================================== -->
+			<!-- Spring Security                          -->
+			<!-- ======================================== -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring-security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring-security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-openid</artifactId>
+				<version>${spring-security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-taglibs</artifactId>
+				<version>${spring-security.version}</version>
+			</dependency>	
+			<!-- ======================================== -->
+			<!-- Spring Security                          -->
 			<!-- ======================================== -->
 
 			<!-- ======================================== -->
@@ -306,7 +357,49 @@
 			</dependency>			
 			<!-- ======================================== -->
 			<!-- FFMQ                                     -->
-			<!-- ======================================== -->				
+			<!-- ======================================== -->
+			
+			<!-- ======================================== -->
+			<!-- Jetty -->
+			<!-- ======================================== -->
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-server</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-servlet</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-webapp</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-jsp</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<!-- ======================================== -->
+			<!-- Jetty -->
+			<!-- ======================================== -->
+
+			<!-- ======================================== -->
+			<!-- Less -->
+			<!-- ======================================== -->			
+			<dependency>
+				<groupId>com.asual.lesscss</groupId>
+				<artifactId>lesscss-servlet</artifactId>
+				<version>${less.version}</version>
+			</dependency>
+			<!-- ======================================== -->
+			<!-- Less -->
+			<!-- ======================================== -->
 
 		</dependencies>
 
