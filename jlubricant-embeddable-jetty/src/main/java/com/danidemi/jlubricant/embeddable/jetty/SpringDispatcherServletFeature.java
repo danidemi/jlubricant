@@ -66,30 +66,16 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 	
 	@Override
 	public void install(EmbeddableJetty embeddableJetty) {
-		
-//		webapp.setAttribute(
-//		WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
-//		webApplicationContext);
-		
-		if(springCtxInWhichJettyRuns == null){
-			throw new RuntimeException(
-					"Spring has not yet provided a reference to the context this feature is running in. "
+				
+		Preconditions.condition("Spring has not yet provided a reference to the context this feature is running in. "
 					+ "Are you sure you gave Spring the chanche to inject a context into this feature ? "
 					+ "If you are following a Java-based container configuration style, "
-					+ "remember you have to create this feature in a @Bean annotated method, or something similar.");
-		}
+					+ "remember you have to create this feature in a @Bean annotated method, or something similar.", springCtxInWhichJettyRuns != null);
 		
-		GenericWebApplicationContext ctx = new GenericWebApplicationContext();
-		ctx.setParent(springCtxInWhichJettyRuns);
+		Preconditions.condition("The Jetty instance where this feature is being installed does not have any handler, e.g. a web context.", embeddableJetty.getHandler()!=null);
 		
 		
-		
-//		embeddableJetty.getHandler().setAttribute(
-//				WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, 
-//				ctx);
-		
-		Preconditions.condition("The Jetty instance where this feature is being installed does not have any handler.", embeddableJetty.getHandler()!=null);
-		
+		// add an initialize listener to the web app, that initialize the Spring system
 		embeddableJetty.getHandler().addEventListener( 
 				new InitializerListener(embeddableJetty) 
 		);
@@ -137,31 +123,12 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 	    public void onStartup(ServletContext container) {
 	        XmlWebApplicationContext appContext = new XmlWebApplicationContext();
 	        appContext.setBeanName("fakeEmptyContext");
-	        //appContext.setConfigLocation("/WEB-INF/spring/dispatcher-config.xml");
 	        String fakeEmptyContext = SpringUtils.fakeEmptyContext();
-	        appContext.setParent(springCtxInWhichJettyRuns);
-	        
-//	        Object bean = springCtxInWhichJettyRuns.getBean("messageSource");
-//	        if(bean == null){
-//	        	springCtxInWhichJettyRuns.addBeanFactoryPostProcessor(new BeanFactoryPostProcessor() {
-//					
-//					@Override
-//					public void postProcessBeanFactory(
-//							ConfigurableListableBeanFactory beanFactory) throws BeansException {
-//						ReloadableResourceBundleMessageSource bean = new ReloadableResourceBundleMessageSource();
-//						bean.setBasename("classpath:");
-//						bean.setDefaultEncoding("UTF-8");
-//						beanFactory.registerSingleton("messageSource", bean );
-//						
-//					}
-//				});
-//	        }
-	        
+	        appContext.setParent(springCtxInWhichJettyRuns);	        
 	        appContext.setConfigLocation(fakeEmptyContext);
 	        appContext.refresh();
-
-	        ServletRegistration.Dynamic dispatcher =
-	          container.addServlet("dispatcher", new DispatcherServlet(appContext));
+	        
+	        ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", new DispatcherServlet(appContext));
 	        dispatcher.setLoadOnStartup(1);
 	        String[] dispatcherServletSubPath2 = SpringDispatcherServletFeature.this.dispatcherServletSubPath;
 	        if(!ArrayUtils.isEmpty(dispatcherServletSubPath2)){
@@ -179,15 +146,11 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 				
 		@Override
 		protected WebApplicationContext createServletApplicationContext() {
-			XmlWebApplicationContext wac = new XmlWebApplicationContext();
-			//wac.setServletConfig(null);
-			//wac.setServletContext(servletContext);
-			
+			XmlWebApplicationContext wac = new XmlWebApplicationContext();			
 			if(springCtxInWhichJettyRuns == null){
 				throw new IllegalStateException("Still null");
 			}
 			wac.setParent(springCtxInWhichJettyRuns);
-			
 			return wac;
 		}		
 		
@@ -206,18 +169,7 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 
 		@Override
 		protected WebApplicationContext createRootApplicationContext() {
-//			if(springCtxInWhichJettyRuns == null){
-//				throw new IllegalStateException("Still null");
-//			}
-//			XmlWebApplicationContext wac = new XmlWebApplicationContext();
-//			wac.setParent(springCtxInWhichJettyRuns);
-//			wac.setServletContext(this.servletContext);
-//			return wac;
-
 			return null;
-			
-			
-			
 		}
 		
 	}

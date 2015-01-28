@@ -17,7 +17,9 @@
 	</root>
 	
 	<logger name="com.danidemi.jlubricant" level="ALL" />
+	<logger name="com.danidemi.jlubricant.embeddable.jetty" level="WARN" />
 	<logger name="org.springframework" level="WARN" />	
+	<logger name="org.springframework.web" level="ALL" />
 	<logger name="org.eclipse.jetty" level="WARN" />
 
 	

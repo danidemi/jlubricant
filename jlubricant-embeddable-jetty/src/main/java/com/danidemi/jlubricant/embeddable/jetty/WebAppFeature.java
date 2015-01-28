@@ -72,18 +72,16 @@ public class WebAppFeature implements Feature {
 		Preconditions.condition("Please provide a context. A context specifies the path of the web app.", webappContextPath != null);
 		
 		// check whether the resource path to the web application really exists.
-		String resourceURI;
+		URI uri;
 		try {
-			resourceURI = new ClassPathResource(webAppResourcePath).getURI().toString();
-			File webAppBaseDir = new File(new URI(resourceURI));
+			uri = new ClassPathResource(webAppResourcePath).getURI();
+			File webAppBaseDir = new File(uri);
 			
-			Preconditions.condition( format("Resource %s should be a directory, but it is not", resourceURI) , webAppBaseDir.isDirectory());
+			Preconditions.condition( format("Resource %s should be a directory, but it is not", uri) , webAppBaseDir.exists() && webAppBaseDir.isDirectory());
 			
-			log.info("Installing web app found at resource path '{}' resolved to URI '{}'.", webAppResourcePath, resourceURI);
+			log.info("Installing web app found at resource path '{}' resolved to URI '{}'.", webAppResourcePath, uri);
 		} catch (IOException e) {
 			throw new RuntimeException("Unable to find web app files at resource path '" + webAppResourcePath + "'.", e);
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
 		}
 		
 		WebAppContext webapp = new WebAppContext();
@@ -94,7 +92,7 @@ public class WebAppFeature implements Feature {
 		
 		webapp.setContextPath(webappContextPath);
 		
-		webapp.setWar(resourceURI);
+		webapp.setWar(uri.toString());
 		
 		// Disable directory listings if no index.html is found.
 		webapp.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed",
