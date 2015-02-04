@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -101,8 +102,18 @@ public class WebAppFeature implements Feature {
 			webapp.setWelcomeFiles(welcomeFiles);			
 		}
 		
-		embeddableJetty.setHandler(webapp);		
+		embeddableJetty.setHandler(webapp);	
+		
+		for (Feature feature : features) {
+			feature.install(embeddableJetty);			
+		}
 
 	}
 
+	
+	private List<Feature> features = new ArrayList<Feature>();
+	
+	public void addFeature(Feature feat){
+		features.add(feat);
+	}
 }
