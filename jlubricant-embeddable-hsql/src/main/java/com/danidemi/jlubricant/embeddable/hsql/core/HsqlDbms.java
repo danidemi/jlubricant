@@ -81,18 +81,26 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 	private Integer definedPort = null;
 	private String address;
 
-	public HsqlDbms(List<HsqlDatabaseDescriptor> dbs) {
-		Arguments.checkNotEmpty(dbs, "Please, provide a not null not empty list of databases.");
+	/** 
+	 * Instantiate an {@link HsqlDbms} that run a set of given databases.
+	 * @param Each descriptor define the parameters of each db to run. 
+	 * */
+	public HsqlDbms(List<HsqlDatabaseDescriptor> descriptors) {
+		Arguments.checkNotEmpty(descriptors, "Please, provide a not null not empty list of databases.");
 		this.dbs = new ArrayList<HsqlDatabaseDescriptor>();
 		server = null;
 		currentStatus = new StoppedStatus(this);
-		for (HsqlDatabaseDescriptor hsqlDatabaseDescriptor : dbs) {
+		for (HsqlDatabaseDescriptor hsqlDatabaseDescriptor : descriptors) {
 			add(hsqlDatabaseDescriptor);
 		}
 	}
-	
-	public HsqlDbms(HsqlDatabaseDescriptor db) {
-		this(Arrays.asList(db));
+		
+	/** 
+	 * Instantiate a {@link HsqlDbms} that just run one database.
+	 * @param Each descriptor define the parameters of each db to run. 
+	 * */
+	public HsqlDbms(HsqlDatabaseDescriptor... descriptors) {
+		this(Arrays.asList(descriptors));
 	}	
 
 	// ===============================================================
