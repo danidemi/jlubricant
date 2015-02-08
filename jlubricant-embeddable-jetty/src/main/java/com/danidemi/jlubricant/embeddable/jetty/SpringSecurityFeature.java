@@ -9,6 +9,7 @@ import javax.servlet.ServletContextListener;
 
 import org.springframework.web.filter.DelegatingFilterProxy;
 
+/** Add the SpringSecurity filter to the web app. */
 public class SpringSecurityFeature implements ServletContextListener, Feature {
 	
 	public SpringSecurityFeature() {
