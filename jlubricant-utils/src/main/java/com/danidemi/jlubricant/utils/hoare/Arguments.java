@@ -24,19 +24,35 @@ public abstract class Arguments {
 		}
 	}
 	
-	public static void checkNotNull(Object cannotBeNull) {
-		checkNotNull(cannotBeNull, "Invalid argument, could not be null");
+	/**
+	 * The first line of a constructor should be <code>this()</code> or <code>super()</code>.
+	 * So, you cannot check if a parameter is null before invoking the constructor. I.e. you cannot write something like:
+	 * <pre>
+	 * Thing(String param){
+	 *   if(param==null) throw new IllegalArgumentException();
+	 *   this(param, 2);
+	 * }
+	 * </pre>
+	 * But you can 'inline' the check with this method, like that:
+	 * <pre>
+	 * Thing(String param){
+	 *   this( checkNotNull(param) , 2);
+	 * }
+	 * </pre> 
+	 * @param cannotBeNull
+	 */
+	public static <T> T checkNotNull(T cannotBeNull) {
+		return checkNotNull(cannotBeNull, "Invalid argument, could not be null");
 	}
 
-	public static void checkNotNull(Object cannotBeNull, String message) {
-		if(cannotBeNull == null){
-			throw new IllegalArgumentException(message);
-		}
+	public static <T> T checkNotNull(T cannotBeNull, String message) {
+		if(cannotBeNull == null) throw new IllegalArgumentException(message);
+		return cannotBeNull;
 	}
 	
-	public static void checkNotNull(Object cannotBeNull, String format, Object... args) {
+	public static <T> T checkNotNull(T cannotBeNull, String format, Object... args) {
 		String message = format(format, args);
-		checkNotNull(cannotBeNull, message);
+		return checkNotNull(cannotBeNull, message);
 	}		
 
 	public static boolean isBlank(String username2) {
