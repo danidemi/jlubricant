@@ -30,6 +30,8 @@ public class WebAppFeature implements Feature {
 	
 	private static final Logger log = LoggerFactory.getLogger(WebAppFeature.class);
 	
+	private FeatureSupport features = new FeatureSupport();	
+	
 	/**
 	 * @param virtualHosts Arrays of virtual hosts to set. If null, no virtual hosts will be set.
 	 * @param webappContextPath The context path of this web app.
@@ -87,9 +89,9 @@ public class WebAppFeature implements Feature {
 
 
 	
-	private List<Feature> features = new ArrayList<Feature>();
+
 	
 	public void addFeature(Feature feat){
-		features.add(feat);
+		features.addFeature(feat);
 	}
 }

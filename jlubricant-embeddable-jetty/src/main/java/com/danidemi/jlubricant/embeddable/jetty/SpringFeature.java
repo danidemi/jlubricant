@@ -14,9 +14,15 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 public class SpringFeature implements Feature, ApplicationContextAware {
 
 	private XmlWebApplicationContext wac;
+	
+	@Override
+	public void install(EmbeddableJetty embeddableJetty) {
+		if(wac == null) throw new IllegalArgumentException("Too early!");
+		embeddableJetty.getHandler().addEventListener(new ContextLoaderListener(wac));
+		
+	}	
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		
@@ -55,12 +61,5 @@ public class SpringFeature implements Feature, ApplicationContextAware {
 		((ConfigurableApplicationContext)applicationContext).getBeanFactory().registerScope("session", new SessionScope());
 				
 	}
-	
-	@Override
-	public void install(EmbeddableJetty embeddableJetty) {
-		if(wac == null) throw new IllegalArgumentException("Too early!");
-		embeddableJetty.getHandler().addEventListener(new ContextLoaderListener(wac));
 		
-	}
-	
 }

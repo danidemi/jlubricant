@@ -48,18 +48,19 @@ public class SpringMvc  extends WebMvcConfigurerAdapter {
 	}
 	
 	@Bean
-	EmbeddableJetty embeddableJetty(SpringDispatcherServletFeature springDispatcherFeature, Feature springFeature, Feature webAppFeature){
+	EmbeddableJetty embeddableJetty(Feature webAppFeature){
 		EmbeddableJetty jetty = new EmbeddableJetty();
 		jetty.addFeature( webAppFeature );
-		jetty.addFeature( springFeature );
-		jetty.addFeature( springDispatcherFeature );
 		//jetty.addFeature(  );
 		return jetty;
 	}
 
 	@Bean
-	WebAppFeature webAppFeature() {
-		return new WebAppFeature(new String[]{"localhost"}, "/", true, "/jettySampleSpringMVC");
+	WebAppFeature webAppFeature(SpringDispatcherServletFeature springDispatcherFeature, SpringFeature springFeature ) {
+		WebAppFeature webAppFeature = new WebAppFeature(new String[]{"localhost"}, "/", true, "/jettySampleSpringMVC");
+		webAppFeature.addFeature( springFeature );
+		webAppFeature.addFeature( springDispatcherFeature );
+		return webAppFeature;
 	}
 
 	/* 
