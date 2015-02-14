@@ -5,14 +5,14 @@ then you install an application server, and finally you deploy your fancy app in
 While there is absolutely nothing wrong with this, it is for sure tremendously slow and expensive if you just want to quickly
 bring your next-fancy-webapp to the masses, and you don't have resources, people, knowledge.
 
-![Deploy of a "Fancy Web App" the usual way](assets/deploy-the-usual-way.svg)
+![Deploy of a "Fancy Web App" the usual way](https://cdn.rawgit.com/danidemi/jlubricant/master/assets/deploy-the-usual-way.svg)
 
 Wait for a minute how it would be nice if it would be possible to assemble a web application that embeds databases, messaging systems,
 application server, and any other service you need, in just one executable `.jar`, that you can maybe deploy on a couple of free openshift
 gears, without messing around with complex systems, yet using standard protocols that will allow you to quickly migrate to standard
 architectures just when your application will need it!
 
-![Deploy of a "Fancy Web App" the JLubricant way](assets/deploy-the-jlubricant-way.svg)
+![Deploy of a "Fancy Web App" the JLubricant way](https://cdn.rawgit.com/danidemi/jlubricant/master/assets/deploy-the-jlubricant-way.svg)
 
 JLubricant allows you to do that.
 
