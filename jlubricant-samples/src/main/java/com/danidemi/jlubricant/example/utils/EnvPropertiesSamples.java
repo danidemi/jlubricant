@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.example;
+package com.danidemi.jlubricant.example.utils;
 
 import java.util.Properties;
 

@@ -1,7 +1,11 @@
 package com.danidemi.jlubricant.embeddable.jetty;
 
+import static java.lang.String.format;
+
+import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventListener;
@@ -33,6 +37,7 @@ import com.asual.lesscss.LessOptions;
 import com.danidemi.jlubricant.embeddable.EmbeddableServer;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
+import com.danidemi.jlubricant.utils.hoare.Preconditions;
 
 /**
  * http://www.eclipse.org/jetty/documentation/current/embedding-jetty.html
@@ -236,6 +241,46 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 	
 	public WebAppContext getHandler(){
 		return (WebAppContext) server.getHandler();
+	}
+	
+	public void createWebApp(
+			String webappContextPath2, String webAppResourcePath2,
+			String[] virtualHosts2, String[] welcomeFiles2) {
+		Preconditions.condition("Please provide a context. A context specifies the path of the web app.", webappContextPath2 != null);
+		
+		
+		// check whether the resource path to the web application really exists.
+		URI uri;
+		try {
+			uri = new ClassPathResource(webAppResourcePath2).getURI();
+			File webAppBaseDir = new File(uri);
+			
+			Preconditions.condition( format("Resource %s should be a directory, but it is not", uri) , webAppBaseDir.exists() && webAppBaseDir.isDirectory());
+			
+			log.info("Installing web app found at resource path '{}' resolved to URI '{}'.", webAppResourcePath2, uri);
+		} catch (IOException e) {
+			throw new RuntimeException("Unable to find web app files at resource path '" + webAppResourcePath2 + "'.", e);
+		}
+		
+		WebAppContext webapp = new WebAppContext();
+		
+		if(virtualHosts2!=null){
+			webapp.setVirtualHosts(virtualHosts2);		
+		}
+		
+		webapp.setContextPath(webappContextPath2);
+		
+		webapp.setWar(uri.toString());
+		
+		// Disable directory listings if no index.html is found.
+		webapp.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed",
+				String.valueOf(dirAllowed));
+		if(welcomeFiles2!=null){
+			webapp.setWelcomeFiles(welcomeFiles2);			
+		}
+		
+		setHandler(webapp);
+		
 	}
 
 }

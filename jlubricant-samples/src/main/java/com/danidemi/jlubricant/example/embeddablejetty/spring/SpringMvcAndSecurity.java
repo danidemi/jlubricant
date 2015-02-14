@@ -45,7 +45,7 @@ import com.danidemi.jlubricant.embeddable.jetty.WebAppFeature;
 import com.danidemi.jlubricant.utils.wait.Wait;
 
 @EnableWebMvcSecurity
-@ComponentScan("com.danidemi.jlubricant.samples.jetty.spring")
+@ComponentScan("com.danidemi.jlubricant.example.embeddablejetty.spring")
 @Configuration
 public class SpringMvcAndSecurity extends WebMvcConfigurerAdapter {
 

@@ -70,45 +70,21 @@ public class WebAppFeature implements Feature {
 	@Override
 	public void install(EmbeddableJetty embeddableJetty) {
 		
-		Preconditions.condition("Please provide a context. A context specifies the path of the web app.", webappContextPath != null);
+		String webappContextPath2 = webappContextPath;
+		String webAppResourcePath2 = webAppResourcePath;
+		String[] virtualHosts2 = virtualHosts;
+		String[] welcomeFiles2 = welcomeFiles;
 		
-		// check whether the resource path to the web application really exists.
-		URI uri;
-		try {
-			uri = new ClassPathResource(webAppResourcePath).getURI();
-			File webAppBaseDir = new File(uri);
-			
-			Preconditions.condition( format("Resource %s should be a directory, but it is not", uri) , webAppBaseDir.exists() && webAppBaseDir.isDirectory());
-			
-			log.info("Installing web app found at resource path '{}' resolved to URI '{}'.", webAppResourcePath, uri);
-		} catch (IOException e) {
-			throw new RuntimeException("Unable to find web app files at resource path '" + webAppResourcePath + "'.", e);
-		}
-		
-		WebAppContext webapp = new WebAppContext();
-		
-		if(virtualHosts!=null){
-			webapp.setVirtualHosts(virtualHosts);		
-		}
-		
-		webapp.setContextPath(webappContextPath);
-		
-		webapp.setWar(uri.toString());
-		
-		// Disable directory listings if no index.html is found.
-		webapp.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed",
-				String.valueOf(dirAllowed));
-		if(welcomeFiles!=null){
-			webapp.setWelcomeFiles(welcomeFiles);			
-		}
-		
-		embeddableJetty.setHandler(webapp);	
+		embeddableJetty.createWebApp(webappContextPath2, webAppResourcePath2,
+				virtualHosts2, welcomeFiles2);	
 		
 		for (Feature feature : features) {
 			feature.install(embeddableJetty);			
 		}
 
 	}
+
+
 
 	
 	private List<Feature> features = new ArrayList<Feature>();
