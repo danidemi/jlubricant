@@ -528,6 +528,9 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<additionalparam>${javadoc.opts}</additionalparam>						
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -659,6 +662,9 @@
 								<goals>
 									<goal>jar</goal>
 								</goals>
+								<configuration>
+									<additionalparam>${javadoc.opts}</additionalparam>
+								</configuration>
 							</execution>
 						</executions>
 
@@ -682,6 +688,18 @@
 				</plugins>
 			</build>
 		</profile>
+
+		<!-- Disable strict doclint checks on JDK >=1.8 -->
+		<profile>
+			<id>doclint-java8-disable</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+			<properties>
+				<javadoc.opts>-Xdoclint:none</javadoc.opts>
+			</properties>
+		</profile>
+		
 	</profiles>
 
 	<!-- <profiles> <profile> <id>release-sign-artifacts</id> <activation> <property> 

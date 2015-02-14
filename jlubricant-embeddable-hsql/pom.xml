@@ -87,7 +87,6 @@
         <dependency>
             <groupId>com.danidemi.jlubricant</groupId>
             <artifactId>jlubricant-internal-contracts</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
