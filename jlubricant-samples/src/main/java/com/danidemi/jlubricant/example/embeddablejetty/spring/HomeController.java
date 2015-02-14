@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.samples.jetty.spring;
+package com.danidemi.jlubricant.example.embeddablejetty.spring;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

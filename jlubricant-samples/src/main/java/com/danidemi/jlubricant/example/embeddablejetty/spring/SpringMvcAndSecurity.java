@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.samples.jetty.spring;
+package com.danidemi.jlubricant.example.embeddablejetty.spring;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,11 +47,11 @@ import com.danidemi.jlubricant.utils.wait.Wait;
 @EnableWebMvcSecurity
 @ComponentScan("com.danidemi.jlubricant.samples.jetty.spring")
 @Configuration
-public class EmbeddableSpringSecuritySample extends WebMvcConfigurerAdapter {
+public class SpringMvcAndSecurity extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
 		
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(EmbeddableSpringSecuritySample.class);
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMvcAndSecurity.class);
 		EmbeddableJetty jetty = ctx.getBean(EmbeddableJetty.class);
 		try {
 			jetty.start();

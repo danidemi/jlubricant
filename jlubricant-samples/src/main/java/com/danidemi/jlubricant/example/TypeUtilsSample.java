@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.samples;
+package com.danidemi.jlubricant.example;
 
 import com.danidemi.jlubricant.utils.sql.TypesUtils;
 

@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.samples;
+package com.danidemi.jlubricant.example.embeddablejetty;
 
 import com.danidemi.jlubricant.embeddable.jetty.EmbeddableJetty;
 import com.danidemi.jlubricant.embeddable.jetty.Feature;
@@ -6,7 +6,7 @@ import com.danidemi.jlubricant.embeddable.jetty.SpringFeature;
 import com.danidemi.jlubricant.embeddable.jetty.WebAppFeature;
 import com.danidemi.jlubricant.utils.wait.Wait;
 
-public class EmbeddableJettySample {
+public class Plain {
 
 	public static void main(String[] args) {
 		

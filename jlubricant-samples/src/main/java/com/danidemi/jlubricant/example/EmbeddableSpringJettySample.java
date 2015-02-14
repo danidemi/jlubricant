@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.samples;
+package com.danidemi.jlubricant.example;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.samples.jetty.spring;
+package com.danidemi.jlubricant.example.embeddablejetty.spring;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -29,11 +29,11 @@ import com.danidemi.jlubricant.utils.wait.Wait;
 
 @ComponentScan("com.danidemi.jlubricant.samples.jetty.spring")
 @Configuration
-public class EmbeddableSpringMVCJettySample  extends WebMvcConfigurerAdapter {
+public class SpringMvc  extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
 		
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(EmbeddableSpringMVCJettySample.class);
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMvc.class);
 		EmbeddableJetty jetty = ctx.getBean(EmbeddableJetty.class);
 		try {
 			jetty.start();
