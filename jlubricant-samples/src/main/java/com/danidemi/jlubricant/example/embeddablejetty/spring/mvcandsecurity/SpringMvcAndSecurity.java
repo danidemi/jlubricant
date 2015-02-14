@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.example.embeddablejetty.spring;
+package com.danidemi.jlubricant.example.embeddablejetty.spring.mvcandsecurity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ import com.danidemi.jlubricant.embeddable.jetty.WebAppFeature;
 import com.danidemi.jlubricant.utils.wait.Wait;
 
 @EnableWebMvcSecurity
-@ComponentScan("com.danidemi.jlubricant.example.embeddablejetty.spring")
+@ComponentScan({"com.danidemi.jlubricant.example.embeddablejetty.spring.mvcandsecurity", "com.danidemi.jlubricant.example.embeddablejetty.spring.webapp"})
 @Configuration
 public class SpringMvcAndSecurity extends WebMvcConfigurerAdapter {
 
@@ -64,14 +64,18 @@ public class SpringMvcAndSecurity extends WebMvcConfigurerAdapter {
 	}
 	
 	@Bean
-	EmbeddableJetty embeddableJetty(SpringFeature springFeature, SpringSecurityFeature security, SpringDispatcherServletFeature springDisptacher){
+	EmbeddableJetty embeddableJetty(WebAppFeature webApp){
 		EmbeddableJetty jetty = new EmbeddableJetty();
-		WebAppFeature webAppFeature = new WebAppFeature(new String[]{"localhost"}, "/", true, "/jettySampleSpringMVC");
-		jetty.addFeature( webAppFeature );
-		jetty.addFeature( springFeature );
-		jetty.addFeature( springDisptacher );
-		jetty.addFeature( security );
+		jetty.addFeature( webApp );
 		return jetty;
+	}
+
+	@Bean public WebAppFeature webApp(SpringFeature springFeature, SpringSecurityFeature security, SpringDispatcherServletFeature springDisptacher) {
+		WebAppFeature webApp = new WebAppFeature(new String[]{"localhost"}, "/", true, "/jettySampleSpringMVC");
+		webApp.addFeature( springFeature );
+		webApp.addFeature( springDisptacher );
+		webApp.addFeature( security );
+		return webApp;
 	}
 	
 	@Bean
