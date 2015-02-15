@@ -17,7 +17,10 @@ architectures just when your application will need it!
 JLubricant allows you to do that.
 
 ![JLubricant](https://cdn.rawgit.com/danidemi/jlubricant/master/assets/jlubricant-logo.png)
+
+<div align="center">
 <img src="https://cdn.rawgit.com/danidemi/jlubricant/master/assets/jlubricant-logo.png" align="center" />
+</div>
 
 [![Build Status](https://travis-ci.org/danidemi/jlubricant.svg)](https://travis-ci.org/danidemi/jlubricant)
 
