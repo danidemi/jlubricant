@@ -43,8 +43,10 @@ public class SpringMvc  extends WebMvcConfigurerAdapter {
 		
 	}
 	
-	@Bean SpringFeature springFeature() {
-		return new SpringFeature();
+	@Bean SpringFeature springFeature(SpringDispatcherServletFeature springDispatcherFeature) {
+		SpringFeature springFeature = new SpringFeature();
+		springFeature.addFeature( springDispatcherFeature );
+		return springFeature;
 	}
 	
 	@Bean
@@ -56,10 +58,9 @@ public class SpringMvc  extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	WebAppFeature webAppFeature(SpringDispatcherServletFeature springDispatcherFeature, SpringFeature springFeature ) {
+	WebAppFeature webAppFeature(SpringFeature springFeature ) {
 		WebAppFeature webAppFeature = new WebAppFeature(new String[]{"localhost"}, "/", true, "/jettySampleSpringMVC");
 		webAppFeature.addFeature( springFeature );
-		webAppFeature.addFeature( springDispatcherFeature );
 		return webAppFeature;
 	}
 

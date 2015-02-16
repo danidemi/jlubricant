@@ -1,4 +1,4 @@
-package com.danidemi.jlubricant.example.embeddablejetty;
+package com.danidemi.jlubricant.example.embeddablejetty.spring.mvc;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

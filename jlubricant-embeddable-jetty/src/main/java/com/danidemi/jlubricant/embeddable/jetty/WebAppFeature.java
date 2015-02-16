@@ -1,20 +1,9 @@
 package com.danidemi.jlubricant.embeddable.jetty;
 
-import static java.lang.String.format;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-
-import com.danidemi.jlubricant.utils.hoare.Preconditions;
 
 /**
  * {@link Feature} that adds a web application to an {@link EmbeddableJetty}.
