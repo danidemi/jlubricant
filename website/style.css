@@ -1,0 +1,78 @@
+BODY {  
+	font-family: 'Ubuntu', Arial, serif; font-weight: 400;
+}
+
+.keyword {
+	font-family: 'Changa One', cursive;
+	color: red;
+	font-size: 3em;
+	text-shadow: 
+		-2px 	0 		0 #634321,
+		0		2px 	0 black,
+		0px 	-2px	0 #ff7f2a;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.box {
+	background:#ff7f2a; 
+	padding: 1em;
+	margin: 1em; 
+	color: white;  
+	display: inline-block;
+	width: 25%;
+	vertical-align: top;
+}
+
+.box-container {
+	text-align: center;
+}
+
+.triangle {
+	margin:auto;
+	width: 0; 
+	height: 0; 
+	border-left: 10em solid transparent; 
+	border-right: 10em solid transparent; 
+}
+
+section {
+	font-size: 1.5em;
+	margin: 0;
+	padding: 0em 1em 1em 1em;
+	min-height: 10em;
+}
+
+p {
+	
+	margin: 0;
+	padding: 0 0 0 2em;
+}
+
+section:nth-child(3n + 1) {
+	background-color: #634321;
+	color: white;
+}
+section:nth-child(3n + 1) > .triangle {
+	border-top: 1.5em solid white; 
+	/* #ff7f2a; */
+}
+
+section:nth-child(3n + 2) {
+	background-color:#ff7f2a;
+}
+section:nth-child(3n + 2) > .triangle {
+	border-top: 1.5em solid #634321;
+}
+
+section:nth-child(3n) {
+	background-color:white;
+}
+section:nth-child(3n) > .triangle {
+	border-top: 1.5em solid #ff7f2a;
+}
+

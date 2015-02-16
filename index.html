@@ -1,6 +1,8 @@
 <html>
 	<head>
 		<title>JLubricant</title>
+		<link href='http://fonts.googleapis.com/css?family=Changa+One|Ubuntu' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="website/style.css">
 	</head>
 	<body>
 		<div align="center" style="margin: 4em;">
@@ -12,20 +14,100 @@
 		</div>
 	
 
-		<div>
-			<div style="background:#ff7f2a; padding: 1%; color: white; float:left; width:20%; margin:0 3% 0 12%">
+		<div class="box-container">
+			<div class="box">
 				Available as <a href="https://search.maven.org/#search|ga|1|jlubricant">Maven dependecy</a>
 			</div>
 
-			<div style="background:#ff7f2a; padding: 1%; color: white; float:left; width:20%; margin:0 3% 0 3%">
+			<div class="box">
 				<a href="/mvnsite/index.html">Documentation</a>
 			</div>
 
-			<div style="background:#ff7f2a; padding: 1%; color: white; float:left; width:20%; margin:0 0 0 3%">
+			<div class="box">
 				Sources available on <a href="https://github.com/danidemi/jlubricant">Github</a>
 			</div>
 		</div>
 		
+		
+		
+		<section>
+			<div class="triangle"></div>
+			
+			<div class="keyword">Rapid.</div> 
+			<p>
+			JLubricant offers you programmatic abstractions to
+			the services you need to use to build your app.
+			</p>
+			
+		</section>
+		
+
+		
+		<section>
+			<div class="triangle"></div>
+			
+			<div class="keyword">Self Containment.</div> 
+			<p>
+			Deploy your whole application (including business logic, database, servers)
+			in one single jar.
+			</p>
+			
+		</section>
+		
+
+		
+		<section>
+			<div class="triangle"></div>
+			
+			<div class="keyword">Observable.</div>
+			<p>
+			JLubricant abstractions logs can be configured in one single file, because
+			all their logging is routed through commons logging libraries
+			that can then be configured in a single point thanks to 
+			slf4j.
+			Databases exposes their ports, so you can easily connect
+			with any sql client.
+			</p>
+			 
+		</section>
+		
+		<section>
+			<div class="triangle"></div>
+			<div class="keyword">Standard Based.</div>
+			<p>
+			JLubricant does not use fancy or exoteric technologies.
+			Just JDBC for databases, JMS for queue messaging systems and so on.
+			</p>
+		</section>
+		
+		<section>
+			<div class="triangle"></div>
+			<div class="keyword">Evolvable.</div>
+			<p>
+			JLubricant allows you to quickly migrate to proper architectures
+			when it is time to do it.
+			Do you want to use an external database ? 
+			Just set up your datasource instead of JLubrican ones.
+			</p>
+		</section>
+		
+		<section>
+			<div class="triangle"></div>
+			<div class="keyword">Java Based.</div>
+			<p>
+			All services included in JLubricant are powered by Java.
+			</p>
+		</section>	
+		
+		<section>
+			<div class="triangle"></div>
+			<div class="keyword">Stand Alone.</div>
+			<p>
+			Why bothering installing and handling an application server
+			if your only goal is to run a single web application ?
+			Just embed ones in your jar, thanks to JLubricant.
+			</p>
+		</section>
 
 	</body>
 </html>
