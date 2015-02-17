@@ -1,5 +1,6 @@
 package com.danidemi.jlubricant.example.embeddablejetty.spring.mvc;
 
+import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,6 +16,8 @@ import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.danidemi.jlubricant.embeddable.ServerException;
+import com.danidemi.jlubricant.embeddable.ServerStartException;
+import com.danidemi.jlubricant.embeddable.ServerStopException;
 import com.danidemi.jlubricant.embeddable.jetty.EmbeddableJetty;
 import com.danidemi.jlubricant.embeddable.jetty.Feature;
 import com.danidemi.jlubricant.embeddable.jetty.SpringDispatcherServletFeature;
@@ -25,18 +28,16 @@ import com.danidemi.jlubricant.utils.wait.Wait;
 
 @ComponentScan("com.danidemi.jlubricant.example.embeddablejetty.spring")
 @Configuration
-public class SpringMvc  extends WebMvcConfigurerAdapter {
+public class SpringMvc extends WebMvcConfigurerAdapter {
 
-	public static void main(String[] args) {
+	@Test public void howToRunASpringApp() throws ServerStartException, ServerStopException {
 		
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMvc.class);
 		EmbeddableJetty jetty = ctx.getBean(EmbeddableJetty.class);
 		try {
 			jetty.start();
-			Wait.forever();
+			Wait.waitForMillis(2);
 			jetty.stop();
-		} catch (ServerException e) {
-			e.printStackTrace();
 		}finally{
 			ctx.close();			
 		}
