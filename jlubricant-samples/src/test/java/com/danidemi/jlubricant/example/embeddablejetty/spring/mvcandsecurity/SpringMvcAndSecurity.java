@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.Filter;
 
+import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,7 @@ import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.danidemi.jlubricant.embeddable.ServerException;
+import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.jetty.EmbeddableJetty;
 import com.danidemi.jlubricant.embeddable.jetty.SpringDispatcherServletFeature;
 import com.danidemi.jlubricant.embeddable.jetty.SpringFeature;
@@ -49,17 +51,18 @@ import com.danidemi.jlubricant.utils.wait.Wait;
 @Configuration
 public class SpringMvcAndSecurity extends WebMvcConfigurerAdapter {
 
-	public static void main(String[] args) {
+	@Test public void runAnApp() throws ServerException {
 		
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMvcAndSecurity.class);
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMvcAndSecurity.class);
 		EmbeddableJetty jetty = ctx.getBean(EmbeddableJetty.class);
 		try {
 			jetty.start();
-			Wait.forever();
+			Wait.waitForMillis(2);
 			jetty.stop();
-		} catch (ServerException e) {
-			e.printStackTrace();
-		} 
+		}finally{
+			ctx.close();
+		}
+
 		
 	}
 	

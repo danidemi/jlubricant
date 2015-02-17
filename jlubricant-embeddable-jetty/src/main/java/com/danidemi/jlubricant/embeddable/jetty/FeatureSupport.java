@@ -26,4 +26,8 @@ public class FeatureSupport implements Iterable<Feature> {
 		return features.iterator();
 	}
 
+	public boolean isNotEmpty() {
+		return !features.isEmpty();
+	}
+
 }

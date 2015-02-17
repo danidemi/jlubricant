@@ -14,13 +14,32 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 public class SpringFeature implements Feature, ApplicationContextAware {
 
 	private XmlWebApplicationContext wac;
+	private FeatureSupport features;
+	
+	public SpringFeature() {
+		features = new FeatureSupport();
+	}
 	
 	@Override
 	public void install(EmbeddableJetty embeddableJetty) {
 		if(wac == null) throw new IllegalArgumentException("Too early!");
 		embeddableJetty.getHandler().addEventListener(new ContextLoaderListener(wac));
 		
-	}	
+		if(features.isNotEmpty()){
+			for (Feature feature : features) {
+				feature.install(embeddableJetty);
+			}
+		}
+		
+	}
+	
+	
+
+	public void addFeature(Feature feature) {
+		features.addFeature(feature);
+	}
+
+
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)

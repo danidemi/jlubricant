@@ -1,5 +1,6 @@
 package com.danidemi.jlubricant.utils.wait;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -50,6 +51,20 @@ public abstract class Wait {
 		
 		
 		
+	}
+
+	public static void waitForMillis(long milliseconds) {
+		
+		long start = System.currentTimeMillis();
+		long target = start + milliseconds;
+		
+		while(System.currentTimeMillis() < target){
+			try {
+				Thread.sleep( Math.abs( target - System.currentTimeMillis() ));
+			} catch (InterruptedException e) {
+				// ok!
+			}			
+		}
 	}
 	
 }
