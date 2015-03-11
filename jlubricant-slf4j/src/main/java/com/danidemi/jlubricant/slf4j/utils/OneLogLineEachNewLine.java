@@ -1,7 +1,11 @@
 package com.danidemi.jlubricant.slf4j.utils;
 
 
+import java.util.StringTokenizer;
+
 public class OneLogLineEachNewLine implements CharsToLogMessagesPolicy {
+
+    private static final String LINE_SEPARATOR = System.lineSeparator();
 
 	private StringBuilder sb;
 	private Callback cb;
@@ -17,16 +21,26 @@ public class OneLogLineEachNewLine implements CharsToLogMessagesPolicy {
 	@Override
 	public void onWrite(char[] copyOfRange) {
 		if(sb == null) sb = new StringBuilder();
-		
-		for (int i = 0; i < copyOfRange.length; i++) {
-			char c = copyOfRange[i];
-			if(c != '\n'){
-				sb.append(c);				
-			}else{
-				sendCurrentBufferToLog();
-			}
-		}
-		
+
+        String s = new String(copyOfRange);
+
+        int start = 0;
+        int end = 0;
+
+        while(start<s.length()){
+            end = s.indexOf(LINE_SEPARATOR, start);
+            if(end >= 0){
+                String substring = s.substring(start, end);
+                sb.append(substring);
+                sendCurrentBufferToLog();
+                start = end + LINE_SEPARATOR.length();
+            }else{
+                sb.append( s.substring( start ) );
+                start = s.length();
+            }
+        }
+
+
 	}
 
 	private void sendCurrentBufferToLog() {

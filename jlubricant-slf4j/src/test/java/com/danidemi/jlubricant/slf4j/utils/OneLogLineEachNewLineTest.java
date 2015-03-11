@@ -4,6 +4,8 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
+import org.junit.Assume;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
@@ -16,8 +18,18 @@ import com.danidemi.jlubricant.slf4j.utils.CharsToLogMessagesPolicy.Callback;
 @RunWith(MockitoJUnitRunner.class)
 public class OneLogLineEachNewLineTest {
 
-	@Mock Callback callback;
-	@InjectMocks OneLogLineEachNewLine tested; 
+    @Mock Callback callback;
+	@InjectMocks OneLogLineEachNewLine tested;
+
+    @Test public void shouldLogLinesOnWhateverSystem() {
+
+        // when
+        tested.onWrite(("this-is-a-line-in-whatever-os" + System.lineSeparator()).toCharArray());
+
+        // then
+        verify( callback ).log("this-is-a-line-in-whatever-os");
+
+    }
 	
 	@Test public void shouldLogOnCloseEvenIfWithoutEndline() {
 		
@@ -33,7 +45,7 @@ public class OneLogLineEachNewLineTest {
 	@Test public void shouldLogOnceForEachNewLine() {
 				
 		// when
-		tested.onWrite("hello\nworld\n".toCharArray());
+		tested.onWrite(("hello" + System.lineSeparator() + "world" + System.lineSeparator()).toCharArray());
 		
 		// then
 		InOrder inOrder = inOrder(callback);

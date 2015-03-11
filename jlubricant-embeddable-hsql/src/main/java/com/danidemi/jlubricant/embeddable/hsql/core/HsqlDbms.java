@@ -83,7 +83,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 
 	/** 
 	 * Instantiate an {@link HsqlDbms} that run a set of given databases.
-	 * @param Each descriptor define the parameters of each db to run. 
+	 * @param descriptors Each descriptor define the parameters of each db to run.
 	 * */
 	public HsqlDbms(List<HsqlDatabaseDescriptor> descriptors) {
 		Arguments.checkNotEmpty(descriptors, "Please, provide a not null not empty list of databases.");
@@ -97,7 +97,7 @@ public class HsqlDbms implements EmbeddableServer, Dbms {
 		
 	/** 
 	 * Instantiate a {@link HsqlDbms} that just run one database.
-	 * @param Each descriptor define the parameters of each db to run. 
+	 * @param descriptors Each descriptor define the parameters of each db to run.
 	 * */
 	public HsqlDbms(HsqlDatabaseDescriptor... descriptors) {
 		this(Arrays.asList(descriptors));
