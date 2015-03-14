@@ -4,19 +4,29 @@ import org.apache.commons.io.Charsets;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
+/**
+ * A {@link TextEncryptor} based on {@link TinyAES}.
+ */
 public class TinyAESTextEncryptor implements TextEncryptor {
 	
 	private final TinyAES enc;
 	private final TinyAES dec;
 		
+	/**
+	 * @param key 128/192/256 bit key.
+	 */
 	public TinyAESTextEncryptor(byte[] key) {
 		super();
 		this.enc = TinyAES.encodingAES(key);
 		this.dec = TinyAES.decondingAES(key);
 	}
 
-	public TinyAESTextEncryptor(String string) {
-		this(string.getBytes(Charsets.UTF_8));
+	/**
+	 * Utility constructor that extract the key from an UTF8 string.
+	 * @param utf8Key
+	 */
+	public TinyAESTextEncryptor(String utf8Key) {
+		this(utf8Key.getBytes(Charsets.UTF_8));
 	}
 
 	@Override
