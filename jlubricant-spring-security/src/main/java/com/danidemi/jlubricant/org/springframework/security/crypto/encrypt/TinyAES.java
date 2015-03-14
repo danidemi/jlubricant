@@ -793,14 +793,20 @@ public abstract class TinyAES
 			byte paddingLen = decoded[decoded.length-1];
 			int originalLen = decoded.length - paddingLen;
 			
-			byte original[] = new byte[originalLen];
-			System.arraycopy(decoded, 0, original, 0, originalLen);
-
+			try{
+				byte original[] = new byte[originalLen];
+				System.arraycopy(decoded, 0, original, 0, originalLen);
+				
 //			System.out.println("encoded  = " + printArr( encoded ));
 //			System.out.println("pad len  = " + paddingLen);
 //			System.out.println("original = " + printArr( original ));
-			
-			return original;
+				
+				return original;
+				
+			}catch(ArrayIndexOutOfBoundsException aioobe){
+				// this exception could happen when the decoding key is not the one used to encode the message
+				return decoded;
+			}
 		}
 	}
 
