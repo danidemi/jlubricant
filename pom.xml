@@ -32,7 +32,6 @@
 		<module>jlubricant-spring-context</module>
 		<module>jlubricant-samples</module>
 		<module>jlubricant-embeddable-jetty</module>
-		<module></module>
 		<module>jlubricant-spring-security</module>
 	</modules>
 
