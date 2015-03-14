@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 
 /*
- This file was shamelessly taken from the Bouncy Castle Crypto package.
+ This class was shamelessly taken from the Bouncy Castle Crypto package.
  Their licence file states the following:
 
  Copyright (c) 2000 - 2004 The Legion Of The Bouncy Castle
@@ -30,6 +30,7 @@ import java.util.Arrays;
  */
 
 /**
+ * The AES from Bouncy Castle, wrapped to be purposedly used in jlubricant.
  * An implementation of the AES (Rijndael), from FIPS-197.
  * <p>
  * For further details see: <a

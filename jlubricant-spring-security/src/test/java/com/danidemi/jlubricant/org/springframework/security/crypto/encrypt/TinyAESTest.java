@@ -49,11 +49,12 @@ public class TinyAESTest {
 		TinyAES decoder = TinyAES.decondingAES(key);
 		
 		// ...a message 
-		String[] msgs = new String[]{"Hello World!", "", "---"};
+		String[] msgs = new String[]{"a", "Hello World!", "", "---"};
 		
 		// then
 		for (String msg : msgs) {
-			assertArrayEquals( msg.getBytes( Charsets.UTF_8 ), encodeAndDecodeAsBytes(msg.getBytes( Charsets.UTF_8 ), encoder, decoder) );		
+			byte[] msgInBytes = msg.getBytes( Charsets.UTF_8 );
+			assertArrayEquals( msgInBytes, encodeAndDecodeAsBytes(msgInBytes, encoder, decoder) );		
 			assertEquals( msg, encodeAndDecodeAsString(msg, encoder, decoder) );			
 		}
 		
