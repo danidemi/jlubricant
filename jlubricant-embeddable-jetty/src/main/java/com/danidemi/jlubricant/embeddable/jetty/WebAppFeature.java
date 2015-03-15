@@ -2,6 +2,8 @@ package com.danidemi.jlubricant.embeddable.jetty;
 
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +21,8 @@ public class WebAppFeature implements Feature {
 	
 	private static final Logger log = LoggerFactory.getLogger(WebAppFeature.class);
 	
-	private FeatureSupport features = new FeatureSupport();	
+	private FeatureSupport features = new FeatureSupport();
+	private ServletContext servletContext;	
 	
 	/**
 	 * @param virtualHosts Arrays of virtual hosts to set. If null, no virtual hosts will be set.
@@ -66,13 +69,17 @@ public class WebAppFeature implements Feature {
 		String[] virtualHosts2 = virtualHosts;
 		String[] welcomeFiles2 = welcomeFiles;
 		
-		embeddableJetty.createWebApp(webappContextPath2, webAppResourcePath2,
+		servletContext = embeddableJetty.createWebApp(webappContextPath2, webAppResourcePath2,
 				virtualHosts2, welcomeFiles2);	
 		
 		for (Feature feature : features) {
 			feature.install(embeddableJetty);			
 		}
 
+	}
+	
+	public ServletContext getServletContext() {
+		return servletContext;
 	}
 
 

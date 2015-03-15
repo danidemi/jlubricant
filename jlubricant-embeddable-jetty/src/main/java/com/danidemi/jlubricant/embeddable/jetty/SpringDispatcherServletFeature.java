@@ -34,6 +34,7 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 
 	private String[] dispatcherServletSubPath = {"/"};
 	private ConfigurableApplicationContext springCtxInWhichJettyRuns;
+	private ServletContext servletContext;
 	
 	/**
 	 * The paths that will be taken in charge by Spring's DispatcherServlet.
@@ -43,6 +44,10 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 	public SpringDispatcherServletFeature(String dispatcherServletSubPath) {
 		super();
 		this.dispatcherServletSubPath = new String[]{dispatcherServletSubPath};
+	}
+	
+	public ServletContext getServletContext() {
+		return servletContext;
 	}
 	
 	/**
@@ -99,7 +104,7 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 	private class InitializerListener extends AbstractDispatcherServletInitializer implements ServletContextListener {
 
 		private EmbeddableJetty jetty;
-		private ServletContext servletContext;
+		//private ServletContext servletContext;
 
 		public InitializerListener(EmbeddableJetty jetty) {
 			this.jetty = jetty;
@@ -128,7 +133,13 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 	        appContext.setConfigLocation(fakeEmptyContext);
 	        appContext.refresh();
 	        
-	        ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", new DispatcherServlet(appContext));
+	        
+	        DispatcherServlet dispatcherServlet = new DispatcherServlet(appContext);
+	        
+	        
+	        
+	        
+			ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", dispatcherServlet);
 	        dispatcher.setLoadOnStartup(1);
 	        String[] dispatcherServletSubPath2 = SpringDispatcherServletFeature.this.dispatcherServletSubPath;
 	        if(!ArrayUtils.isEmpty(dispatcherServletSubPath2)){
