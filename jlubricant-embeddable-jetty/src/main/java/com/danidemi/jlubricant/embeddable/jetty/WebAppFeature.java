@@ -74,13 +74,14 @@ public class WebAppFeature implements Feature {
 		servletContext = embeddableJetty.createWebApp(webappContextPath2, webAppResourcePath2,
 				virtualHosts2, welcomeFiles2);	
 		
+		for (ContextAvailableListener cal : this.cals) {
+			cal.onContextAvailable( servletContext );
+		}
+		
 		for (Feature feature : features) {
 			feature.install(embeddableJetty);			
 		}
 		
-		for (ContextAvailableListener cal : this.cals) {
-			cal.onContextAvailable( servletContext );
-		}
 
 	}
 	
