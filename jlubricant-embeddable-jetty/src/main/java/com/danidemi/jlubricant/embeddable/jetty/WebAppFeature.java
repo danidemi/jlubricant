@@ -1,5 +1,6 @@
 package com.danidemi.jlubricant.embeddable.jetty;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -22,7 +23,8 @@ public class WebAppFeature implements Feature {
 	private static final Logger log = LoggerFactory.getLogger(WebAppFeature.class);
 	
 	private FeatureSupport features = new FeatureSupport();
-	private ServletContext servletContext;	
+	private ServletContext servletContext;
+	private List<ContextAvailableListener> cals = new LinkedList<>();	
 	
 	/**
 	 * @param virtualHosts Arrays of virtual hosts to set. If null, no virtual hosts will be set.
@@ -75,6 +77,10 @@ public class WebAppFeature implements Feature {
 		for (Feature feature : features) {
 			feature.install(embeddableJetty);			
 		}
+		
+		for (ContextAvailableListener cal : this.cals) {
+			cal.onContextAvailable( servletContext );
+		}
 
 	}
 	
@@ -82,7 +88,15 @@ public class WebAppFeature implements Feature {
 		return servletContext;
 	}
 
-
+	public void addContextAvailableListener(ContextAvailableListener cal){
+		
+		this.cals.add(cal);
+		
+		if( servletContext != null ){
+			cal.onContextAvailable(servletContext);
+		}
+		
+	}
 
 	
 

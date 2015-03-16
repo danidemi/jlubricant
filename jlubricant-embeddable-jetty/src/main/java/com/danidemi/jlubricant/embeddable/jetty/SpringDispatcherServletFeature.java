@@ -11,19 +11,11 @@ import javax.servlet.ServletRegistration;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.taglibs.standard.lang.jstl.ArraySuffix;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
@@ -68,7 +60,7 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 	public String[] getDispatcherServletSubPath() {
 		return dispatcherServletSubPath;
 	}
-	
+		
 	@Override
 	public void install(EmbeddableJetty embeddableJetty) {
 				
@@ -118,6 +110,9 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 			try {
 				servletContext = event.getServletContext();				
 				onStartup(servletContext);
+				
+				
+				
 			} catch (Exception e) {
 				logger.error("Failed to initialize web application", e);
 				System.exit(0);
