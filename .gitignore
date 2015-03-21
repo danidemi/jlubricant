@@ -8,3 +8,7 @@
 /travis.yml~
 **/.classpath
 **/.project
+/.idea/
+/**/*.iml
+*.iml
+

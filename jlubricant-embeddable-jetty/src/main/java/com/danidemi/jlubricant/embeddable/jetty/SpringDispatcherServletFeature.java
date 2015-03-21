@@ -11,19 +11,11 @@ import javax.servlet.ServletRegistration;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.taglibs.standard.lang.jstl.ArraySuffix;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
@@ -34,6 +26,7 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 
 	private String[] dispatcherServletSubPath = {"/"};
 	private ConfigurableApplicationContext springCtxInWhichJettyRuns;
+	private ServletContext servletContext;
 	
 	/**
 	 * The paths that will be taken in charge by Spring's DispatcherServlet.
@@ -43,6 +36,10 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 	public SpringDispatcherServletFeature(String dispatcherServletSubPath) {
 		super();
 		this.dispatcherServletSubPath = new String[]{dispatcherServletSubPath};
+	}
+	
+	public ServletContext getServletContext() {
+		return servletContext;
 	}
 	
 	/**
@@ -63,7 +60,7 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 	public String[] getDispatcherServletSubPath() {
 		return dispatcherServletSubPath;
 	}
-	
+		
 	@Override
 	public void install(EmbeddableJetty embeddableJetty) {
 				
@@ -99,7 +96,7 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 	private class InitializerListener extends AbstractDispatcherServletInitializer implements ServletContextListener {
 
 		private EmbeddableJetty jetty;
-		private ServletContext servletContext;
+		//private ServletContext servletContext;
 
 		public InitializerListener(EmbeddableJetty jetty) {
 			this.jetty = jetty;
@@ -113,6 +110,9 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 			try {
 				servletContext = event.getServletContext();				
 				onStartup(servletContext);
+				
+				
+				
 			} catch (Exception e) {
 				logger.error("Failed to initialize web application", e);
 				System.exit(0);
@@ -128,7 +128,13 @@ public class SpringDispatcherServletFeature implements Feature, ApplicationConte
 	        appContext.setConfigLocation(fakeEmptyContext);
 	        appContext.refresh();
 	        
-	        ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", new DispatcherServlet(appContext));
+	        
+	        DispatcherServlet dispatcherServlet = new DispatcherServlet(appContext);
+	        
+	        
+	        
+	        
+			ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", dispatcherServlet);
 	        dispatcher.setLoadOnStartup(1);
 	        String[] dispatcherServletSubPath2 = SpringDispatcherServletFeature.this.dispatcherServletSubPath;
 	        if(!ArrayUtils.isEmpty(dispatcherServletSubPath2)){

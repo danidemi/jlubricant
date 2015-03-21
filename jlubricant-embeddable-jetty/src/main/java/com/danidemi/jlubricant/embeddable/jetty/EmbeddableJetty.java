@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.EventListener;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 
@@ -20,6 +21,7 @@ import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler.Context;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -243,7 +245,7 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 		return (WebAppContext) server.getHandler();
 	}
 	
-	public void createWebApp(
+	public ServletContext createWebApp(
 			String webappContextPath2, String webAppResourcePath2,
 			String[] virtualHosts2, String[] welcomeFiles2) {
 		Preconditions.condition("Please provide a context. A context specifies the path of the web app.", webappContextPath2 != null);
@@ -280,6 +282,9 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 		}
 		
 		setHandler(webapp);
+		
+		Context servletContext = webapp.getServletContext();
+		return servletContext;
 		
 	}
 
