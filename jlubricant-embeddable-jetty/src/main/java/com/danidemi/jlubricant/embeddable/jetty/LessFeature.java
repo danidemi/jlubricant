@@ -7,6 +7,10 @@ import javax.servlet.ServletRegistration;
 
 import com.asual.lesscss.LessServlet;
 
+/**
+ * Enable Less {@link http://lesscss.org/} through {@link https://github.com/asual/lesscss-servlet}.
+ * By default all <code>*.css</code> are served by this feature.
+ */
 public class LessFeature implements Feature,  ServletContextListener {
 	
 	@Override
