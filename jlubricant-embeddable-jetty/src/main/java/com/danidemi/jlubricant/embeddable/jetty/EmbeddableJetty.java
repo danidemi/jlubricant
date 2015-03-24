@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventListener;
@@ -22,6 +23,7 @@ import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandler.Context;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,6 +115,9 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 		if(host != null){
 			http.setHost(host);			
 		}
+		
+//		SslContextFactory sslContextFactory = new SslContextFactory();
+//		sslContextFactory.setKeyStore(  );
 		
 		// HTTP connector #2
 //		ServerConnector http2 = new ServerConnector(server,
