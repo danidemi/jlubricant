@@ -119,40 +119,60 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 			http.setHost(host);			
 		}
 		
-        // === jetty-https.xml ===
-        // SSL Context Factory
+//        // === jetty-https.xml ===
+//        // SSL Context Factory
+//        SslContextFactory sslContextFactory = new SslContextFactory();
+//        sslContextFactory.setKeyStorePath("/tmp/keys/keystore");
+//        
+//        //the passwords for the key store, 
+//        //sslContextFactory.setKeyStorePassword("OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4");
+//        //sslContextFactory.setKeyStorePassword("cocacola");
+//        
+//        //the key password (that should be optional if it's the same as the key store password) 
+//        //sslContextFactory.setKeyManagerPassword("OBF:1u2u1wml1z7s1z7a1wnl1u2g");
+//
+//        //sslContextFactory.setTrustStorePath("/tmp/keystore");
+//        // the trust store password.
+//        //sslContextFactory.setTrustStorePassword("OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4");
+//        //sslContextFactory.setTrustStorePassword("cocacola");
+//        
+//        sslContextFactory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA",
+//                "SSL_DHE_RSA_WITH_DES_CBC_SHA", "SSL_DHE_DSS_WITH_DES_CBC_SHA",
+//                "SSL_RSA_EXPORT_WITH_RC4_40_MD5",
+//                "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
+//                "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
+//                "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
+//
+//        // SSL HTTP Configuration
+//        HttpConfiguration https_config = new HttpConfiguration(http_config);
+//        https_config.addCustomizer(new SecureRequestCustomizer());
+//
+//        // SSL Connector
+//        ServerConnector sslConnector = new ServerConnector(server,
+//            new SslConnectionFactory(sslContextFactory,HttpVersion.HTTP_1_1.asString()),
+//            new HttpConnectionFactory(https_config));
+//        sslConnector.setPort(8443);
+//        //server.addConnector(sslConnector);
+//        // === jetty-https.xml ===
+        
+		
+		
+		
+        
+//		// === jetty-https.xml ===
+//		HttpConfiguration https = new HttpConfiguration();
+		http_config.addCustomizer(new SecureRequestCustomizer());        
         SslContextFactory sslContextFactory = new SslContextFactory();
-        sslContextFactory.setKeyStorePath("/tmp/keystore");
-        
-        //the passwords for the key store, 
-        //sslContextFactory.setKeyStorePassword("OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4");
-        sslContextFactory.setKeyStorePassword("cocacola");
-        
-        //the key password (that should be optional if it's the same as the key store password) 
-        //sslContextFactory.setKeyManagerPassword("OBF:1u2u1wml1z7s1z7a1wnl1u2g");
+        sslContextFactory.setKeyStorePath( "/tmp/keys/keystore" );
 
-        sslContextFactory.setTrustStorePath("/tmp/keystore");
-        // the trust store password.
-        //sslContextFactory.setTrustStorePassword("OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4");
-        sslContextFactory.setTrustStorePassword("cocacola");
-        
-        sslContextFactory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA",
-                "SSL_DHE_RSA_WITH_DES_CBC_SHA", "SSL_DHE_DSS_WITH_DES_CBC_SHA",
-                "SSL_RSA_EXPORT_WITH_RC4_40_MD5",
-                "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
-                "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
-                "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
-
-        // SSL HTTP Configuration
-        HttpConfiguration https_config = new HttpConfiguration(http_config);
-        https_config.addCustomizer(new SecureRequestCustomizer());
-
-        // SSL Connector
         ServerConnector sslConnector = new ServerConnector(server,
-            new SslConnectionFactory(sslContextFactory,HttpVersion.HTTP_1_1.asString()),
-            new HttpConnectionFactory(https_config));
+                new SslConnectionFactory(sslContextFactory, "http/1.1"),
+                new HttpConnectionFactory(http_config));
         sslConnector.setPort(8443);
-        //server.addConnector(sslConnector);
+//        // === jetty-https.xml ===
+        
+        
+        
 		
 //		SslContextFactory sslContextFactory = new SslContextFactory();
 //		sslContextFactory.setKeyStore(  );
@@ -200,7 +220,11 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 		
 		
 		
-		server.setConnectors(new Connector[] { http, sslConnector });
+		server.setConnectors(new Connector[] { 
+				http
+				, 
+				sslConnector 
+				});
 		
 		try {
 			log.info("Starting Jetty...");
