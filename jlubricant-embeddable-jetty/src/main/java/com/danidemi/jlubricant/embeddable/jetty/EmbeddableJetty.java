@@ -6,27 +6,22 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
-import java.security.KeyStore;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EventListener;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletException;
 
-import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandler.Context;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.util.component.LifeCycle;
+import org.eclipse.jetty.util.component.LifeCycle.Listener;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +29,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.web.context.AbstractContextLoaderInitializer;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.GenericWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
 
-import com.asual.lesscss.LessOptions;
 import com.danidemi.jlubricant.embeddable.EmbeddableServer;
 import com.danidemi.jlubricant.embeddable.ServerStartException;
 import com.danidemi.jlubricant.embeddable.ServerStopException;
@@ -100,6 +90,8 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 	
 	@Override
 	public void start() throws ServerStartException {
+		
+		if(features.isEmpty()) throw new IllegalArgumentException("Sorry, no features available.");
 
 		
 		server = new Server();
@@ -117,128 +109,50 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 		http.setIdleTimeout(idleTimeout);
 		if(host != null){
 			http.setHost(host);			
-		}
-		
-//        // === jetty-https.xml ===
-//        // SSL Context Factory
+		}		
+        
+////		// === jetty-https.xml ===
+//		http_config.addCustomizer(new SecureRequestCustomizer());        
 //        SslContextFactory sslContextFactory = new SslContextFactory();
-//        sslContextFactory.setKeyStorePath("/tmp/keys/keystore");
-//        
-//        //the passwords for the key store, 
-//        //sslContextFactory.setKeyStorePassword("OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4");
-//        //sslContextFactory.setKeyStorePassword("cocacola");
-//        
-//        //the key password (that should be optional if it's the same as the key store password) 
-//        //sslContextFactory.setKeyManagerPassword("OBF:1u2u1wml1z7s1z7a1wnl1u2g");
+//        sslContextFactory.setKeyStorePath( "/tmp/keys/keystore" );
 //
-//        //sslContextFactory.setTrustStorePath("/tmp/keystore");
-//        // the trust store password.
-//        //sslContextFactory.setTrustStorePassword("OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4");
-//        //sslContextFactory.setTrustStorePassword("cocacola");
-//        
-//        sslContextFactory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA",
-//                "SSL_DHE_RSA_WITH_DES_CBC_SHA", "SSL_DHE_DSS_WITH_DES_CBC_SHA",
-//                "SSL_RSA_EXPORT_WITH_RC4_40_MD5",
-//                "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
-//                "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
-//                "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
-//
-//        // SSL HTTP Configuration
-//        HttpConfiguration https_config = new HttpConfiguration(http_config);
-//        https_config.addCustomizer(new SecureRequestCustomizer());
-//
-//        // SSL Connector
 //        ServerConnector sslConnector = new ServerConnector(server,
-//            new SslConnectionFactory(sslContextFactory,HttpVersion.HTTP_1_1.asString()),
-//            new HttpConnectionFactory(https_config));
+//                new SslConnectionFactory(sslContextFactory, "http/1.1"),
+//                new HttpConnectionFactory(http_config));
 //        sslConnector.setPort(8443);
-//        //server.addConnector(sslConnector);
-//        // === jetty-https.xml ===
-        
-		
-		
-		
-        
-//		// === jetty-https.xml ===
-//		HttpConfiguration https = new HttpConfiguration();
-		http_config.addCustomizer(new SecureRequestCustomizer());        
-        SslContextFactory sslContextFactory = new SslContextFactory();
-        sslContextFactory.setKeyStorePath( "/tmp/keys/keystore" );
-
-        ServerConnector sslConnector = new ServerConnector(server,
-                new SslConnectionFactory(sslContextFactory, "http/1.1"),
-                new HttpConnectionFactory(http_config));
-        sslConnector.setPort(8443);
-//        // === jetty-https.xml ===
-        
-        
-        
-		
-//		SslContextFactory sslContextFactory = new SslContextFactory();
-//		sslContextFactory.setKeyStore(  );
-		
-		// HTTP connector #2
-//		ServerConnector http2 = new ServerConnector(server,
-//				new HttpConnectionFactory(http_config));
-//		http2.setPort(9090);
-//		http2.setIdleTimeout(30000);
-		
-//		WebAppContext webapp = new WebAppContext();
-//		
-//		if(virtualHosts!=null){
-//			webapp.setVirtualHosts(virtualHosts);		
-//		}
-//		
-//		webapp.setContextPath(webappContextPath);
-//		
-//		webapp.setWar(resourceURI);
-//		
-//		// Disable directory listings if no index.html is found.
-//		webapp.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed",
-//				String.valueOf(dirAllowed));
-		
-		
-		//webapp.addEventListener(new InitializerListener(this));
-		//webapp.addEventListener(new RegisterLessServlet());
-		//webapp.addEventListener(new SecurityEnable(this));
-		
+////        // === jetty-https.xml ===
+        		
 		for (Feature feature : features) {
 			log.info("Installing feature " + feature);
 			feature.install(this);
 		}
-		
-//		// Create the root web application context and set it as a servlet
-//		// attribute so the dispatcher servlet can find it.
-//		webApplicationContext = new GenericWebApplicationContext();
-//		webApplicationContext.setParent(mainSpringContext);
-//		webApplicationContext.refresh();
-//		webapp.setAttribute(
-//				WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
-//				webApplicationContext);
-		
-
-		
-		
-		
+				
 		server.setConnectors(new Connector[] { 
 				http
-				, 
-				sslConnector 
+				//, 
+				//sslConnector 
 				});
 		
 		try {
 			log.info("Starting Jetty...");
+			
+			final AtomicInteger k = new AtomicInteger(0);
 			
 			jettyThread = new Thread( new Runnable() {
 
 				@Override
 				public void run() {
 					try {
-						server.start();
+											
+				
+						
+						server.start();						
+						
 						StringBuffer stringBuffer = new StringBuffer();
 						server.dump(stringBuffer);
 						log.debug( stringBuffer.toString() );
 						try{
+							k.set(2);
 							server.join();							
 						}catch(InterruptedException ie){
 							log.info("Stopping Jetty...");
@@ -262,6 +176,10 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 			} );
 			jettyThread.start();
 			
+			while(k.get()==0){
+				Thread.sleep(1000);
+			}
+			System.out.println("==========================" + k.get());
 
 			log.info("Jetty Started.");
 		} catch (Exception e) {
@@ -304,7 +222,7 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 	
 
 	
-	public void setHandler(WebAppContext webapp) {
+	public void setHandler(Handler webapp) {
 		server.setHandler(webapp);
 	}
 	
