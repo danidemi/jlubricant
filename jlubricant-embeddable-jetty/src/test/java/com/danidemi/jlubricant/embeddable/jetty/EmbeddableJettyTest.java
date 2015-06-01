@@ -33,6 +33,7 @@ public class EmbeddableJettyTest {
 	
 	@Test public void shouldConnectThroughHttp() throws ServerStartException, IOException{
 		
+		jetty.addConnectivity(new HttpConnectivity("localhost", 8080, 30000));
 		testConnection("http://localhost:8080/");
 		
 	}

@@ -16,12 +16,8 @@ import javax.servlet.ServletContextEvent;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandler.Context;
-import org.eclipse.jetty.util.component.LifeCycle;
-import org.eclipse.jetty.util.component.LifeCycle.Listener;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +44,7 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 	private Server server;
 	private ApplicationContext mainSpringContext;
 	GenericWebApplicationContext webApplicationContext;
-	private int httpPort = 8080;
-	private int idleTimeout = 30000;
+	List<HttpConnectivity> connectivities = new ArrayList<>();
 	private boolean dirAllowed = true;
 
 
@@ -80,14 +75,14 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 		this.dirAllowed = dirAllowed;
 	}
 	
-	public void setIdleTimeout(int idleTimeout) {
-		this.idleTimeout = idleTimeout;
-	}
-
-	public void setHttpPort(int httpPort) {
-		this.httpPort = httpPort;
+	public void setConnectivities(List<HttpConnectivity> connectivities) {
+		this.connectivities.addAll( connectivities );
 	}
 	
+	public void addConnectivity( HttpConnectivity connectivity ){
+		this.connectivities.add(connectivity);
+	}
+		
 	@Override
 	public void start() throws ServerStartException {
 		
@@ -102,14 +97,6 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 		http_config.setSecurePort(8443);
 		http_config.setOutputBufferSize(32768);
 		
-		// HTTP connector #1
-		ServerConnector http = new ServerConnector(server,
-				new HttpConnectionFactory(http_config));
-		http.setPort(httpPort);
-		http.setIdleTimeout(idleTimeout);
-		if(host != null){
-			http.setHost(host);			
-		}		
         
 ////		// === jetty-https.xml ===
 //		http_config.addCustomizer(new SecureRequestCustomizer());        
@@ -126,12 +113,12 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 			log.info("Installing feature " + feature);
 			feature.install(this);
 		}
-				
-		server.setConnectors(new Connector[] { 
-				http
-				//, 
-				//sslConnector 
-				});
+			
+		Connector[] connectors = new Connector[connectivities.size()];
+		for(int i=0; i<connectivities.size(); i++){
+			connectors[i] = connectivities.get(i).doInstall(server);
+		}
+		server.setConnectors(connectors);
 		
 		try {
 			log.info("Starting Jetty...");
