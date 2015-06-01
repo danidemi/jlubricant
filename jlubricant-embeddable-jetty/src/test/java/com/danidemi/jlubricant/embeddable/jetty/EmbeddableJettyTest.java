@@ -4,10 +4,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +33,13 @@ public class EmbeddableJettyTest {
 	
 	@Test public void shouldConnectThroughHttp() throws ServerStartException, IOException{
 		
+		testConnection("http://localhost:8080/");
+		
+	}
+
+	private void testConnection(String spec) throws ServerStartException, IOException, MalformedURLException {
+		
+		// given
 		jetty.addFeature(new EasyFeature(){
 
 			@Override
@@ -45,9 +50,12 @@ public class EmbeddableJettyTest {
 			}});
 		jetty.start();
 		
-		String string = IOUtils.toString( new URL( "http", "localhost", 8080, "/").openStream() );
+		// when
+		String string = IOUtils.toString( new URL( spec).openStream() );
+		
+		// then
 		assertThat( string, equalTo("Hello!"));
 		
 	}
-	
+		
 }
