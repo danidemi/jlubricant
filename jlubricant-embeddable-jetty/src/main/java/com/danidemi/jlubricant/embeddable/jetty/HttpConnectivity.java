@@ -9,7 +9,7 @@ import org.eclipse.jetty.server.ServerConnector;
 public class HttpConnectivity implements Connectivity {
 
 	private int httpPort = 8080;
-	private int idleTimeout = 30000;
+	private Integer idleTimeout = null;
 	private String host;
 	
 	public HttpConnectivity() {
@@ -59,7 +59,7 @@ public class HttpConnectivity implements Connectivity {
 		// HTTP connector #1
 		ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(http_config));
 		http.setPort(httpPort);
-		http.setIdleTimeout(idleTimeout);
+		http.setIdleTimeout(idleTimeout == null ? 30000 : idleTimeout);
 		if(host != null){
 			http.setHost(host);			
 		}

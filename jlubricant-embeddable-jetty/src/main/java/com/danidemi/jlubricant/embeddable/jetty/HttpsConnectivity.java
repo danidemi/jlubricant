@@ -15,7 +15,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 public class HttpsConnectivity implements Connectivity {
 
 	private int httpPort = 8443;
-	private int idleTimeout = 30000;
+	private Integer idleTimeout = null;
 	private String host;
 	private File keystoreFile;
 	private String trustStoreAndKeyStorePassword;
@@ -34,6 +34,8 @@ public class HttpsConnectivity implements Connectivity {
 		this.keystoreFile = keystoreFile;
 		this.trustStoreAndKeyStorePassword = trustStoreAndKeyStorePassword;
 	}
+	
+	
 
 	public int getHttpPort() {
 		return httpPort;
@@ -58,6 +60,17 @@ public class HttpsConnectivity implements Connectivity {
 	public void setHost(String host) {
 		this.host = host;
 	}
+	
+	public void setKeystoreFile(File keystoreFile) {
+		this.keystoreFile = keystoreFile;
+	}
+	
+	public void setTrustStoreAndKeyStorePassword(
+			String trustStoreAndKeyStorePassword) {
+		this.trustStoreAndKeyStorePassword = trustStoreAndKeyStorePassword;
+	}
+	
+	
 
 
 	@Override
@@ -104,7 +117,7 @@ public class HttpsConnectivity implements Connectivity {
             new SslConnectionFactory(sslContextFactory,HttpVersion.HTTP_1_1.asString()),
                 new HttpConnectionFactory(https_config));
         https.setPort(this.httpPort);
-        https.setIdleTimeout(idleTimeout);
+        https.setIdleTimeout(idleTimeout != null ? idleTimeout : 30000);
         
         return https;
 		
