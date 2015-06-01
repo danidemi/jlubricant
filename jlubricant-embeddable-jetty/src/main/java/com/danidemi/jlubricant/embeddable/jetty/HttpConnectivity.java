@@ -6,7 +6,7 @@ import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 
-public class HttpConnectivity {
+public class HttpConnectivity implements Connectivity {
 
 	private int httpPort = 8080;
 	private int idleTimeout = 30000;

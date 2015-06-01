@@ -44,7 +44,7 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 	private Server server;
 	private ApplicationContext mainSpringContext;
 	GenericWebApplicationContext webApplicationContext;
-	List<HttpConnectivity> connectivities = new ArrayList<>();
+	List<Connectivity> connectivities = new ArrayList<>();
 	private boolean dirAllowed = true;
 
 
@@ -75,11 +75,11 @@ public class EmbeddableJetty implements ApplicationContextAware, EmbeddableServe
 		this.dirAllowed = dirAllowed;
 	}
 	
-	public void setConnectivities(List<HttpConnectivity> connectivities) {
+	public void setConnectivities(List<Connectivity> connectivities) {
 		this.connectivities.addAll( connectivities );
 	}
 	
-	public void addConnectivity( HttpConnectivity connectivity ){
+	public void addConnectivity( Connectivity connectivity ){
 		this.connectivities.add(connectivity);
 	}
 		
